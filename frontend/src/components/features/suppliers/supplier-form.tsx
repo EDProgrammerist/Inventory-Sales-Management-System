@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import ImageUpload from '@/components/common/image-upload'
+import ImageUpload from '@/components/ui/image-upload'
 import { productCategories } from '@/data/inventory-demo'
 import {
   validateSupplier,
@@ -34,14 +34,14 @@ const fields: {
     label: 'Category',
     type: 'select',
     placeholder: 'Select product category',
-    helper: 'Choose a category from the sample product categories.',
+    helper: 'Choose a product category.',
   },
   {
     name: 'price',
     label: 'Buying Price',
     type: 'number',
     placeholder: 'Enter buying price',
-    helper: 'Price in USD, greater than zero and with up to 2 decimal places.',
+    helper: 'Price in PHP, greater than zero and with up to 2 decimal places.',
   },
   {
     name: 'phone',
@@ -217,11 +217,9 @@ export default function SupplierForm({
           )}
         </div>
       </fieldset>
-      <p aria-live="polite" className="text-[10px] leading-4 text-slate-400">
-        {readingImage
-          ? 'Reading image…'
-          : 'Sample suppliers · changes last while this page is open.'}
-      </p>
+      {readingImage && (
+        <p role="status" className="text-[10px] leading-4 text-slate-400">Reading image...</p>
+      )}
       <div className="flex justify-end gap-3 pt-1">
         <button type="button" onClick={onDiscard} className="inventory-button">
           Discard

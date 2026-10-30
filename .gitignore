@@ -1,0 +1,19 @@
+# Local AI skills, instructions, and design-review artifacts
+/.agents/
+/.taste-skill/
+/frontend/.impeccable/
+/AGENTS.md
+/skills-lock.json
+
+# Local project notes and design references
+/rules.md
+/backend/docs/implementation-status.md
+/frontend/DESIGN.md
+/frontend/PRODUCT.md
+/frontend/design/tacky-fullpage-design-ref.png
+/frontend/docs/audit-cleanup.md
+/frontend/docs/inventory-preview.md
+/frontend/docs/landing-implementation.md
+/frontend/docs/orders-stores-preview.md
+/frontend/docs/suppliers-preview.md
+/frontend/docs/ui-refinement-review.md

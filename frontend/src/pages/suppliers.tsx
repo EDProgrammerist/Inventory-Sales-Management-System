@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import { FunnelIcon, MagnifyingGlassIcon, CheckCircleIcon } from '@phosphor-icons/react'
 import WorkspaceLayout, { type WorkspaceAction } from '@/components/common/workspace-layout'
-import DashboardDialog from '@/components/features/dashboard/dashboard-dialog'
+import DashboardDialog from '@/components/ui/dashboard-dialog'
 import SupplierForm from '@/components/features/suppliers/supplier-form'
 import { SupplierFilters, SupplierDetails } from '@/components/features/suppliers/supplier-panels'
 import {
-  supplierFixtures,
   supplierTypeLabels,
   supplierPageSize,
   selectSuppliers,
@@ -15,7 +14,8 @@ import {
 } from '@/data/suppliers-demo'
 import { paginateRows } from '@/data/pagination'
 import { downloadCsv } from '@/lib/download'
-import { useInventory } from '@/components/features/inventory/inventory-context'
+import { useInventory } from '@/components/context/inventory-context'
+import { useWorkspace } from '@/components/context/workspace-context'
 import InventoryPanelContent from '@/components/features/inventory/inventory-panels'
 import { inventoryPanelTitles } from '@/components/features/inventory/inventory-presentation'
 
@@ -28,7 +28,7 @@ const typeStyles = {
 
 export default function SuppliersPage() {
   const { products: inventory, addProduct } = useInventory()
-  const [suppliers, setSuppliers] = useState(supplierFixtures)
+  const { suppliers, setSuppliers } = useWorkspace()
   const [query, setQuery] = useState('')
   const [type, setType] = useState<SupplierTypeFilter>('all')
   const [onWayOnly, setOnWayOnly] = useState(false)
@@ -58,12 +58,12 @@ export default function SuppliersPage() {
     setPage(Math.ceil(next.length / supplierPageSize))
     setPanel(null)
     setNotice(
-      `${supplier.name} was added to the sample supplier list. Changes last while this page is open.`,
+      `${supplier.name} was added to the supplier list.`,
     )
   }
   function downloadAll() {
-    downloadCsv(suppliersCsv(suppliers), 'kanban-sample-suppliers.csv')
-    setNotice(`Downloaded all ${suppliers.length} sample supplier rows.`)
+    downloadCsv(suppliersCsv(suppliers), 'shenban-suppliers.csv')
+    setNotice(`Downloaded all ${suppliers.length} supplier rows.`)
   }
   function panelTitle(value: SupplierPanel) {
     if (value === 'new-supplier') return 'New Supplier'
@@ -135,8 +135,7 @@ export default function SuppliersPage() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1050px] border-collapse text-left text-sm">
             <caption className="sr-only">
-              Sample supplier list from the reference. Repeated rows are retained; a missing return
-              type is marked Not specified.
+              Supplier contact and return information.
             </caption>
             <thead>
               <tr className="border-b border-[#edf0f3] text-[#7b8495]">

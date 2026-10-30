@@ -2,6 +2,7 @@
 
 import { useState, type InputHTMLAttributes } from 'react'
 import { EyeIcon, EyeSlashIcon } from '@phosphor-icons/react'
+import LoadingSpinner from '@/components/ui/loading-spinner'
 
 export const authLinkClass = 'rounded-sm font-medium text-[#1765d5] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1765d5]'
 const fieldClass = 'h-12 w-full rounded-lg border border-[#d3d7de] bg-white px-3.5 text-[15px] text-zinc-800 shadow-[0_1px_2px_rgba(24,39,62,0.04)] outline-none transition-[border-color,box-shadow] placeholder:text-[#8b919e] focus:border-[#1765d5] focus:ring-3 focus:ring-[#1765d5]/10 aria-invalid:border-red-600 disabled:bg-zinc-50'
@@ -38,8 +39,10 @@ export function AuthField({ id, label, error, helper, visibleHelper = false, typ
 export function AuthSubmit({ pending, complete, label, pendingLabel }: { pending: boolean; complete: boolean; label: string; pendingLabel: string }) {
   return (
     <button type="submit" disabled={pending || complete} className="relative mt-1 h-12 w-full overflow-hidden rounded-md bg-[#1765d5] text-[15px] font-medium text-white shadow-[0_1px_2px_rgba(23,101,213,0.15)] transition-[background-color,transform] hover:bg-[#1258bd] active:scale-[0.98] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#1765d5] disabled:cursor-default disabled:opacity-70">
-      {pending && <span aria-hidden="true" className="loading-sheen absolute inset-0" />}
-      <span className="relative">{pending ? pendingLabel : complete ? 'Success' : label}</span>
+      <span className="relative inline-flex items-center justify-center gap-2" role={pending ? 'status' : undefined}>
+        {pending && <LoadingSpinner className="size-4" />}
+        {pending ? pendingLabel : complete ? 'Success' : label}
+      </span>
     </button>
   )
 }

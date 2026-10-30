@@ -1,15 +1,15 @@
-// Reference-design fixtures. These figures are not records from the connected database.
+// Empty chart series; no sales or purchase transaction source is connected.
 export const monthlyActivity = [
-  { month: 'Jan', purchase: 55000, sales: 49000, ordered: 3800, delivered: 3200 },
-  { month: 'Feb', purchase: 58000, sales: 48000, ordered: 2700, delivered: 3700 },
-  { month: 'Mar', purchase: 45000, sales: 53000, ordered: 2500, delivered: 3500 },
-  { month: 'Apr', purchase: 37000, sales: 44000, ordered: 1400, delivered: 3600 },
-  { month: 'May', purchase: 44000, sales: 47000, ordered: 2250, delivered: 3350 },
-  { month: 'Jun', purchase: 29000, sales: 42000, ordered: 2100, delivered: 3100 },
-  { month: 'Jul', purchase: 55000, sales: 49000, ordered: 2800, delivered: 3400 },
-  { month: 'Aug', purchase: 45000, sales: 42000, ordered: 2400, delivered: 3000 },
-  { month: 'Sep', purchase: 45000, sales: 44000, ordered: 2650, delivered: 3600 },
-  { month: 'Oct', purchase: 37000, sales: 44000, ordered: 2300, delivered: 3450 },
+  { month: 'Jan', purchase: 0, sales: 0, ordered: 0, delivered: 0 },
+  { month: 'Feb', purchase: 0, sales: 0, ordered: 0, delivered: 0 },
+  { month: 'Mar', purchase: 0, sales: 0, ordered: 0, delivered: 0 },
+  { month: 'Apr', purchase: 0, sales: 0, ordered: 0, delivered: 0 },
+  { month: 'May', purchase: 0, sales: 0, ordered: 0, delivered: 0 },
+  { month: 'Jun', purchase: 0, sales: 0, ordered: 0, delivered: 0 },
+  { month: 'Jul', purchase: 0, sales: 0, ordered: 0, delivered: 0 },
+  { month: 'Aug', purchase: 0, sales: 0, ordered: 0, delivered: 0 },
+  { month: 'Sep', purchase: 0, sales: 0, ordered: 0, delivered: 0 },
+  { month: 'Oct', purchase: 0, sales: 0, ordered: 0, delivered: 0 },
 ]
 
 export type ChartPeriod = 'monthly' | 'quarterly'
@@ -36,17 +36,9 @@ export interface StockItem {
   image?: string
 }
 
-export const topStock: StockItem[] = [
-  { name: 'Surf Excel', sold: 30, remaining: 12, price: 100 },
-  { name: 'Rin', sold: 21, remaining: 15, price: 207 },
-  { name: 'Parle G', sold: 19, remaining: 17, price: 105 },
-]
+export const topStock: StockItem[] = []
 
-export const lowStock: StockItem[] = [
-  { name: 'Tata Salt', remaining: 10, image: '/dashboard/tata-salt.png' },
-  { name: 'Lays', remaining: 15, image: '/dashboard/lays.png' },
-  { name: 'Nova', remaining: 15, image: '/dashboard/nova.png' },
-]
+export const lowStock: StockItem[] = []
 
 export function filterStock(items: StockItem[], query: string) {
   const search = query.trim().toLocaleLowerCase()

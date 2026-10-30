@@ -1,9 +1,10 @@
+import { formatMoney } from '@/data/currency'
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { useInventory } from '@/components/features/inventory/inventory-context'
+import { useInventory } from '@/components/context/inventory-context'
 import { FunnelIcon, MagnifyingGlassIcon, CheckCircleIcon } from '@phosphor-icons/react'
 import WorkspaceLayout from '@/components/common/workspace-layout'
-import DashboardDialog from '@/components/features/dashboard/dashboard-dialog'
+import DashboardDialog from '@/components/ui/dashboard-dialog'
 import InventoryOverview from '@/components/features/inventory/inventory-overview'
 import InventoryPanelContent from '@/components/features/inventory/inventory-panels'
 import {
@@ -55,12 +56,12 @@ export default function InventoryPage() {
     setPage(Math.ceil((products.length + 1) / 9))
     setPanel(null)
     setNotice(
-      `${product.name} was added to the sample inventory. Changes last until this page is reloaded.`,
+      `${product.name} was added to inventory.`,
     )
   }
   function downloadAll() {
-    downloadCsv(inventoryCsv(products), 'kanban-sample-inventory.csv')
-    setNotice(`Downloaded ${products.length} sample products as CSV.`)
+    downloadCsv(inventoryCsv(products), 'shenban-inventory.csv')
+    setNotice(`Downloaded ${products.length} products as CSV.`)
   }
 
   return (
@@ -124,8 +125,7 @@ export default function InventoryPage() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[900px] border-collapse text-left text-sm">
             <caption className="sr-only">
-              Sample inventory. Reference expiry dates and availability labels are preserved; these
-              are not live stock records.
+              Inventory products and stock levels.
             </caption>
             <thead>
               <tr className="border-b border-[#e9ecf0] text-[#7b8495]">
@@ -165,7 +165,7 @@ export default function InventoryPage() {
                     </Link>
                   </th>
                   <td className="px-4 tabular-nums">
-                    ${product.price.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                    {formatMoney(product.price)}
                   </td>
                   <td className="px-4 tabular-nums">
                     {product.quantity} {product.unit ?? 'Packets'}

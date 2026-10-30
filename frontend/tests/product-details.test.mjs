@@ -1,18 +1,19 @@
+import { inventoryProducts } from './fixtures/reference-data.ts'
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { inventoryProducts, validateProduct, selectProducts } from '../src/data/inventory-demo.ts'
-import { createInventoryState, inventoryReducer, productForOverview, imageFileError } from '../src/data/inventory-state.ts'
+import { validateProduct, selectProducts } from '../src/data/inventory-demo.ts'
+import { createInventoryState, inventoryReducer, productForOverview } from '../src/data/inventory-state.ts'
+import { imageFileError } from '../src/data/image-validation.ts'
 
-test('detail reference snapshot is preserved without changing inventory list fixtures', () => {
-  const initial = createInventoryState(inventoryProducts)
-  const maggi = initial.products[0]
-  assert.equal(maggi.sku, '456567')
-  assert.equal(selectProducts(initial.products, '456567', 'all')[0].id, 'maggi')
-  assert.equal(productForOverview(maggi).quantity, 34)
-  assert.equal(productForOverview(maggi).expiry, '2023-04-13')
-  assert.equal(maggi.details.locations.reduce((sum, item) => sum + item.quantity, 0), 34)
-  assert.equal(inventoryProducts[0].quantity, 43)
-  assert.equal(inventoryProducts[0].expiry, '2022-12-11')
+test('inventory initialization preserves supplied records without reference overrides', () => {
+  const supplied = [{ ...inventoryProducts[0], sku: 'CUSTOM-1', unit: 'Boxes', image: undefined }]
+  const initial = createInventoryState(supplied)
+  assert.deepEqual(initial.products, supplied)
+  assert.notEqual(initial.products[0], supplied[0])
+  assert.equal(productForOverview(initial.products[0]).quantity, 43)
+  assert.equal(productForOverview(initial.products[0]).expiry, '2022-12-11')
+  assert.equal(initial.products[0].details, undefined)
+  assert.equal(selectProducts(initial.products, 'CUSTOM-1', 'all')[0].id, 'maggi')
 })
 
 test('new product fields and image persist in shared inventory state and create history', () => {
@@ -42,8 +43,9 @@ test('expanded form validates IDs, category, and unit', () => {
   const initial = createInventoryState(inventoryProducts)
   const input = { name: 'Oat Biscuits', sku: 'OAT-21', category: 'Groceries', unit: 'Boxes', price: '125.50', quantity: '12', threshold: '5', expiry: '2027-05-21' }
   assert.equal(validateProduct(input, initial.products).valid, true)
-  for (const changes of [{ sku: '' }, { sku: '456567' }, { category: '' }, { category: 'unknown' }, { unit: ' ' }]) {
-    assert.equal(validateProduct({ ...input, ...changes }, initial.products).valid, false)
+  const existing = [{ ...initial.products[0], sku: 'EXISTING-1' }]
+  for (const changes of [{ sku: '' }, { sku: 'EXISTING-1' }, { category: '' }, { category: 'unknown' }, { unit: ' ' }]) {
+    assert.equal(validateProduct({ ...input, ...changes }, existing).valid, false)
   }
 })
 

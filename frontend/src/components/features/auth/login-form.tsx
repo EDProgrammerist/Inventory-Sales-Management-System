@@ -1,8 +1,8 @@
 ﻿'use client'
 
 import { useState, type FormEvent } from 'react'
-import { Link } from 'react-router'
-import { signIn } from '@/services/auth'
+import { Link, useLocation, useNavigate } from 'react-router'
+import { useAuth } from '@/components/context/use-auth'
 import { emailError } from '@/lib/auth-validation'
 import { AuthField, AuthSubmit, AuthFeedback, GoogleButton, authLinkClass } from './auth-controls'
 
@@ -18,6 +18,9 @@ function readRememberedEmail(): string {
 }
 
 export default function LoginForm() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { login, loading } = useAuth()
   const [email, setEmail] = useState(readRememberedEmail)
   const [remember, setRemember] = useState(() => Boolean(readRememberedEmail()))
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
@@ -25,7 +28,7 @@ export default function LoginForm() {
   const [notice, setNotice] = useState('')
   const [requestError, setRequestError] = useState('')
   const [signedIn, setSignedIn] = useState(false)
-  const disabled = pending || signedIn
+  const disabled = pending || signedIn || loading
 
   function showNotice(message: string) {
     setRequestError('')
@@ -58,7 +61,7 @@ export default function LoginForm() {
     }
     setPending(true)
     try {
-      await signIn(cleanEmail, password)
+      await login(cleanEmail, password)
       try {
         if (remember) localStorage.setItem(rememberedEmailKey, JSON.stringify({ email: cleanEmail, expiresAt: Date.now() + 30 * 86400000 }))
         else localStorage.removeItem(rememberedEmailKey)
@@ -66,6 +69,9 @@ export default function LoginForm() {
       form.reset()
       setSignedIn(true)
       setNotice('You’re signed in successfully.')
+      const from: unknown = location.state?.from
+      const destination = typeof from === 'string' && /^\/(dashboard|inventory|reports|suppliers|orders|manage-store)(?:[/?#]|$)/.test(from) ? from : '/dashboard'
+      navigate(destination, { replace: true })
     } catch (error) {
       setRequestError(error instanceof Error ? error.message : 'Unable to sign in. Please try again.')
     } finally {
@@ -76,7 +82,7 @@ export default function LoginForm() {
   return (
     <>
       <form noValidate onSubmit={handleSubmit} aria-busy={pending} className="space-y-5">
-        <AuthField id="email" name="email" label="Email" type="email" autoComplete="username" placeholder="Enter your email" value={email} disabled={disabled} error={errors.email} helper="Use the email associated with your Kanban account." onChange={(event) => { setEmail(event.target.value); setErrors((current) => ({ ...current, email: undefined })) }} />
+        <AuthField id="email" name="email" label="Email" type="email" autoComplete="username" placeholder="Enter your email" value={email} disabled={disabled} error={errors.email} helper="Use the email associated with your Shenban account." onChange={(event) => { setEmail(event.target.value); setErrors((current) => ({ ...current, email: undefined })) }} />
         <AuthField id="password" name="password" label="Password" type="password" autoComplete="current-password" placeholder="••••••••" disabled={disabled} error={errors.password} helper="Your password is case sensitive." onChange={() => setErrors((current) => ({ ...current, password: undefined }))} />
         <div className="flex flex-wrap items-center justify-between gap-3 pt-1 text-[13px]">
           <label className="flex cursor-pointer items-center gap-2.5 text-[#515967]">
@@ -86,7 +92,7 @@ export default function LoginForm() {
           <span id="remember-help" className="sr-only">Save only your email on this device for 30 days.</span>
           <button type="button" disabled={pending} onClick={() => showNotice('Password recovery is currently unavailable. Please contact your workspace administrator for help.')} className={authLinkClass}>Forgot password</button>
         </div>
-        <AuthSubmit pending={pending} complete={signedIn} label="Sign in" pendingLabel="Signing in…" />
+        <AuthSubmit pending={pending || loading} complete={signedIn} label="Sign in" pendingLabel={loading ? 'Checking session…' : 'Signing in…'} />
       </form>
       <GoogleButton label="Sign in with Google" disabled={disabled} onClick={() => showNotice('Google sign-in is currently unavailable. Please use your email and password.')} />
       <p className="mt-8 text-center text-[13px] text-[#737b8b]">Don’t have an account? <Link to="/signup" className={`${authLinkClass} ml-1`}>Sign up</Link></p>

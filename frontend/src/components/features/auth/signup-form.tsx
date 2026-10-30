@@ -1,20 +1,22 @@
 'use client'
 
 import { useState, type FormEvent } from 'react'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { AuthField, AuthSubmit, GoogleButton, AuthFeedback, authLinkClass } from './auth-controls'
 import { emailError } from '@/lib/auth-validation'
-import { signUp } from '@/services/auth'
+import { useAuth } from '@/components/context/use-auth'
 
 type FieldErrors = { name?: string; email?: string; password?: string }
 
 export default function SignupForm() {
+  const { signup, loading } = useAuth()
+  const navigate = useNavigate()
   const [errors, setErrors] = useState<FieldErrors>({})
   const [pending, setPending] = useState(false)
   const [complete, setComplete] = useState(false)
   const [requestError, setRequestError] = useState('')
   const [notice, setNotice] = useState('')
-  const disabled = pending || complete
+  const disabled = pending || complete || loading
 
   function clearError(field: keyof FieldErrors) {
     setErrors((current) => ({ ...current, [field]: undefined }))
@@ -43,10 +45,10 @@ export default function SignupForm() {
     }
     setPending(true)
     try {
-      await signUp(name, email, password)
+      await signup(name, email, password)
       form.reset()
       setComplete(true)
-      setNotice('Your account has been created. You can now log in.')
+      navigate('/dashboard', { replace: true })
     } catch (error) {
       setRequestError(error instanceof Error ? error.message : 'Unable to create your account. Please try again.')
     } finally {
@@ -60,7 +62,7 @@ export default function SignupForm() {
         <AuthField id="name" name="name" label="Name*" type="text" autoComplete="name" placeholder="Enter your name" required maxLength={100} disabled={disabled} error={errors.name} helper="Enter the name you want to use for your account." onChange={() => clearError('name')} />
         <AuthField id="email" name="email" label="Email*" type="email" autoComplete="email" placeholder="Enter your email" required maxLength={254} disabled={disabled} error={errors.email} helper="Use an email you can access." onChange={() => clearError('email')} />
         <AuthField id="password" name="password" label="Password*" type="password" autoComplete="new-password" placeholder="Create a password" required minLength={8} disabled={disabled} error={errors.password} helper="Must be at least 8 characters." visibleHelper onChange={() => clearError('password')} />
-        <AuthSubmit pending={pending} complete={complete} label="Get started" pendingLabel="Creating your account…" />
+        <AuthSubmit pending={pending || loading} complete={complete} label="Get started" pendingLabel="Creating your account…" />
       </form>
       <GoogleButton label="Sign up with Google" disabled={disabled} onClick={() => { setRequestError(''); setNotice('Google sign-up is currently unavailable. Please create an account with your email.') }} />
       <p className="mt-8 text-center text-[13px] text-[#737b8b]">Already have an account? <Link to="/login" className={`${authLinkClass} ml-1`}>Log in</Link></p>

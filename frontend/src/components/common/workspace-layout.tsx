@@ -1,9 +1,9 @@
 import { useState, type ReactNode } from 'react'
-import { BellIcon, MagnifyingGlassIcon, ListIcon, XIcon } from '@phosphor-icons/react'
+import { BellIcon, MagnifyingGlassIcon, ListIcon, UserCircleIcon, XIcon } from '@phosphor-icons/react'
 import DashboardSidebar, {
   type DashboardAction,
 } from '@/components/features/dashboard/dashboard-sidebar'
-import DashboardDialog from '@/components/features/dashboard/dashboard-dialog'
+import MobileMenu from './mobile-menu'
 
 export type WorkspaceAction = DashboardAction | 'notifications' | 'profile'
 
@@ -12,7 +12,7 @@ export default function WorkspaceLayout({
   query,
   onQueryChange,
   onAction,
-  notificationCount = 3,
+  notificationCount = 0,
   searchPlaceholder = 'Search products',
   searchLabel,
   children,
@@ -33,8 +33,8 @@ export default function WorkspaceLayout({
   }
 
   return (
-    <div className="min-h-[100dvh] min-w-0 bg-[#f0f1f3] text-[#5d687e]">
-      <title>{`${title} · Kanban`}</title>
+    <div className="min-h-[100dvh] min-w-0 bg-workspace text-ink">
+      <title>{`${title} · Shenban`}</title>
       <a
         href="#workspace-content"
         className="sr-only fixed top-3 left-3 z-30 rounded bg-white p-3 text-blue-600 shadow focus:not-sr-only"
@@ -45,25 +45,27 @@ export default function WorkspaceLayout({
         <DashboardSidebar onAction={handleAction} />
       </aside>
       <div className="min-w-0 lg:ml-[240px] xl:ml-[280px]">
-        <header className="sticky top-0 z-10 flex min-h-20 items-center gap-3 border-b border-[#eef0f3] bg-white px-4 sm:px-8 lg:min-h-[100px]">
+        <header className="sticky top-0 z-10 flex flex-wrap items-center gap-2 border-b border-divider bg-surface px-4 py-3 sm:min-h-20 sm:flex-nowrap sm:gap-3 sm:px-6 sm:py-0 xl:px-8">
           <button
             type="button"
-            aria-label="Open navigation"
+            aria-label="Open menu"
+            aria-controls="workspace-mobile-menu"
             aria-expanded={mobileNavigation}
             onClick={() => setMobileNavigation(true)}
-            className="grid size-10 shrink-0 place-items-center rounded-md hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-blue-500 lg:hidden"
+            className="workspace-icon-button lg:hidden"
           >
             <ListIcon size={24} />
           </button>
-          <div className="relative min-w-0 flex-1 sm:max-w-[400px]">
+          <span className="min-w-0 flex-1 truncate text-sm font-medium text-ink sm:hidden">SHENBAN</span>
+          <div className="relative order-last basis-full sm:order-none sm:min-w-0 sm:flex-1 sm:basis-auto sm:max-w-[400px]">
             <MagnifyingGlassIcon
               size={21}
               weight="regular"
               aria-hidden="true"
-              className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-[#9aa3b5]"
+              className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted"
             />
             <label htmlFor="stock-search" className="sr-only">
-              {searchLabel ?? `Search ${title.toLowerCase()} products`}
+              {searchLabel ?? searchPlaceholder}
             </label>
             <input
               id="stock-search"
@@ -72,30 +74,24 @@ export default function WorkspaceLayout({
               placeholder={searchPlaceholder}
               value={query}
               onChange={(event) => onQueryChange(event.target.value)}
-              className="h-11 w-full rounded-md border border-[#e9ecf2] bg-white pr-10 pl-12 text-sm outline-none placeholder:text-[#929db0] focus:border-blue-400 focus:ring-2 focus:ring-blue-100 [&::-webkit-search-cancel-button]:appearance-none"
+              className="h-11 w-full rounded-md border border-control bg-surface pr-12 pl-10 text-sm text-ink outline-none placeholder:text-muted focus:border-brand focus:ring-2 focus:ring-brand/15 [&::-webkit-search-cancel-button]:appearance-none"
             />
             {query && (
               <button
                 aria-label="Clear search"
                 onClick={() => onQueryChange('')}
-                className="absolute inset-y-0 right-0 grid w-10 place-items-center rounded-r-md text-slate-400 hover:text-slate-700"
+                className="absolute inset-y-0 right-0 grid w-11 place-items-center rounded-r-md text-muted hover:text-ink"
               >
                 <XIcon size={16} />
               </button>
             )}
           </div>
-          <div className="ml-auto flex shrink-0 items-center gap-3 sm:gap-5">
-            <span
-              className="hidden rounded-full border border-[#e7eaf0] bg-[#fafbfc] px-2.5 py-1 text-[10px] font-medium tracking-wide text-[#7c879b] sm:inline-block"
-              title="Reference-design sample figures; not live business records"
-            >
-              Sample data
-            </span>
+          <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-3">
             <button
               type="button"
               aria-label={`Notifications: ${notificationCount} stock alerts`}
               onClick={() => handleAction('notifications')}
-              className="grid size-9 place-items-center rounded-full hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-blue-500"
+              className="workspace-icon-button"
             >
               <BellIcon size={22} weight="regular" />
             </button>
@@ -103,13 +99,9 @@ export default function WorkspaceLayout({
               type="button"
               aria-label="Open workspace profile"
               onClick={() => handleAction('profile')}
-              className="shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-blue-500"
+              className="workspace-icon-button"
             >
-              <img
-                src="/dashboard/profile.png"
-                alt=""
-                className="size-10 rounded-full object-cover"
-              />
+              <UserCircleIcon size={28} aria-hidden="true" />
             </button>
           </div>
         </header>
@@ -118,18 +110,11 @@ export default function WorkspaceLayout({
           className="mx-auto min-w-0 max-w-[1640px] p-4 sm:p-6 xl:p-8"
           tabIndex={-1}
         >
-          <h1 className="sr-only">{title}</h1>
-          <p className="mb-3 text-[11px] font-medium text-[#7c879b] sm:hidden">
-            {title} · sample data
-          </p>
+          <h1 className="mb-5 text-[24px] leading-8 font-semibold tracking-[-0.025em] text-ink">{title}</h1>
           {children}
         </main>
       </div>
-      {mobileNavigation && (
-        <DashboardDialog title="Navigation" onClose={() => setMobileNavigation(false)}>
-          <DashboardSidebar onAction={handleAction} onClose={() => setMobileNavigation(false)} />
-        </DashboardDialog>
-      )}
+      <MobileMenu open={mobileNavigation} onClose={() => setMobileNavigation(false)} onAction={handleAction} />
     </div>
   )
 }

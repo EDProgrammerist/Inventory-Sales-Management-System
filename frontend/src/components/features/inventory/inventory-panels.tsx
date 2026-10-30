@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import WorkspaceProfile from '@/components/common/workspace-profile'
 import { Link } from 'react-router'
 import {
   availabilityStyles,
@@ -86,7 +87,7 @@ export default function InventoryPanelContent({
     return (
       <div className="space-y-4">
         <p className="text-sm leading-6 text-slate-500">
-          Export all {products.length} sample products, including buying prices, quantities,
+          Export all {products.length} products, including buying prices, quantities,
           thresholds, expiry dates, and availability.
         </p>
         <button onClick={onDownload} className="inventory-button">
@@ -97,6 +98,9 @@ export default function InventoryPanelContent({
   if (panel === 'notifications')
     return (
       <ul className="divide-y divide-slate-100">
+        {!products.some((product) => product.availability !== 'in-stock') && (
+          <li className="py-3 text-sm text-muted">No stock alerts. Products needing attention will appear here.</li>
+        )}
         {products
           .filter((product) => product.availability !== 'in-stock')
           .map((product) => (
@@ -122,12 +126,7 @@ export default function InventoryPanelContent({
         Use compact product rows
       </label>
     )
-  if (panel === 'profile')
-    return (
-      <p className="text-sm leading-6 text-slate-500">
-        You are viewing a sample workspace. No account is signed in.
-      </p>
-    )
+  if (panel === 'profile') return <WorkspaceProfile />
   return (
     <div className="space-y-4">
       <p className="text-sm text-slate-500">

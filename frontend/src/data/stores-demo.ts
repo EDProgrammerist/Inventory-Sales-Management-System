@@ -6,32 +6,7 @@ export interface Store {
   city: string
   phone: string
 }
-export const storeFixtures: Store[] = [
-  {
-    id: 'singanallur',
-    branch: 'Singanallur Branch',
-    name: 'Lisy Store',
-    address: '1A/Krishnarajapuram, 3 rd street sulur',
-    city: 'Coimbatore - 6313403',
-    phone: '044- 653578',
-  },
-  {
-    id: 'slur',
-    branch: 'Slur Branch',
-    name: 'Lisy Store',
-    address: '54 Ramani colony, 3 rd street sulur',
-    city: 'Coimbatore - 63133452',
-    phone: '044- 653763',
-  },
-  {
-    id: 'gaandipuram',
-    branch: 'Gaandipuram Branch',
-    name: 'Lisy Store',
-    address: '32/ Venkatasamy layout, 3 rd street sulur',
-    city: 'Coimbatore - 6313403',
-    phone: '044- 653578',
-  },
-]
+export const storeFixtures: Store[] = []
 export function selectStores(rows: Store[], query: string) {
   const search = query.trim().toLowerCase()
   return rows.filter((row) =>

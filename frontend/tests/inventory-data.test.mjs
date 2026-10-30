@@ -1,8 +1,24 @@
+import { inventoryProducts } from './fixtures/reference-data.ts'
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { inventoryProducts, selectProducts, paginateProducts, validateProduct, inventoryCsv, displayExpiry } from '../src/data/inventory-demo.ts'
+import { selectProducts, paginateProducts, validateProduct, inventoryCsv, displayExpiry } from '../src/data/inventory-demo.ts'
+import { inventoryProducts as initialProducts } from '../src/data/inventory-demo.ts'
+import { createInventoryState,inventoryReducer } from '../src/data/inventory-state.ts'
 
 const validInput = { name: 'Oat Biscuits', price: '125.50', quantity: '12', threshold: '5', expiry: '2027-05-21' }
+
+test('empty inventory still supports manual creation, editing, and local history',()=>{
+  assert.deepEqual(initialProducts,[])
+  const state=createInventoryState(initialProducts)
+  const result=validateProduct({...validInput,sku:'OAT-21',category:'Groceries',unit:'Boxes'},state.products)
+  assert.equal(result.valid,true)
+  const product={...result.product,id:'manual-product'}
+  const added=inventoryReducer(state,{type:'add',product,eventId:'add',at:'2026-10-30T01:00:00Z'})
+  const edited=inventoryReducer(added,{type:'update',id:product.id,product:{...product,quantity:7},eventId:'edit',at:'2026-10-30T01:10:00Z'})
+  assert.equal(added.products.length,1)
+  assert.equal(edited.products[0].quantity,7)
+  assert.equal(edited.events.length,2)
+})
 
 test('search and availability filters compose without changing reference records', () => {
   assert.deepEqual(selectProducts(inventoryProducts, ' BRU ', 'out-of-stock').map((row) => row.name), ['Bru'])

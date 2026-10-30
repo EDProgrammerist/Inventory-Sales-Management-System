@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import WorkspaceLayout, { type WorkspaceAction } from '@/components/common/workspace-layout'
 import WorkspaceUtilityDialog from '@/components/common/workspace-utility-dialog'
-import DashboardDialog from '@/components/features/dashboard/dashboard-dialog'
-import RecordForm, { type RecordField } from '@/components/common/record-form'
-import { storeFixtures, selectStores, validateStore, type Store } from '@/data/stores-demo'
+import DashboardDialog from '@/components/ui/dashboard-dialog'
+import RecordForm, { type RecordField } from '@/components/ui/record-form'
+import { selectStores, validateStore, type Store } from '@/data/stores-demo'
+import { useWorkspace } from '@/components/context/workspace-context'
 
 const fields: RecordField[] = [
   { name: 'branch', label: 'Branch Name' },
@@ -13,7 +14,7 @@ const fields: RecordField[] = [
   { name: 'phone', label: 'Contact Number', type: 'tel', maxLength: 32 },
 ]
 export default function ManageStorePage() {
-  const [stores, setStores] = useState(storeFixtures)
+  const { stores, setStores } = useWorkspace()
   const [query, setQuery] = useState('')
   const [editing, setEditing] = useState<Store | null>(null)
   const [formOpen, setFormOpen] = useState(false)
@@ -123,7 +124,7 @@ export default function ManageStorePage() {
               )
               setQuery('')
               setNotice(
-                `${next.branch} ${editing ? 'updated' : 'added'} in the sample list. Changes last while this page is open.`,
+                `${next.branch} ${editing ? 'updated' : 'added'} in the store list.`,
               )
               close()
             }}

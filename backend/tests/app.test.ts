@@ -29,8 +29,8 @@ test('root and API health respond without PostgreSQL', async () => {
   }
 })
 
-test('unknown routes return JSON 404 rather than claiming authentication exists', async () => {
-  const response = await fetch(`${baseUrl}/api/auth/v1/csrf-token`)
+test('unknown routes return JSON 404', async () => {
+  const response = await fetch(`${baseUrl}/api/unknown`)
   assert.equal(response.status, 404)
   assert.deepEqual(await response.json(), { status: 'error', message: 'Route not found' })
 })

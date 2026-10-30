@@ -6,6 +6,7 @@ import hpp from 'hpp'
 import { ENV } from '@/config/env'
 import { healthRouter } from '@/routes/health.routes'
 import { errorHandler } from '@/middlewares/error.middleware'
+import { authRouter } from '@/routes/auth.routes'
 
 export const app = express()
 app.disable('x-powered-by')
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: false, limit: '32kb' }))
 app.use(cookieParser())
 app.use(hpp())
 app.use(healthRouter)
+app.use('/api/auth/v1', authRouter)
 
 app.use((_request, response) => {
   response.status(404).json({ status: 'error', message: 'Route not found' })

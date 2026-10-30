@@ -1,4 +1,4 @@
-﻿import { useState, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import {
   validateProduct,
   productCategories,
@@ -6,7 +6,7 @@ import {
   type ProductInput,
   type ProductErrors,
 } from '@/data/inventory-demo'
-import ImageUpload from '@/components/common/image-upload'
+import ImageUpload from '@/components/ui/image-upload'
 
 const fields: {
   name: keyof ProductInput
@@ -37,7 +37,7 @@ const fields: {
     label: 'Category',
     type: 'select',
     placeholder: 'Select product category',
-    helper: 'Choose a category for this sample product.',
+    helper: 'Choose a product category.',
   },
   {
     name: 'price',
@@ -47,7 +47,7 @@ const fields: {
     min: '0.01',
     max: '999999999.99',
     step: '0.01',
-    helper: 'Buying price in US dollars, with up to 2 decimal places.',
+    helper: 'Buying price in Philippine pesos, with up to 2 decimal places.',
   },
   {
     name: 'quantity',
@@ -71,7 +71,7 @@ const fields: {
     label: 'Expiry Date',
     type: 'date',
     placeholder: 'Enter expiry date',
-    helper: 'Choose a valid expiry date. Historical dates are allowed in this sample.',
+    helper: 'Choose a valid expiry date.',
   },
   {
     name: 'threshold',
@@ -196,11 +196,9 @@ export default function ProductForm({
           </div>
         ))}
       </div>
-      <p aria-live="polite" className="text-[10px] leading-4 text-slate-400">
-        {readingImage
-          ? 'Reading image…'
-          : 'Sample inventory · changes last until this page is reloaded.'}
-      </p>
+      {readingImage && (
+        <p role="status" className="text-[10px] leading-4 text-slate-400">Reading image...</p>
+      )}
       <div className="flex justify-end gap-3 pt-1">
         <button type="button" onClick={onCancel} className="inventory-button">
           Discard

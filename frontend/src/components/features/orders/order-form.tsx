@@ -33,7 +33,7 @@ const fields = [
     type: 'number',
     step: '0.01',
     max: '999999999.99',
-    helper: 'Total order value in USD, greater than zero, with up to two decimal places.',
+    helper: 'Total order value in PHP, greater than zero, with up to two decimal places.',
   },
   {
     name: 'quantity',
@@ -59,14 +59,14 @@ const fields = [
     type: 'number',
     step: '0.01',
     max: '999999999.99',
-    helper: 'Buying price in USD, greater than zero, with up to two decimal places.',
+    helper: 'Buying price in PHP, greater than zero, with up to two decimal places.',
   },
   {
     name: 'expected',
     label: 'Date of Delivery',
     placeholder: 'Enter date of delivery',
     type: 'date',
-    helper: 'Choose a valid delivery date. Historical dates are accepted in this sample.',
+    helper: 'Choose a valid delivery date.',
   },
 ]
 const inputClass =
@@ -170,8 +170,7 @@ export default function OrderForm({
           Notify on the date of delivery
         </label>
         <p id="order-notification-help" className="mt-2 text-[10px] leading-4 text-slate-400">
-          Saves a preference in this sample only; no notification is scheduled. Changes last while
-          this page is open.
+          Notification preference only; no notification is scheduled.
         </p>
       </div>
       <div className="flex justify-end gap-3 pt-2">

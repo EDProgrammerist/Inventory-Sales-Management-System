@@ -1,19 +1,19 @@
+import { formatMoney } from '@/data/currency'
 import { useState } from 'react'
 import { FunnelIcon } from '@phosphor-icons/react'
 import WorkspaceLayout, { type WorkspaceAction } from '@/components/common/workspace-layout'
 import WorkspaceUtilityDialog from '@/components/common/workspace-utility-dialog'
-import DashboardDialog from '@/components/features/dashboard/dashboard-dialog'
+import DashboardDialog from '@/components/ui/dashboard-dialog'
 import OrderForm from '@/components/features/orders/order-form'
 import OrderOverview from '@/components/features/orders/order-overview'
 import {
-  orderFixtures,
   orderStatuses,
   selectOrders,
   displayOrderDate,
   createNewOrder,
   ordersCsv,
-  type Order,
 } from '@/data/orders-demo'
+import { useWorkspace } from '@/components/context/workspace-context'
 import { paginateRows } from '@/data/pagination'
 import { downloadCsv } from '@/lib/download'
 
@@ -24,7 +24,7 @@ const statusColors = {
   'Out for delivery': 'text-[#1aaf78]',
 }
 export default function OrdersPage() {
-  const [orders, setOrders] = useState(orderFixtures)
+  const { orders, setOrders } = useWorkspace()
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState('all')
   const [draftStatus, setDraftStatus] = useState('all')
@@ -33,7 +33,6 @@ export default function OrdersPage() {
   const [utility, setUtility] = useState<WorkspaceAction | null>(null)
   const [compact, setCompact] = useState(false)
   const [notice, setNotice] = useState('')
-  const [added, setAdded] = useState<Order[]>([])
   const result = paginateRows(selectOrders(orders, query, status), page, 9)
   function clear() {
     setQuery('')
@@ -100,7 +99,7 @@ export default function OrdersPage() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[850px] text-left text-sm">
               <caption className="sr-only">
-                Sample order records from the supplied reference
+                Order records
               </caption>
               <thead>
                 <tr className="border-b border-[#edf0f3] text-[#7b8495]">
@@ -130,7 +129,7 @@ export default function OrdersPage() {
                     >
                       {row.product}
                     </th>
-                    <td className="px-4 tabular-nums">${row.value}</td>
+                    <td className="px-4 tabular-nums">{formatMoney(row.value)}</td>
                     <td className="px-4 tabular-nums">
                       {row.quantity} {row.unit}
                     </td>
@@ -186,12 +185,11 @@ export default function OrdersPage() {
               onAdd={(input) => {
                 const next = createNewOrder(input, crypto.randomUUID())
                 setOrders([...orders, next])
-                setAdded([...added, next])
                 clear()
                 setPage(Math.ceil((orders.length + 1) / 9))
                 setPanel(null)
                 setNotice(
-                  `Order ${next.id} was added to the sample list. The historical summary remains the reference snapshot.`,
+                  `Order ${next.id} was added to the order list.`,
                 )
               }}
             />
@@ -234,24 +232,23 @@ export default function OrdersPage() {
           {panel === 'history' && (
             <div className="space-y-5 text-sm leading-6">
               <p>
-                The reference contains current order snapshots without an event timeline. No earlier
-                status changes are recorded.
+                No earlier status changes are recorded.
               </p>
               <h3 className="font-semibold">Created during this visit</h3>
-              {added.length ? (
+              {orders.length ? (
                 <ul className="divide-y divide-slate-100">
-                  {added.map((row) => (
+                  {orders.map((row) => (
                     <li key={row.id} className="py-3">
                       <p>
                         Order {row.id} · {row.product} · Confirmed
                       </p>
                       <p className="text-xs text-slate-500">
                         Product ID {row.productId} · {row.category} · {row.quantity} {row.unit} ·
-                        Buying price ${row.buyingPrice}
+                        Buying price {row.buyingPrice === undefined ? 'Not recorded' : formatMoney(row.buyingPrice)}
                       </p>
                       <p className="text-xs text-slate-500">
                         Delivery {displayOrderDate(row.expected)} · Notification preference:{' '}
-                        {row.notifyOnDelivery ? 'Requested (sample only)' : 'Off'}
+                        {row.notifyOnDelivery ? 'Requested (not scheduled)' : 'Off'}
                       </p>
                     </li>
                   ))}
@@ -261,7 +258,7 @@ export default function OrdersPage() {
               )}
               <button
                 className="inventory-button"
-                onClick={() => downloadCsv(ordersCsv(orders), 'kanban-sample-orders.csv')}
+                onClick={() => downloadCsv(ordersCsv(orders), 'shenban-orders.csv')}
               >
                 Download all orders CSV
               </button>

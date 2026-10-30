@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import WorkspaceLayout, { type WorkspaceAction } from '@/components/common/workspace-layout'
-import DashboardDialog from '@/components/features/dashboard/dashboard-dialog'
+import DashboardDialog from '@/components/ui/dashboard-dialog'
 import ReportOverview from '@/components/features/reports/report-overview'
 import ProfitRevenueChart from '@/components/features/reports/profit-revenue-chart'
 import {
@@ -8,7 +8,7 @@ import {
   ReportProductsTable,
   ReportEmpty,
 } from '@/components/features/reports/report-tables'
-import { useInventory } from '@/components/features/inventory/inventory-context'
+import { useInventory } from '@/components/context/inventory-context'
 import InventoryPanelContent from '@/components/features/inventory/inventory-panels'
 import { inventoryPanelTitles } from '@/components/features/inventory/inventory-presentation'
 import {
@@ -136,7 +136,7 @@ export default function ReportsPage() {
                   onClick={() =>
                     downloadCsv(
                       reportCategoriesCsv(reportCategories),
-                      'kanban-sample-categories.csv',
+                      'shenban-sample-categories.csv',
                     )
                   }
                   className="inventory-button"
@@ -159,7 +159,7 @@ export default function ReportsPage() {
               <div className="mt-5 flex justify-end">
                 <button
                   onClick={() =>
-                    downloadCsv(reportProductsCsv(reportProducts), 'kanban-sample-best-sellers.csv')
+                    downloadCsv(reportProductsCsv(reportProducts), 'shenban-sample-best-sellers.csv')
                   }
                   className="inventory-button"
                 >
@@ -192,7 +192,7 @@ export default function ReportsPage() {
                 onClick={() =>
                   downloadCsv(
                     reportProductsCsv([selectedProduct]),
-                    `kanban-sample-${selectedProduct.id}-report.csv`,
+                    `shenban-sample-${selectedProduct.id}-report.csv`,
                   )
                 }
               >
@@ -214,7 +214,7 @@ export default function ReportsPage() {
               onClose={() => setPanel(null)}
               onFilter={() => setPanel(null)}
               onDownload={() =>
-                downloadCsv(reportProductsCsv(products), 'kanban-sample-report-products.csv')
+                downloadCsv(reportProductsCsv(products), 'shenban-sample-report-products.csv')
               }
             />
           )}

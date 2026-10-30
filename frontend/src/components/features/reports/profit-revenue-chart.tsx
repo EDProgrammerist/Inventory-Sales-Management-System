@@ -22,11 +22,11 @@ export default function ProfitRevenueChart({
   const data = reportTrendForPeriod(period)
   const [active, setActive] = useState<number | null>(3)
   const [visible, setVisible] = useState({ revenue: true, profit: true })
-  const min = period === 'monthly' ? 20000 : 0
+  const min = 0
   const max =
     period === 'monthly'
       ? 80000
-      : Math.ceil(Math.max(...data.flatMap((row) => [row.revenue, row.profit])) / 50000) * 50000
+      : Math.max(1, Math.ceil(Math.max(...data.flatMap((row) => [row.revenue, row.profit])) / 50000) * 50000)
   const plot = { x: 85, y: 35, width: 1050, height: 230 }
   const x = (index: number) => plot.x + (index * plot.width) / (data.length - 1)
   const y = (value: number) => plot.y + plot.height * (1 - (value - min) / (max - min))
@@ -51,7 +51,7 @@ export default function ProfitRevenueChart({
             type="button"
             aria-label="Download profit and revenue CSV"
             onClick={() =>
-              downloadCsv(reportTrendCsv(period), `kanban-sample-${period}-profit-revenue.csv`)
+              downloadCsv(reportTrendCsv(period), `shenban-sample-${period}-profit-revenue.csv`)
             }
             className="grid size-9 place-items-center rounded-md border border-[#d0d5dd] text-[#78849a] hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-blue-500"
           >

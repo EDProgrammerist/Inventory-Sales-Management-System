@@ -1,3 +1,4 @@
+import { formatMoney } from '@/data/currency'
 import { useState } from 'react'
 import {
   supplierTypeLabels,
@@ -82,7 +83,7 @@ export function SupplierDetails({ supplier }: { supplier: Supplier }) {
       'Buying Price',
       supplier.price === undefined
         ? 'Not recorded'
-        : `$${supplier.price.toLocaleString('en-US', { maximumFractionDigits: 2 })}`,
+        : formatMoney(supplier.price),
     ],
     ['Contact Number', supplier.phone],
     ['Email', supplier.email],
@@ -98,7 +99,7 @@ export function SupplierDetails({ supplier }: { supplier: Supplier }) {
           className="mx-auto mb-6 size-24 rounded-full object-cover"
         />
       )}
-      <p className="mb-5 text-xs text-slate-500">Sample supplier record</p>
+      <p className="mb-5 text-xs text-slate-500">Supplier details</p>
       <dl className="grid gap-4 text-sm">
         {fields.map(([label, value]) => (
           <div key={label} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] gap-4">
@@ -110,7 +111,7 @@ export function SupplierDetails({ supplier }: { supplier: Supplier }) {
       <div className="mt-6 flex justify-end">
         <button
           onClick={() =>
-            downloadCsv(suppliersCsv([supplier]), `kanban-sample-supplier-${supplier.id}.csv`)
+            downloadCsv(suppliersCsv([supplier]), `shenban-supplier-${supplier.id}.csv`)
           }
           className="inventory-button"
         >

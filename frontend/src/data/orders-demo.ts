@@ -17,89 +17,7 @@ export interface Order {
   buyingPrice?: number
   notifyOnDelivery?: boolean
 }
-export const orderFixtures: Order[] = [
-  {
-    id: '7535',
-    product: 'Maggi',
-    value: 4306,
-    quantity: 43,
-    unit: 'Packets',
-    expected: '2022-12-11',
-    status: 'Delayed',
-  },
-  {
-    id: '5724',
-    product: 'Bru',
-    value: 2557,
-    quantity: 22,
-    unit: 'Packets',
-    expected: '2022-12-21',
-    status: 'Confirmed',
-  },
-  {
-    id: '2775',
-    product: 'Red Bull',
-    value: 4075,
-    quantity: 36,
-    unit: 'Packets',
-    expected: '2022-12-05',
-    status: 'Returned',
-  },
-  {
-    id: '2275',
-    product: 'Bourn Vita',
-    value: 5052,
-    quantity: 14,
-    unit: 'Packets',
-    expected: '2022-12-08',
-    status: 'Out for delivery',
-  },
-  {
-    id: '2427',
-    product: 'Horlicks',
-    value: 5370,
-    quantity: 5,
-    unit: 'Packets',
-    expected: '2023-01-09',
-    status: 'Returned',
-  },
-  {
-    id: '2578',
-    product: 'Harpic',
-    value: 6065,
-    quantity: 10,
-    unit: 'Packets',
-    expected: '2023-01-09',
-    status: 'Out for delivery',
-  },
-  {
-    id: '2757',
-    product: 'Ariel',
-    value: 4078,
-    quantity: 23,
-    unit: 'Packets',
-    expected: '2023-12-15',
-    status: 'Delayed',
-  },
-  {
-    id: '3757',
-    product: 'Scotch Brite',
-    value: 3559,
-    quantity: 43,
-    unit: 'Packets',
-    expected: '2023-06-06',
-    status: 'Confirmed',
-  },
-  {
-    id: '2474',
-    product: 'Coca cola',
-    value: 2055,
-    quantity: 41,
-    unit: 'Packets',
-    expected: '2022-11-11',
-    status: 'Delayed',
-  },
-]
+export const orderFixtures: Order[] = []
 export function selectOrders(rows: Order[], query: string, status = 'all') {
   const search = query.trim().toLowerCase()
   return rows.filter(
@@ -177,7 +95,7 @@ export function ordersCsv(rows: Order[]) {
   return toCsv([
     [
       'Product',
-      'Order Value (USD)',
+      'Order Value (PHP)',
       'Quantity',
       'Unit',
       'Order ID',
@@ -185,7 +103,7 @@ export function ordersCsv(rows: Order[]) {
       'Status',
       'Product ID',
       'Category',
-      'Buying Price (USD)',
+      'Buying Price (PHP)',
       'Delivery Notification Requested',
     ],
     ...rows.map((row) => [

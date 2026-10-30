@@ -1,7 +1,7 @@
-import DashboardDialog from '@/components/features/dashboard/dashboard-dialog'
+import DashboardDialog from '@/components/ui/dashboard-dialog'
 import InventoryPanelContent from '@/components/features/inventory/inventory-panels'
 import { inventoryPanelTitles } from '@/components/features/inventory/inventory-presentation'
-import { useInventory } from '@/components/features/inventory/inventory-context'
+import { useInventory } from '@/components/context/inventory-context'
 import type { WorkspaceAction } from './workspace-layout'
 
 export default function WorkspaceUtilityDialog({

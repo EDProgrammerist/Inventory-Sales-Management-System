@@ -1,27 +1,28 @@
+import { formatMoney } from '@/data/currency'
 const summaries = [
-  { title: 'Categories', color: 'text-[#1872ef]', values: [{ value: '14', label: 'Last 7 days' }] },
+  { title: 'Categories', color: 'text-[#1872ef]', values: [{ value: '0', label: 'Last 7 days' }] },
   {
     title: 'Total Products',
     color: 'text-[#df922e]',
     values: [
-      { value: '868', label: 'Last 7 days' },
-      { value: '$25000', label: 'Revenue' },
+      { value: '0', label: 'Last 7 days' },
+      { value: formatMoney(0), label: 'Revenue' },
     ],
   },
   {
     title: 'Top Selling',
     color: 'text-[#9471c8]',
     values: [
-      { value: '5', label: 'Last 7 days' },
-      { value: '$2500', label: 'Cost' },
+      { value: '0', label: 'Last 7 days' },
+      { value: formatMoney(0), label: 'Cost' },
     ],
   },
   {
     title: 'Low Stocks',
     color: 'text-[#ee6d6d]',
     values: [
-      { value: '12', label: 'Ordered' },
-      { value: '2', label: 'Not in stock' },
+      { value: '0', label: 'Ordered' },
+      { value: '0', label: 'Not in stock' },
     ],
   },
 ]
@@ -33,7 +34,7 @@ export default function InventoryOverview() {
         Overall Inventory
       </h2>
       <p className="sr-only">
-        Reference-design summary figures. These are separate from the editable sample product list.
+        Inventory summary.
       </p>
       <div className="mt-6 grid grid-cols-1 gap-y-5 sm:grid-cols-2 xl:grid-cols-[.65fr_1.2fr_1.25fr_1.15fr] xl:divide-x xl:divide-[#f0f1f4]">
         {summaries.map((summary) => (

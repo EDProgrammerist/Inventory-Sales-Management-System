@@ -1,6 +1,9 @@
 import { renderToString } from 'react-dom/server'
 import { MemoryRouter, Route, Routes } from 'react-router'
-import InventoryProvider from '../src/components/features/inventory/inventory-provider'
+import WorkspaceProvider from '../src/components/context/workspace-provider'
+import AuthProvider from '../src/components/context/auth-context'
+import { AuthContext, type AuthState } from '../src/components/context/auth-state'
+import ProtectedRoute from '../src/components/context/protected-route'
 import InventoryPage from '../src/pages/inventory'
 import ProductInfoPage from '../src/pages/product-info'
 import ProductForm from '../src/components/features/inventory/product-form'
@@ -20,10 +23,25 @@ export function renderOrderForm() {
   return renderToString(<OrderForm onAdd={() => { throw new Error('Static rendering must not submit an order') }} onDiscard={() => { throw new Error('Static rendering must not discard an order') }} />)
 }
 
+export function renderAuthGuard(state: Pick<AuthState, 'user' | 'loading' | 'error'>) {
+  const value: AuthState = { ...state, retry: () => {}, login: async () => {}, signup: async () => {}, logout: async () => {} }
+  return renderToString(
+    <MemoryRouter initialEntries={['/inventory']}>
+      <AuthContext value={value}>
+        <Routes>
+          <Route element={<ProtectedRoute />}>
+            <Route path="/inventory" element={<p>Private workspace content</p>} />
+          </Route>
+        </Routes>
+      </AuthContext>
+    </MemoryRouter>,
+  )
+}
+
 export function renderInventoryRoute(path: string) {
   return renderToString(
     <MemoryRouter initialEntries={[path]}>
-      <InventoryProvider>
+      <AuthProvider><WorkspaceProvider>
         <Routes>
           <Route path="/inventory" element={<InventoryPage />} />
           <Route path="/inventory/:productId" element={<ProductInfoPage />} />
@@ -32,7 +50,7 @@ export function renderInventoryRoute(path: string) {
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/manage-store" element={<ManageStorePage />} />
         </Routes>
-      </InventoryProvider>
+      </WorkspaceProvider></AuthProvider>
     </MemoryRouter>,
   )
 }

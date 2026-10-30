@@ -27,90 +27,8 @@ export interface InventoryProduct {
   }
 }
 
-// Preserve the supplied reference's sample values, dates, and explicit stock labels.
-export const inventoryProducts: InventoryProduct[] = [
-  {
-    id: 'maggi',
-    name: 'Maggi',
-    price: 430,
-    quantity: 43,
-    threshold: 12,
-    expiry: '2022-12-11',
-    availability: 'in-stock',
-  },
-  {
-    id: 'bru',
-    name: 'Bru',
-    price: 257,
-    quantity: 22,
-    threshold: 12,
-    expiry: '2022-12-21',
-    availability: 'out-of-stock',
-  },
-  {
-    id: 'red-bull',
-    name: 'Red Bull',
-    price: 405,
-    quantity: 36,
-    threshold: 9,
-    expiry: '2022-12-05',
-    availability: 'in-stock',
-  },
-  {
-    id: 'bourn-vita',
-    name: 'Bourn Vita',
-    price: 502,
-    quantity: 14,
-    threshold: 6,
-    expiry: '2022-12-08',
-    availability: 'out-of-stock',
-  },
-  {
-    id: 'horlicks',
-    name: 'Horlicks',
-    price: 530,
-    quantity: 5,
-    threshold: 5,
-    expiry: '2023-01-09',
-    availability: 'in-stock',
-  },
-  {
-    id: 'harpic',
-    name: 'Harpic',
-    price: 605,
-    quantity: 10,
-    threshold: 5,
-    expiry: '2023-01-09',
-    availability: 'in-stock',
-  },
-  {
-    id: 'ariel',
-    name: 'Ariel',
-    price: 408,
-    quantity: 23,
-    threshold: 7,
-    expiry: '2023-12-15',
-    availability: 'out-of-stock',
-  },
-  {
-    id: 'scotch-brite',
-    name: 'Scotch Brite',
-    price: 359,
-    quantity: 43,
-    threshold: 8,
-    expiry: '2023-06-06',
-    availability: 'in-stock',
-  },
-  {
-    id: 'coca-cola',
-    name: 'Coca cola',
-    price: 205,
-    quantity: 41,
-    threshold: 10,
-    expiry: '2022-11-11',
-    availability: 'low-stock',
-  },
-]
+// Start empty; products are entered manually for the current account session.
+export const inventoryProducts: InventoryProduct[] = []
 
 export const availabilityLabels: Record<Availability, string> = {
   'in-stock': 'In-stock',
@@ -225,7 +143,7 @@ export function inventoryCsv(products: InventoryProduct[]) {
   return toCsv([
     [
       'Product',
-      'Buying price (USD)',
+      'Buying price (PHP)',
       'Quantity',
       'Threshold Value',
       'Expiry date',

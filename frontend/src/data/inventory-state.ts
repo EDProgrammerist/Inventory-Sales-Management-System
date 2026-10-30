@@ -22,30 +22,7 @@ export type InventoryChange =
 
 export function createInventoryState(products: InventoryProduct[]): InventoryState {
   return {
-    products: products.map((product) =>
-      product.id === 'maggi'
-        ? {
-            ...product,
-            sku: '456567',
-            category: 'Instant food',
-            unit: 'Packets',
-            image: '/inventory/maggi.png',
-            // The supplied detail design uses a different reference snapshot than the list design.
-            details: {
-              expiry: '2023-04-13',
-              openingStock: 40,
-              remainingStock: 34,
-              onWay: 15,
-              supplierName: 'Ronald Martin',
-              supplierPhone: '98789 86757',
-              locations: [
-                { name: 'Sulur Branch', quantity: 15 },
-                { name: 'Singanallur Branch', quantity: 19 },
-              ],
-            },
-          }
-        : { ...product, unit: 'Packets' },
-    ),
+    products: products.map((product) => ({ ...product })),
     events: [],
   }
 }
@@ -102,5 +79,3 @@ export function inventoryReducer(state: InventoryState, change: InventoryChange)
     ],
   }
 }
-
-export { imageFileError } from './image-validation.ts'

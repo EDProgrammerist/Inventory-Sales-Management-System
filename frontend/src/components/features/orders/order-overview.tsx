@@ -1,27 +1,28 @@
+import { formatMoney } from '@/data/currency'
 const metrics = [
-  { label: 'Total Orders', color: 'text-[#1872ef]', count: '37', caption: 'Last 7 days' },
+  { label: 'Total Orders', color: 'text-[#1872ef]', count: '0', caption: 'Last 7 days' },
   {
     label: 'Total Received',
     color: 'text-[#dc9b38]',
-    count: '32',
+    count: '0',
     caption: 'Last 7 days',
-    amount: '$25000',
+    amount: formatMoney(0),
     amountCaption: 'Revenue',
   },
   {
     label: 'Total Returned',
     color: 'text-[#9562c6]',
-    count: '5',
+    count: '0',
     caption: 'Last 7 days',
-    amount: '$2500',
+    amount: formatMoney(0),
     amountCaption: 'Cost',
   },
   {
     label: 'On the way',
     color: 'text-[#ef6868]',
-    count: '12',
+    count: '0',
     caption: 'Ordered',
-    amount: '$ 2356',
+    amount: formatMoney(0),
     amountCaption: 'Cost',
   },
 ]
@@ -50,8 +51,7 @@ export default function OrderOverview() {
         ))}
       </div>
       <p className="sr-only">
-        Historical summary from the supplied reference; independent of the sample table and local
-        additions.
+        Order summary.
       </p>
     </section>
   )

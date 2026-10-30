@@ -1,4 +1,5 @@
-import { MagnifyingGlassIcon } from '@phosphor-icons/react'
+import { formatMoney } from '@/data/currency'
+import { Link } from 'react-router'
 import { filterStock, lowStock, topStock, type StockItem } from '@/data/dashboard-demo'
 
 export function StockTable({ items, compact = false }: { items: StockItem[]; compact?: boolean }) {
@@ -6,7 +7,7 @@ export function StockTable({ items, compact = false }: { items: StockItem[]; com
     <div className="overflow-x-auto">
       <table className="w-full min-w-[500px] border-collapse text-left text-sm">
         <caption className="sr-only">
-          Sample stock quantities and prices. Prices are in Indian rupees as shown in the reference.
+          Stock quantities and prices in Philippine pesos.
         </caption>
         <thead className="text-[13px] font-normal text-[#6b768c]">
           <tr className="border-y border-[#f0f1f4]">
@@ -14,7 +15,7 @@ export function StockTable({ items, compact = false }: { items: StockItem[]; com
               <th
                 key={label}
                 scope="col"
-                className="px-4 py-3 font-medium first:pl-5 last:text-right last:pr-5"
+                className="px-4 py-3 text-right font-medium first:pl-5 first:text-left last:pr-5"
               >
                 {label}
               </th>
@@ -33,10 +34,10 @@ export function StockTable({ items, compact = false }: { items: StockItem[]; com
               >
                 {item.name}
               </th>
-              <td className="px-4 tabular-nums">{item.sold ?? '—'}</td>
-              <td className="px-4 tabular-nums">{item.remaining}</td>
+              <td className="px-4 text-right tabular-nums">{item.sold ?? '—'}</td>
+              <td className="px-4 text-right tabular-nums">{item.remaining}</td>
               <td className="px-4 text-right tabular-nums last:pr-5">
-                {item.price ? `₹ ${item.price}` : '—'}
+                {item.price === undefined ? '—' : formatMoney(item.price)}
               </td>
             </tr>
           ))}
@@ -48,12 +49,12 @@ export function StockTable({ items, compact = false }: { items: StockItem[]; com
 
 function EmptyStock({ query }: { query: string }) {
   return (
-    <div className="grid min-h-52 place-content-center justify-items-center gap-2 px-5 text-center">
-      <MagnifyingGlassIcon size={28} weight="regular" className="text-slate-400" />
-      <p className="text-sm font-medium text-slate-600">No matching stock</p>
-      <p className="max-w-64 text-xs leading-5 text-slate-500">
-        No products match “{query}”. Try another product name.
+    <div className="grid justify-items-start gap-2 px-5 py-5 text-left">
+      <p className="text-sm font-medium text-ink">{query.trim() ? 'No matching stock' : 'No stock activity yet'}</p>
+      <p className="max-w-72 text-sm leading-5 text-muted">
+        {query.trim() ? `No products match “${query.trim()}”. Try another product name.` : 'Stock activity will appear here when available.'}
       </p>
+      {!query.trim() && <Link to="/inventory" className="dashboard-link">Open inventory</Link>}
     </div>
   )
 }
@@ -73,7 +74,7 @@ export function TopStockPanel({
       className="overflow-hidden rounded-[10px] bg-white"
       aria-labelledby="top-stock-heading"
     >
-      <header className="flex items-center justify-between gap-3 px-5 py-5">
+      <header className="flex flex-wrap items-center justify-between gap-3 px-5 pt-5">
         <h2 id="top-stock-heading" className="dashboard-heading">
           Top Selling Stock
         </h2>
@@ -90,7 +91,7 @@ export function LowStockPanel({ query, onSeeAll }: { query: string; onSeeAll: ()
   const items = filterStock(lowStock, query)
   return (
     <section className="dashboard-card" aria-labelledby="low-stock-heading">
-      <header className="flex items-center justify-between gap-3">
+      <header className="flex flex-wrap items-center justify-between gap-3">
         <h2 id="low-stock-heading" className="dashboard-heading">
           Low Quantity Stock
         </h2>

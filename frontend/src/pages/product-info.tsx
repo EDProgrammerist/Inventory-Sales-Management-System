@@ -2,8 +2,8 @@ import { useId, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { PencilSimpleIcon, PackageIcon, ArrowLeftIcon } from '@phosphor-icons/react'
 import WorkspaceLayout from '@/components/common/workspace-layout'
-import DashboardDialog from '@/components/features/dashboard/dashboard-dialog'
-import { useInventory } from '@/components/features/inventory/inventory-context'
+import DashboardDialog from '@/components/ui/dashboard-dialog'
+import { useInventory } from '@/components/context/inventory-context'
 import ProductOverview from '@/components/features/inventory/product-overview'
 import ProductTabs, { type ProductTab } from '@/components/features/inventory/product-tabs'
 import ProductForm from '@/components/features/inventory/product-form'
@@ -47,10 +47,10 @@ function ProductDetail({ product }: { product: InventoryProduct }) {
   function saveProduct(updated: Omit<InventoryProduct, 'id'>) {
     updateProduct(product.id, updated)
     setPanel(null)
-    setNotice('Product changes saved in this sample workspace until reload.')
+    setNotice('Product changes saved for this session.')
   }
   function downloadProduct() {
-    downloadCsv(inventoryCsv([overview]), `kanban-product-${product.sku ?? product.id}.csv`)
+    downloadCsv(inventoryCsv([overview]), `shenban-product-${product.sku ?? product.id}.csv`)
     setNotice('Product CSV download started.')
   }
 
@@ -136,7 +136,7 @@ function ProductDetail({ product }: { product: InventoryProduct }) {
           tabIndex={0}
         >
           <EmptyRecords title="No purchase records">
-            No purchase transactions are included for this sample product.
+            No purchase transactions are recorded for this product.
           </EmptyRecords>
         </section>
         <section
@@ -147,7 +147,7 @@ function ProductDetail({ product }: { product: InventoryProduct }) {
           tabIndex={0}
         >
           <EmptyRecords title="No stock adjustments">
-            No stock adjustment records are included for this sample product.
+            No stock adjustments are recorded for this product.
           </EmptyRecords>
         </section>
         <section
@@ -163,7 +163,7 @@ function ProductDetail({ product }: { product: InventoryProduct }) {
                 <li key={event.id} className="flex flex-wrap justify-between gap-3 py-4 text-sm">
                   <span>
                     {event.kind === 'created'
-                      ? 'Product added to sample inventory'
+                      ? 'Product added to inventory'
                       : 'Product details updated'}
                   </span>
                   <time dateTime={event.at} className="text-xs text-slate-500">
@@ -178,7 +178,7 @@ function ProductDetail({ product }: { product: InventoryProduct }) {
             </ul>
           ) : (
             <EmptyRecords title="No activity yet">
-              Changes you make to this sample product will appear here during this session.
+              Product changes will appear here during this session.
             </EmptyRecords>
           )}
         </section>
@@ -205,7 +205,7 @@ function ProductDetail({ product }: { product: InventoryProduct }) {
           ) : panel === 'location' ? (
             <p className="text-sm leading-6 text-slate-500">
               {selectedLocation?.quantity} {product.unit ?? 'Packets'} of {product.name} in hand at{' '}
-              {selectedLocation?.name}. Sample stock information.
+              {selectedLocation?.name}.
             </p>
           ) : (
             <InventoryPanelContent
@@ -220,7 +220,7 @@ function ProductDetail({ product }: { product: InventoryProduct }) {
               }}
               onClose={() => setPanel(null)}
               onFilter={() => setPanel(null)}
-              onDownload={() => downloadCsv(inventoryCsv(products), 'kanban-sample-inventory.csv')}
+              onDownload={() => downloadCsv(inventoryCsv(products), 'shenban-inventory.csv')}
             />
           )}
         </DashboardDialog>
@@ -246,7 +246,7 @@ export default function ProductInfoPage() {
           <PackageIcon size={40} className="text-slate-300" />
           <h2 className="dashboard-heading">Product not found</h2>
           <p className="text-sm text-slate-500">
-            This product is not in the current sample inventory.
+            This product is not in the current inventory.
           </p>
           <Link to="/inventory" className="inventory-button">
             <ArrowLeftIcon size={17} />

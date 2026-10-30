@@ -4,11 +4,11 @@ import { toCsv } from '@/data/csv'
 
 export function activityCsv(period: ChartPeriod): string {
   return toCsv([
-    ['Period', 'Purchase (USD)', 'Sales (USD)'],
+    ['Period', 'Purchase (PHP)', 'Sales (PHP)'],
     ...activityForPeriod(period).map((row) => [row.month, row.purchase, row.sales]),
   ])
 }
 
 export function downloadActivityReport(period: ChartPeriod) {
-  downloadCsv(activityCsv(period), `kanban-sample-${period}-report.csv`)
+  downloadCsv(activityCsv(period), `shenban-${period}-report.csv`)
 }
