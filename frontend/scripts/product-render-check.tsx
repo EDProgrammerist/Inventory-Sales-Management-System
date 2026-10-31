@@ -18,6 +18,7 @@ import { supplierFixtures } from '../src/data/suppliers-demo'
 import OrdersPage from '../src/pages/orders'
 import ManageStorePage from '../src/pages/manage-store'
 import OrderForm from '../src/components/features/orders/order-form'
+import { WorkspaceContext } from '../src/components/context/workspace-context'
 
 export function renderOrderForm() {
   return renderToString(<OrderForm onAdd={() => { throw new Error('Static rendering must not submit an order') }} onDiscard={() => { throw new Error('Static rendering must not discard an order') }} />)
@@ -28,11 +29,13 @@ export function renderAuthGuard(state: Pick<AuthState, 'user' | 'loading' | 'err
   return renderToString(
     <MemoryRouter initialEntries={['/inventory']}>
       <AuthContext value={value}>
+        <WorkspaceContext value={{ orders: [], suppliers: [], stores: [], loading: false, error: '', retry: () => {}, saveOrder: async () => {}, saveSupplier: async () => {}, saveStore: async () => {} }}>
         <Routes>
           <Route element={<ProtectedRoute />}>
             <Route path="/inventory" element={<p>Private workspace content</p>} />
           </Route>
         </Routes>
+        </WorkspaceContext>
       </AuthContext>
     </MemoryRouter>,
   )

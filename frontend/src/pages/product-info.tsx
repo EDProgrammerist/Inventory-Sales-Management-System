@@ -44,10 +44,10 @@ function ProductDetail({ product }: { product: InventoryProduct }) {
     .slice()
     .reverse()
   const matches = selectProducts(products, query, 'all')
-  function saveProduct(updated: Omit<InventoryProduct, 'id'>) {
-    updateProduct(product.id, updated)
+  async function saveProduct(updated: Omit<InventoryProduct, 'id'>) {
+    await updateProduct(product.id, updated)
     setPanel(null)
-    setNotice('Product changes saved for this session.')
+    setNotice('Product changes saved.')
   }
   function downloadProduct() {
     downloadCsv(inventoryCsv([overview]), `shenban-product-${product.sku ?? product.id}.csv`)
@@ -214,8 +214,8 @@ function ProductDetail({ product }: { product: InventoryProduct }) {
               availability="all"
               compact={compact}
               onCompactChange={setCompact}
-              onAdd={(newProduct) => {
-                addProduct(newProduct)
+              onAdd={async (newProduct) => {
+                await addProduct(newProduct)
                 setPanel(null)
               }}
               onClose={() => setPanel(null)}

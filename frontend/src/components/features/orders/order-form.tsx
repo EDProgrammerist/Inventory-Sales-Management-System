@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { productCategories } from '@/data/inventory-demo'
 import { validateNewOrder } from '@/data/orders-demo'
+import { useSaveRecord } from '@/components/context/use-save-record'
+import SaveFeedback from '@/components/ui/save-feedback'
 
 const fields = [
   {
@@ -76,10 +78,11 @@ export default function OrderForm({
   onAdd,
   onDiscard,
 }: {
-  onAdd: (input: Record<string, string>) => void
+  onAdd: (input: Record<string, string>) => void | Promise<void>
   onDiscard: () => void
 }) {
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const { saving, saveError, run } = useSaveRecord()
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const form = event.currentTarget
@@ -91,7 +94,7 @@ export default function OrderForm({
       form.querySelector<HTMLInputElement | HTMLSelectElement>(`[name="${first.name}"]`)?.focus()
       return
     }
-    onAdd(input)
+    void run(() => onAdd(input))
   }
   return (
     <form noValidate onSubmit={submit} className="space-y-5">
@@ -173,12 +176,14 @@ export default function OrderForm({
           Notification preference only; no notification is scheduled.
         </p>
       </div>
+      <SaveFeedback saving={saving} error={saveError} />
       <div className="flex justify-end gap-3 pt-2">
         <button type="button" className="inventory-button" onClick={onDiscard}>
           Discard
         </button>
         <button
           type="submit"
+          disabled={saving}
           className="inventory-button border-[#1765d5] bg-[#1765d5] text-white hover:bg-blue-700"
         >
           Add Order

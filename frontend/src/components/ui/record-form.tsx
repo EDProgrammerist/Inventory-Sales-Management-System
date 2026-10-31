@@ -1,4 +1,6 @@
 import { useState, type FormEvent } from 'react'
+import { useSaveRecord } from '@/components/context/use-save-record'
+import SaveFeedback from './save-feedback'
 
 export interface RecordField {
   name: string
@@ -18,11 +20,12 @@ export default function RecordForm({
   fields: RecordField[]
   initial?: Record<string, string>
   validate: (input: Record<string, string>) => Record<string, string>
-  onSave: (input: Record<string, string>) => void
+  onSave: (input: Record<string, string>) => void | Promise<void>
   onCancel: () => void
   submitLabel: string
 }) {
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const { saving, saveError, run } = useSaveRecord()
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const input = Object.fromEntries(new FormData(event.currentTarget).entries()) as Record<
@@ -36,7 +39,7 @@ export default function RecordForm({
       event.currentTarget.querySelector<HTMLInputElement>(`[name="${first.name}"]`)?.focus()
       return
     }
-    onSave(input)
+    void run(() => onSave(input))
   }
   return (
     <form noValidate onSubmit={submit} className="space-y-4">
@@ -67,12 +70,14 @@ export default function RecordForm({
           )}
         </div>
       ))}
+      <SaveFeedback saving={saving} error={saveError} />
       <div className="flex justify-end gap-3 pt-2">
         <button type="button" className="inventory-button" onClick={onCancel}>
           Discard
         </button>
         <button
           type="submit"
+          disabled={saving}
           className="inventory-button border-[#1765d5] bg-[#1765d5] text-white hover:bg-blue-700"
         >
           {submitLabel}

@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import ImageUpload from '@/components/ui/image-upload'
+import { useSaveRecord } from '@/components/context/use-save-record'
+import SaveFeedback from '@/components/ui/save-feedback'
 import { productCategories } from '@/data/inventory-demo'
 import {
   validateSupplier,
@@ -67,10 +69,11 @@ export default function SupplierForm({
   onDiscard,
 }: {
   suppliers: Supplier[]
-  onAdd: (supplier: Omit<Supplier, 'id'>) => void
+  onAdd: (supplier: Omit<Supplier, 'id'>) => void | Promise<void>
   onDiscard: () => void
 }) {
   const [errors, setErrors] = useState<SupplierErrors>({})
+  const { saving, saveError, run } = useSaveRecord()
   const [image, setImage] = useState<string | undefined>()
   const [readingImage, setReadingImage] = useState(false)
   const [type, setType] = useState('')
@@ -92,7 +95,7 @@ export default function SupplierForm({
       form.querySelector<HTMLInputElement | HTMLSelectElement>(`[name="${first}"]`)?.focus()
       return
     }
-    onAdd({ ...result.supplier, image })
+    void run(() => onAdd({ ...result.supplier, image }))
   }
 
   return (
@@ -220,13 +223,14 @@ export default function SupplierForm({
       {readingImage && (
         <p role="status" className="text-[10px] leading-4 text-slate-400">Reading image...</p>
       )}
+      <SaveFeedback saving={saving} error={saveError} />
       <div className="flex justify-end gap-3 pt-1">
         <button type="button" onClick={onDiscard} className="inventory-button">
           Discard
         </button>
         <button
           type="submit"
-          disabled={readingImage}
+          disabled={readingImage || saving}
           className="inventory-button border-[#1765d5] bg-[#1765d5] text-white hover:bg-blue-700"
         >
           Add Supplier

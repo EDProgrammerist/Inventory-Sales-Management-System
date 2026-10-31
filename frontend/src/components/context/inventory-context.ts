@@ -5,8 +5,8 @@ import type { InventoryEvent } from '@/data/inventory-state'
 export const InventoryContext = createContext<{
   products: InventoryProduct[]
   events: InventoryEvent[]
-  addProduct: (product: Omit<InventoryProduct, 'id'>) => void
-  updateProduct: (id: string, product: Omit<InventoryProduct, 'id'>) => void
+  addProduct: (product: Omit<InventoryProduct, 'id'>) => Promise<void>
+  updateProduct: (id: string, product: Omit<InventoryProduct, 'id'>) => Promise<void>
 } | null>(null)
 
 export function useInventory() {

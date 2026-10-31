@@ -28,7 +28,7 @@ const typeStyles = {
 
 export default function SuppliersPage() {
   const { products: inventory, addProduct } = useInventory()
-  const { suppliers, setSuppliers } = useWorkspace()
+  const { suppliers, saveSupplier } = useWorkspace()
   const [query, setQuery] = useState('')
   const [type, setType] = useState<SupplierTypeFilter>('all')
   const [onWayOnly, setOnWayOnly] = useState(false)
@@ -51,11 +51,10 @@ export default function SuppliersPage() {
     setOnWayOnly(false)
     setPage(1)
   }
-  function addSupplier(supplier: Omit<Supplier, 'id'>) {
-    const next = [...suppliers, { ...supplier, id: crypto.randomUUID() }]
-    setSuppliers(next)
+  async function addSupplier(supplier: Omit<Supplier, 'id'>) {
+    await saveSupplier({ ...supplier, id: crypto.randomUUID() })
     clearFilters()
-    setPage(Math.ceil(next.length / supplierPageSize))
+    setPage(Math.ceil((suppliers.length + 1) / supplierPageSize))
     setPanel(null)
     setNotice(
       `${supplier.name} was added to the supplier list.`,
@@ -251,8 +250,8 @@ export default function SuppliersPage() {
                 availability="all"
                 compact={compact}
                 onCompactChange={setCompact}
-                onAdd={(product) => {
-                  addProduct(product)
+                onAdd={async (product) => {
+                  await addProduct(product)
                   setPanel(null)
                 }}
                 onClose={() => setPanel(null)}

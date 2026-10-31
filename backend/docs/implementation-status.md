@@ -40,19 +40,25 @@ For future migrations, inspect the generated SQL before applying it:
 npm run db:migrate
 ```
 
-Use `npm run db:plan` after schema changes and `npm run db:studio` to inspect a configured development database. The user table is a starter model and has no password hash column yet.
+Use `npm run db:plan` after schema changes and `npm run db:studio` to inspect a configured development database. The user table now includes password hashes, roles and authentication timestamps. Migration `0001_conscious_red_shift.sql` adds the authentication schema and token table; it does not add business tables or records.
 
 ## Authentication boundary
 
-Authentication packages are installed, but authentication, CSRF, session, role, and item routes are not implemented by this starter. Unknown endpoints return JSON 404. The frontend login and signup forms are prepared for the documented `/api/auth/v1/` endpoints; submitting them cannot create a user or authenticate until those backend features are implemented.
+The documented `/api/auth/v1/` endpoints are implemented: GET csrf-token/session and POST login/signup/refresh/logout. Authentication uses bcrypt cost 12, HttpOnly cookies, signed double-submit CSRF tokens, 15-minute access tokens and 7-day refresh tokens. Refresh tokens are hashed in PostgreSQL, rotated atomically, and revoked by logout. Signup always creates USER accounts and rejects role injection. The supplied admin was created through `scripts/seed-admin.ts` using stdin credentials; no credentials are embedded in source.
 
-Google OAuth and password recovery are also not implemented. The signup page's 30-day trial copy matches the supplied design; trial activation/billing logic is not implemented.
+The workspace routes require a verified frontend session. Business lists remain in-memory frontend state, not database-connected APIs. Item CRUD remains a documented example and is not implemented. No product, supplier, order, store or recipe records are seeded. Supplier/order reference datasets are absent from initial state and test fixtures.
+
+`scripts/verify-admin.ts` verifies the requested admin against the configured database without creating business records or extra accounts. Credentials arrive through stdin, and verification removes only its own token IDs. Services follow the documented one-service-per-file convention and reuse the shared repository, schemas and response view.
+
+Password handling follows [OWASP bcrypt guidance](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html); CSRF configuration follows the installed [csrf-csrf v4 API](https://github.com/Psifi-Solutions/csrf-csrf). Google login, password recovery and email delivery remain unavailable.
+
+Google OAuth, password recovery, email delivery, and trial activation/billing are not implemented. The unused Nodemailer packages were removed during the October 31 audit. Logout still clears browser cookies when the supplied refresh cookie has expired or is malformed; valid sessions are revoked normally and database errors are not swallowed.
 
 ## Dashboard preview
 
-The frontend `/dashboard` route recreates `frontend/design/Dashboard-ref-design.png`. Overview figures, charts, and stock lists are explicitly labeled sample data and are kept in `frontend/src/data/dashboard-demo.ts`. They are not queried from Neon. The page is a public preview, not an authenticated workspace.
+The protected frontend `/dashboard` route follows `frontend/design/Dashboard-ref-design.png`. Business lists start empty, charts and transaction metrics remain zero, and values are not queried from Neon. Currency is PHP. Manual supplier/order/store entries survive client-side navigation through the shared workspace provider. All business state resets on reload, logout, or account changes.
 
-Product search filters both stock lists. Chart grouping switches between monthly values and quarterly totals, including the partial final quarter. Legends toggle purchase/sales visibility. Stock details, notifications, report CSV export, and in-session display preferences are implemented. Supplier/store-management screens remain unavailable. Product/profile thumbnails are extracted from the user-provided reference image.
+Product search filters the available stock lists. Chart grouping switches between monthly values and quarterly totals, including the partial final quarter. Legends toggle purchase/sales visibility. Stock details, notifications, report CSV export, and in-session display preferences are implemented. Supplier, order, inventory, report, and store screens exist; sales/purchase metrics are not wired to transactions. No sample thumbnails or stock allocations are injected into entered inventory records.
 
 Run `npm test` in `frontend/` for data filtering and aggregation checks.
 

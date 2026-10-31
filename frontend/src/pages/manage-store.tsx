@@ -14,7 +14,7 @@ const fields: RecordField[] = [
   { name: 'phone', label: 'Contact Number', type: 'tel', maxLength: 32 },
 ]
 export default function ManageStorePage() {
-  const { stores, setStores } = useWorkspace()
+  const { stores, saveStore } = useWorkspace()
   const [query, setQuery] = useState('')
   const [editing, setEditing] = useState<Store | null>(null)
   const [formOpen, setFormOpen] = useState(false)
@@ -108,7 +108,7 @@ export default function ManageStorePage() {
             validate={(input) => validateStore(input, stores, editing?.id)}
             onCancel={close}
             submitLabel={editing ? 'Save Changes' : 'Add Store'}
-            onSave={(input) => {
+            onSave={async (input) => {
               const next: Store = {
                 id: editing?.id ?? crypto.randomUUID(),
                 branch: input.branch.trim(),
@@ -117,11 +117,7 @@ export default function ManageStorePage() {
                 city: input.city.trim(),
                 phone: input.phone.trim(),
               }
-              setStores(
-                editing
-                  ? stores.map((row) => (row.id === editing.id ? next : row))
-                  : [...stores, next],
-              )
+              await saveStore(next, Boolean(editing))
               setQuery('')
               setNotice(
                 `${next.branch} ${editing ? 'updated' : 'added'} in the store list.`,

@@ -76,7 +76,7 @@ export default function InventoryPanelContent({
   availability: AvailabilityFilter
   compact: boolean
   onCompactChange: (value: boolean) => void
-  onAdd: (product: Omit<InventoryProduct, 'id'>) => void
+  onAdd: (product: Omit<InventoryProduct, 'id'>) => void | Promise<void>
   onClose: () => void
   onFilter: (value: AvailabilityFilter) => void
   onDownload: () => void

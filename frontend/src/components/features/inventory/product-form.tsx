@@ -7,6 +7,8 @@ import {
   type ProductErrors,
 } from '@/data/inventory-demo'
 import ImageUpload from '@/components/ui/image-upload'
+import { useSaveRecord } from '@/components/context/use-save-record'
+import SaveFeedback from '@/components/ui/save-feedback'
 
 const fields: {
   name: keyof ProductInput
@@ -94,11 +96,12 @@ export default function ProductForm({
   initial,
 }: {
   products: InventoryProduct[]
-  onAdd: (product: Omit<InventoryProduct, 'id'>) => void
+  onAdd: (product: Omit<InventoryProduct, 'id'>) => void | Promise<void>
   onCancel: () => void
   initial?: InventoryProduct
 }) {
   const [errors, setErrors] = useState<ProductErrors>({})
+  const { saving, saveError, run } = useSaveRecord()
   const [image, setImage] = useState(initial?.image)
   const [readingImage, setReadingImage] = useState(false)
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -119,7 +122,7 @@ export default function ProductForm({
       form.querySelector<HTMLInputElement | HTMLSelectElement>(`[name="${firstInvalid}"]`)?.focus()
       return
     }
-    onAdd({ ...result.product, image })
+    void run(() => onAdd({ ...result.product, image }))
   }
   return (
     <form noValidate onSubmit={handleSubmit} className="space-y-5">
@@ -199,13 +202,14 @@ export default function ProductForm({
       {readingImage && (
         <p role="status" className="text-[10px] leading-4 text-slate-400">Reading image...</p>
       )}
+      <SaveFeedback saving={saving} error={saveError} />
       <div className="flex justify-end gap-3 pt-1">
         <button type="button" onClick={onCancel} className="inventory-button">
           Discard
         </button>
         <button
           type="submit"
-          disabled={readingImage}
+          disabled={readingImage || saving}
           className="inventory-button border-[#1765d5] bg-[#1765d5] text-white hover:bg-blue-700"
         >
           {initial ? 'Save changes' : 'Add Product'}

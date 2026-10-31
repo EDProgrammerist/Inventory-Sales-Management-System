@@ -1,26 +1,23 @@
-import { useReducer, type ReactNode } from 'react'
-import { inventoryProducts, type InventoryProduct } from '@/data/inventory-demo'
-import { createInventoryState, inventoryReducer } from '@/data/inventory-state'
+import type { ReactNode } from 'react'
+import type { InventoryProduct } from '@/data/inventory-demo'
+import type { InventoryState } from '@/data/inventory-state'
 import { InventoryContext } from './inventory-context'
 
-export default function InventoryProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(inventoryReducer, inventoryProducts, createInventoryState)
-  function addProduct(product: Omit<InventoryProduct, 'id'>) {
-    dispatch({
-      type: 'add',
-      product: { ...product, id: crypto.randomUUID() },
-      eventId: crypto.randomUUID(),
-      at: new Date().toISOString(),
-    })
+export default function InventoryProvider({ state, onSave, children }: {
+  state: InventoryState
+  onSave: (product: InventoryProduct, updating?: boolean) => Promise<void>
+  children: ReactNode
+}) {
+  async function addProduct(product: Omit<InventoryProduct, 'id'>) {
+    await onSave({ ...product, id: crypto.randomUUID() })
   }
-  function updateProduct(id: string, product: Omit<InventoryProduct, 'id'>) {
-    dispatch({
-      type: 'update',
-      id,
-      product,
-      eventId: crypto.randomUUID(),
-      at: new Date().toISOString(),
-    })
+  async function updateProduct(id: string, product: Omit<InventoryProduct, 'id'>) {
+    const current = state.products.find((row) => row.id === id)
+    if (!current) throw new Error('Product not found. Please reload inventory.')
+    await onSave({ ...product, id, details: {
+      ...current.details, expiry: product.expiry, remainingStock: product.quantity,
+      locations: product.quantity === (current.details?.remainingStock ?? current.quantity) ? current.details?.locations : undefined,
+    } }, true)
   }
   return (
     <InventoryContext value={{ ...state, addProduct, updateProduct }}>{children}</InventoryContext>

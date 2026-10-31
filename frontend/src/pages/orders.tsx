@@ -24,7 +24,7 @@ const statusColors = {
   'Out for delivery': 'text-[#1aaf78]',
 }
 export default function OrdersPage() {
-  const { orders, setOrders } = useWorkspace()
+  const { orders, saveOrder } = useWorkspace()
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState('all')
   const [draftStatus, setDraftStatus] = useState('all')
@@ -182,9 +182,9 @@ export default function OrdersPage() {
           {panel === 'add' && (
             <OrderForm
               onDiscard={() => setPanel(null)}
-              onAdd={(input) => {
+              onAdd={async (input) => {
                 const next = createNewOrder(input, crypto.randomUUID())
-                setOrders([...orders, next])
+                await saveOrder(next)
                 clear()
                 setPage(Math.ceil((orders.length + 1) / 9))
                 setPanel(null)
@@ -234,7 +234,7 @@ export default function OrdersPage() {
               <p>
                 No earlier status changes are recorded.
               </p>
-              <h3 className="font-semibold">Created during this visit</h3>
+              <h3 className="font-semibold">Saved orders</h3>
               {orders.length ? (
                 <ul className="divide-y divide-slate-100">
                   {orders.map((row) => (
@@ -254,7 +254,7 @@ export default function OrdersPage() {
                   ))}
                 </ul>
               ) : (
-                <p className="text-slate-400">No orders added during this visit.</p>
+                <p className="text-slate-400">No saved orders.</p>
               )}
               <button
                 className="inventory-button"

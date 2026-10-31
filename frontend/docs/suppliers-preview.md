@@ -4,7 +4,7 @@ Open `/suppliers`. The Suppliers sidebar link opens the list; **Add Supplier** o
 
 ## Reference and behavior
 
-- Preserves the 14 reference rows, including repeated contacts with unique internal IDs. The blank return type is displayed as **Not specified**.
+- Starts empty for manual entry. A missing return type is displayed as **Not specified**.
 - Corrects the reference toolbar label from Add Product to Add Supplier.
 - Searches supplier names, products, email, contact numbers, and recorded categories. Return-type and incoming-product filters compose with search.
 - Uses real pagination with 14 rows per page. Download all exports all supplier rows as CSV, including new additions.
@@ -14,16 +14,16 @@ Open `/suppliers`. The Suppliers sidebar link opens the list; **Add Supplier** o
 
 ## Files
 
-- `src/pages/suppliers.tsx`: list, local state, pagination, dialogs, and export actions.
+- `src/pages/suppliers.tsx`: list, pagination, dialogs, and export actions; records live in the shared account-scoped workspace provider.
 - `src/components/features/suppliers/supplier-form.tsx`: New Supplier form.
 - `src/components/features/suppliers/supplier-panels.tsx`: filters and supplier details.
-- `src/data/suppliers-demo.ts`: reference fixtures, validation, search, and CSV conversion.
-- `src/components/common/image-upload.tsx`: shared product/supplier image picker.
+- `src/data/suppliers-demo.ts`: empty initial data, validation, search, and CSV conversion.
+- `src/components/ui/image-upload.tsx`: shared product/supplier image picker.
 - `src/data/pagination.ts`, `field-validation.ts`, and `image-validation.ts`: shared rules reused by inventory and suppliers.
 - `src/main.tsx` and the shared sidebar: route and navigation integration.
 
 ## Data and verification limits
 
-This page uses sample data. Added suppliers and photos remain in memory while the Suppliers page is open; leaving or reloading resets them. No supplier data is written to Neon.
+The page starts empty. Added suppliers and photos remain in memory across client-side navigation, until reload, logout, or an account change. No supplier data is written to Neon.
 
 Automated checks cover the production build, ESLint, fixture integrity, filtering, validation, pagination, CSV escaping, and server-rendered routes/forms. Browser access was unavailable in this environment, so these checks do not establish screenshot fidelity or verify interactive browser behavior.

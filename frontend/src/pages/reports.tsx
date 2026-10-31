@@ -207,8 +207,8 @@ export default function ReportsPage() {
               availability="all"
               compact={compact}
               onCompactChange={setCompact}
-              onAdd={(product) => {
-                addProduct(product)
+              onAdd={async (product) => {
+                await addProduct(product)
                 setPanel(null)
               }}
               onClose={() => setPanel(null)}

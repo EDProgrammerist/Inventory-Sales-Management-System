@@ -37,7 +37,7 @@ async function authRequest(path: string, options?: RequestInit) {
   return response.json()
 }
 
-async function getCsrfToken(): Promise<string> {
+export async function getCsrfToken(): Promise<string> {
   const result = await authRequest('csrf-token')
   const token: unknown = result.data?.csrfToken
   if (typeof token !== 'string' || !token) throw new Error('Unable to start a secure session. Please try again.')

@@ -49,8 +49,8 @@ export default function InventoryPage() {
     setAvailability('all')
     setPage(1)
   }
-  function addProduct(product: Omit<InventoryProduct, 'id'>) {
-    storeProduct(product)
+  async function addProduct(product: Omit<InventoryProduct, 'id'>) {
+    await storeProduct(product)
     setQuery('')
     setAvailability('all')
     setPage(Math.ceil((products.length + 1) / 9))

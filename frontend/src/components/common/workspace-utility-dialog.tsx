@@ -24,8 +24,8 @@ export default function WorkspaceUtilityDialog({
         availability="all"
         compact={compact}
         onCompactChange={onCompactChange}
-        onAdd={(product) => {
-          addProduct(product)
+        onAdd={async (product) => {
+          await addProduct(product)
           onClose()
         }}
         onClose={onClose}
