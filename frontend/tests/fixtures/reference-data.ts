@@ -1,7 +1,5 @@
 import type { InventoryProduct } from '../../src/data/inventory-demo.ts'
 import type { Store } from '../../src/data/stores-demo.ts'
-import type { StockItem } from '../../src/data/dashboard-demo.ts'
-import type { ReportCategory,ReportProduct } from '../../src/data/reports-demo.ts'
 export const inventoryProducts: InventoryProduct[] = [
   {
     id: 'maggi',
@@ -109,66 +107,5 @@ export const storeFixtures: Store[] = [
     address: '32/ Venkatasamy layout, 3 rd street sulur',
     city: 'Coimbatore - 6313403',
     phone: '044- 653578',
-  },
-]
-export const topStock: StockItem[] = [
-  { name: 'Surf Excel', sold: 30, remaining: 12, price: 100 },
-  { name: 'Rin', sold: 21, remaining: 15, price: 207 },
-  { name: 'Parle G', sold: 19, remaining: 17, price: 105 },
-]
-export const lowStock: StockItem[] = [
-  { name: 'Tata Salt', remaining: 10, image: '/dashboard/tata-salt.png' },
-  { name: 'Lays', remaining: 15, image: '/dashboard/lays.png' },
-  { name: 'Nova', remaining: 15, image: '/dashboard/nova.png' },
-]
-export const reportCategories: ReportCategory[] = [
-  { id: 'vegetables', name: 'Vegetable', turnover: 26000, increase: 3.2 },
-  { id: 'instant-food', name: 'Instant Food', turnover: 22000, increase: 2 },
-  { id: 'households', name: 'Households', turnover: 22000, increase: 1.5 },
-]
-export const reportProducts: ReportProduct[] = [
-  {
-    id: 'tomato',
-    name: 'Tomato',
-    productId: '23567',
-    categoryId: 'vegetables',
-    category: 'Vegetable',
-    remaining: 225,
-    unit: 'kg',
-    turnover: 17000,
-    increase: 2.3,
-  },
-  {
-    id: 'onion',
-    name: 'Onion',
-    productId: '25831',
-    categoryId: 'vegetables',
-    category: 'Vegetable',
-    remaining: 200,
-    unit: 'kg',
-    turnover: 12000,
-    increase: 1.3,
-  },
-  {
-    id: 'maggi',
-    name: 'Maggi',
-    productId: '56841',
-    categoryId: 'instant-food',
-    category: 'Instant Food',
-    remaining: 200,
-    unit: 'Packet',
-    turnover: 10000,
-    increase: 1.3,
-  },
-  {
-    id: 'surf-excel',
-    name: 'Surf Excel',
-    productId: '23567',
-    categoryId: 'households',
-    category: 'Household',
-    remaining: 125,
-    unit: 'Packet',
-    turnover: 9000,
-    increase: 1,
   },
 ]

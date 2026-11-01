@@ -47,8 +47,9 @@ export function decodeOrders(data:unknown):CustomerOrder[] {
     return row
   })
 }
+export function isActiveDemoOrder(order:Pick<CustomerOrder,'paymentMode'|'paymentState'|'status'>){return order.paymentMode==='demo'&&order.paymentState==='demo_paid'&&order.status!=='cancelled'}
 export function commerceMetrics(products:Pick<CatalogProduct,'id'>[],orders:Pick<CustomerOrder,'paymentMode'|'paymentState'|'status'|'subtotal'>[]) {
-  const sales=orders.filter(order=>order.paymentMode==='demo'&&order.paymentState==='demo_paid'&&order.status!=='cancelled')
+  const sales=orders.filter(isActiveDemoOrder)
   return {products:products.length,demoSales:sales.reduce((total,order)=>total+Math.round(order.subtotal*100),0)/100,demoOrders:sales.length,pending:orders.filter(order=>order.status==='pending').length,cancelled:orders.filter(order=>order.status==='cancelled').length}
 }
 export function monthlyDemoSales(orders:CustomerOrder[],year=new Date().getFullYear()) {

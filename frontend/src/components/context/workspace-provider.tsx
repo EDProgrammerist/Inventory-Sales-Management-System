@@ -1,5 +1,4 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import InventoryProvider from './inventory-provider'
 import { WorkspaceContext } from './workspace-context'
 import { useAuth } from './use-auth'
 import { emptyWorkspace, loadWorkspace, saveWorkspaceRecord, type WorkspaceRecords, type WorkspaceSnapshot } from '@/services/workspace'
@@ -37,7 +36,7 @@ function WorkspaceSession({ userId, children }: { userId?: string; children: Rea
       saveStore: (record, updating) => save('stores', record, updating),
       loading, error, retry: () => { setError(''); setLoading(true); setAttempt((value) => value + 1) },
     }}>
-      <InventoryProvider state={snapshot} onSave={(record, updating) => save('products', record, updating)}>{children}</InventoryProvider>
+      {children}
     </WorkspaceContext>
   )
 }

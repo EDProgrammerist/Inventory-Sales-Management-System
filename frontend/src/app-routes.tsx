@@ -15,7 +15,7 @@ import CommerceProvider from '@/components/context/commerce-provider'
 
 const DashboardPage = lazy(() => import('@/pages/admin-dashboard'))
 const InventoryPage = lazy(() => import('@/pages/admin-products'))
-const ProductInfoPage = InventoryPage
+const ProductInfoPage = lazy(() => import('@/pages/admin-product-info'))
 const ReportsPage = lazy(() => import('@/pages/admin-reports'))
 const SuppliersPage = lazy(() => import('@/pages/suppliers'))
 const OrdersPage = lazy(() => import('@/pages/admin-orders'))

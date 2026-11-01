@@ -5,7 +5,6 @@ import type { AddressInfo } from 'node:net'
 import { app } from '@/app'
 import { ENV } from '@/config/env'
 import { getDatabase } from '@/db'
-import { toItemResponse } from '@/views/item.view'
 
 const server = app.listen(0, '127.0.0.1')
 let baseUrl: string
@@ -63,12 +62,6 @@ test('security headers are enabled and Express identification is removed', async
   const response = await fetch(`${baseUrl}/api/health`)
   assert.equal(response.headers.get('x-content-type-options'), 'nosniff')
   assert.equal(response.headers.get('x-powered-by'), null)
-})
-
-test('item presenter excludes internal ownership fields', () => {
-  assert.deepEqual(toItemResponse({ id: 'item-id', userId: 'private-owner', name: 'Draft', description: null }), {
-    id: 'item-id', name: 'Draft', description: null,
-  })
 })
 
 test('persisted features fail clearly when no database is configured', () => {

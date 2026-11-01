@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import WorkspaceLayout, { type WorkspaceAction } from '@/components/common/workspace-layout'
-import WorkspaceUtilityDialog from '@/components/common/workspace-utility-dialog'
+import CommerceLayout from '@/components/common/commerce-layout'
 import DashboardDialog from '@/components/ui/dashboard-dialog'
 import RecordForm, { type RecordField } from '@/components/ui/record-form'
 import { selectStores, validateStore, type Store } from '@/data/stores-demo'
@@ -18,7 +17,6 @@ export default function ManageStorePage() {
   const [query, setQuery] = useState('')
   const [editing, setEditing] = useState<Store | null>(null)
   const [formOpen, setFormOpen] = useState(false)
-  const [utility, setUtility] = useState<WorkspaceAction | null>(null)
   const [compact, setCompact] = useState(false)
   const [notice, setNotice] = useState('')
   const rows = selectStores(stores, query)
@@ -27,11 +25,12 @@ export default function ManageStorePage() {
     setEditing(null)
   }
   return (
-    <WorkspaceLayout
+    <CommerceLayout
       title="Manage Store"
       query={query}
       onQueryChange={setQuery}
-      onAction={setUtility}
+      compact={compact}
+      onCompactChange={setCompact}
       searchPlaceholder="Search stores or branches"
       searchLabel="Search branches, store names, addresses, or phone numbers"
     >
@@ -128,14 +127,6 @@ export default function ManageStorePage() {
           />
         </DashboardDialog>
       )}
-      {utility && (
-        <WorkspaceUtilityDialog
-          panel={utility}
-          onClose={() => setUtility(null)}
-          compact={compact}
-          onCompactChange={setCompact}
-        />
-      )}
-    </WorkspaceLayout>
+    </CommerceLayout>
   )
 }

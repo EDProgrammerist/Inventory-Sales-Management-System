@@ -1,6 +1,7 @@
 import {useEffect,useReducer,useState} from 'react'
 import {Link,useNavigate,useSearchParams} from 'react-router'
 import CheckoutFrame from '@/components/common/checkout-frame'
+import {useStorefront} from '@/components/context/storefront-context'
 import {useAuth} from '@/components/context/use-auth'
 import {loadOwnOrders,cancelCustomerOrder} from '@/services/customer-orders'
 import {statusLabels,type CustomerOrder} from '@/data/customer-orders'
@@ -9,6 +10,7 @@ import {formatMoney} from '@/data/currency'
 import LoadingSpinner from '@/components/ui/loading-spinner'
 
 export default function CustomerOrdersPage(){
+ const {reloadCatalog}=useStorefront()
  const {user,logout}=useAuth(),navigate=useNavigate(),[params]=useSearchParams()
  const [orders,setOrders]=useState<CustomerOrder[]>([]),[loading,setLoading]=useState(true),[error,setError]=useState(''),[revision,refresh]=useReducer(value=>value+1,0),[signingOut,setSigningOut]=useState(false)
  useEffect(()=>{const controller=new AbortController();loadOwnOrders(controller.signal).then(rows=>{if(!controller.signal.aborted){setOrders(rows);setLoading(false);setError('')}}).catch((reason:unknown)=>{if(!controller.signal.aborted){setError(reason instanceof Error?reason.message:'Unable to load your orders.');setLoading(false)}});return()=>controller.abort()},[revision,user?.id])
@@ -16,6 +18,6 @@ export default function CustomerOrdersPage(){
  {loading&&<p className="flex items-center gap-3" role="status"><LoadingSpinner/>Loading your orders…</p>}
  {error&&<p role="alert" className="checkout-prerequisite">{error}</p>}
  {!loading&&!error&&!orders.length&&<p className="checkout-prerequisite">No demo orders yet. <Link to="/products">Explore products</Link> to start shopping.</p>}
- <div className="grid gap-6">{orders.map(order=><article className="rounded-lg border border-divider p-5" key={order.id} aria-labelledby={`order-${order.id}`}><header className="mb-4 flex flex-wrap justify-between gap-3"><div><h2 id={`order-${order.id}`} className="font-semibold">Order {order.id.slice(0,8)}</h2><p className="mt-2 text-sm text-muted">{new Date(order.createdAt).toLocaleString('en-PH')} · {statusLabels[order.status]}</p></div><strong className="tabular-nums">{formatMoney(order.subtotal)}</strong></header>{params.get('order')===order.id&&<p className="mb-4 text-sm" role="status">Your demo order is saved. No real payment was taken.</p>}<details open={params.get('order')===order.id}><summary className="mb-4 min-h-11 cursor-pointer text-sm">View order details</summary><CustomerOrderDetails order={order} onCancel={async()=>{const updated=await cancelCustomerOrder(order.id);setOrders(current=>current.map(row=>row.id===updated.id?updated:row))}}/></details></article>)}</div>
+ <div className="grid gap-6">{orders.map(order=><article className="rounded-lg border border-divider p-5" key={order.id} aria-labelledby={`order-${order.id}`}><header className="mb-4 flex flex-wrap justify-between gap-3"><div><h2 id={`order-${order.id}`} className="font-semibold">Order {order.id.slice(0,8)}</h2><p className="mt-2 text-sm text-muted">{new Date(order.createdAt).toLocaleString('en-PH')} · {statusLabels[order.status]}</p></div><strong className="tabular-nums">{formatMoney(order.subtotal)}</strong></header>{params.get('order')===order.id&&<p className="mb-4 text-sm" role="status">Your demo order is saved. No real payment was taken.</p>}<details open={params.get('order')===order.id}><summary className="mb-4 min-h-11 cursor-pointer text-sm">View order details</summary><CustomerOrderDetails order={order} onCancel={async()=>{const updated=await cancelCustomerOrder(order.id);setOrders(current=>current.map(row=>row.id===updated.id?updated:row));reloadCatalog()}}/></details></article>)}</div>
  </section></CheckoutFrame>
 }

@@ -1,7 +1,7 @@
-import { useContext, useState } from 'react'
-import {CommerceContext} from '@/components/context/commerce-context'
+import { useState } from 'react'
+import {useCommerce} from '@/components/context/commerce-context'
 import { FunnelIcon, MagnifyingGlassIcon, CheckCircleIcon } from '@phosphor-icons/react'
-import WorkspaceLayout, { type WorkspaceAction } from '@/components/common/workspace-layout'
+import CommerceLayout from '@/components/common/commerce-layout'
 import DashboardDialog from '@/components/ui/dashboard-dialog'
 import SupplierForm from '@/components/features/suppliers/supplier-form'
 import { SupplierFilters, SupplierDetails } from '@/components/features/suppliers/supplier-panels'
@@ -15,12 +15,9 @@ import {
 } from '@/data/suppliers-demo'
 import { paginateRows } from '@/data/pagination'
 import { downloadCsv } from '@/lib/download'
-import { useInventory } from '@/components/context/inventory-context'
 import { useWorkspace } from '@/components/context/workspace-context'
-import InventoryPanelContent from '@/components/features/inventory/inventory-panels'
-import { inventoryPanelTitles } from '@/components/features/inventory/inventory-presentation'
 
-type SupplierPanel = WorkspaceAction | 'new-supplier' | 'supplier-filters' | 'supplier-details'
+type SupplierPanel = 'new-supplier' | 'supplier-filters' | 'supplier-details'
 const typeStyles = {
   'taking-return': 'text-[#1aaf78]',
   'not-taking-return': 'text-[#e85050]',
@@ -28,8 +25,7 @@ const typeStyles = {
 }
 
 export default function SuppliersPage() {
-  const commerce=useContext(CommerceContext)
-  const { products: inventory, addProduct } = useInventory()
+  const commerce=useCommerce()
   const { suppliers, saveSupplier } = useWorkspace()
   const [query, setQuery] = useState('')
   const [type, setType] = useState<SupplierTypeFilter>('all')
@@ -69,19 +65,18 @@ export default function SuppliersPage() {
   function panelTitle(value: SupplierPanel) {
     if (value === 'new-supplier') return 'New Supplier'
     if (value === 'supplier-filters') return 'Filter suppliers'
-    if (value === 'supplier-details') return selectedSupplier?.name ?? 'Supplier details'
-    return inventoryPanelTitles[value]
+    return selectedSupplier?.name ?? 'Supplier details'
   }
 
   return (
-    <WorkspaceLayout
+    <CommerceLayout
       title="Suppliers"
       query={query}
       onQueryChange={updateQuery}
       searchPlaceholder="Search suppliers or products"
       searchLabel="Search suppliers, products, email, or contact number"
-      onAction={setPanel}
-      notificationCount={inventory.filter((row) => row.availability !== 'in-stock').length}
+      compact={compact}
+      onCompactChange={setCompact}
     >
       {notice && (
         <p
@@ -223,7 +218,7 @@ export default function SuppliersPage() {
         >
           {panel === 'new-supplier' && (
             <SupplierForm
-              catalog={commerce?.products}
+              catalog={commerce.products}
               suppliers={suppliers}
               onAdd={addSupplier}
               onDiscard={() => setPanel(null)}
@@ -244,26 +239,8 @@ export default function SuppliersPage() {
           {panel === 'supplier-details' && selectedSupplier && (
             <SupplierDetails supplier={selectedSupplier} />
           )}
-          {panel !== 'new-supplier' &&
-            panel !== 'supplier-filters' &&
-            panel !== 'supplier-details' && (
-              <InventoryPanelContent
-                panel={panel}
-                products={inventory}
-                availability="all"
-                compact={compact}
-                onCompactChange={setCompact}
-                onAdd={async (product) => {
-                  await addProduct(product)
-                  setPanel(null)
-                }}
-                onClose={() => setPanel(null)}
-                onFilter={() => setPanel(null)}
-                onDownload={downloadAll}
-              />
-            )}
         </DashboardDialog>
       )}
-    </WorkspaceLayout>
+    </CommerceLayout>
   )
 }

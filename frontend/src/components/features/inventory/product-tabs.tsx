@@ -43,7 +43,7 @@ export default function ProductTabs({
           tabIndex={active === tab ? 0 : -1}
           onClick={() => onChange(tab)}
           onKeyDown={(event) => handleKey(event, index)}
-          className={`shrink-0 border-b-2 px-1 py-3 text-sm capitalize outline-none focus-visible:bg-blue-50 sm:mr-10 sm:px-2 ${active === tab ? 'border-[#2474ed] text-[#515b6b]' : 'border-transparent text-[#7d8697] hover:text-blue-600'}`}
+          className={`shrink-0 border-b-2 px-1 py-3 text-sm capitalize outline-none focus-visible:bg-blue-50 sm:mr-10 sm:px-2 ${active === tab ? 'border-brand text-ink' : 'border-transparent text-muted hover:text-brand'}`}
         >
           {tab}
         </button>

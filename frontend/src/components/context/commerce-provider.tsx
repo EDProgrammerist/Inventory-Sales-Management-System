@@ -21,7 +21,7 @@ export default function CommerceProvider({children}:{children:ReactNode}) {
   },[revision])
   if(loading)return <WorkspaceLoading/>
   if(error)return <main className="grid min-h-dvh place-items-center bg-workspace p-6"><div className="grid max-w-md gap-4"><p role="alert">{error}</p><button className="inventory-button" onClick={()=>{setError('');setLoading(true);refresh()}}>Try again</button></div></main>
-  return <CommerceContext value={{products,orders,refresh,advanceOrder:async(id,status)=>{const order=await advanceOrder(id,status);setOrders(current=>current.map(row=>row.id===id?{...row,...order}:row))},cancelOrder:async id=>{const order=await cancelCustomerOrder(id);setOrders(current=>current.map(row=>row.id===id?{...row,...order}:row));refresh()},saveProduct:async(input,updating)=>{
+  return <CommerceContext value={{products,orders,refresh,advanceOrder:async(id,status)=>{const order=await advanceOrder(id,status);setOrders(current=>current.map(row=>row.id===id?{...row,...order}:row))},cancelOrder:async id=>{const order=await cancelCustomerOrder(id);setOrders(current=>current.map(row=>row.id===id?{...row,...order}:row));reloadCatalog();refresh()},saveProduct:async(input,updating)=>{
     const row=await saveAdminProduct(input,updating)
     setProducts(current=>updating?current.map(product=>product.id===row.id?row:product):[...current,row])
     reloadCatalog()
