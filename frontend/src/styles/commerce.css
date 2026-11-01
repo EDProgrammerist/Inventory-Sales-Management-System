@@ -1,0 +1,49 @@
+.commerce-workspace { min-width:0; }
+.commerce-toolbar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; margin-bottom:20px; }
+.commerce-toolbar p,.commerce-note { color:var(--color-muted); font-size:14px; line-height:1.75; }
+.commerce-primary { background:var(--color-brand); border-color:var(--color-brand); color:var(--color-surface); }
+.commerce-primary:hover { background:var(--color-ink); color:var(--color-surface); }
+.commerce-primary:disabled { opacity:.65; }
+.commerce-sheet { background:var(--color-surface); border-radius:10px; padding:20px; min-width:0; }
+.commerce-table { width:100%; border-collapse:collapse; font-size:14px; }
+.commerce-table th { color:var(--color-muted); font-weight:400; font-size:13px; text-align:left; padding:12px 10px; }
+.commerce-table td { padding:14px 10px; border-top:1px solid var(--color-divider); vertical-align:middle; }
+.commerce-table .num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.commerce-object { display:flex; align-items:center; gap:12px; min-width:0; }
+.commerce-object img { width:44px; height:48px; object-fit:contain; flex:none; }
+.commerce-object strong { display:block; font-weight:500; overflow-wrap:anywhere; }
+.commerce-object small { display:block; color:var(--color-muted); margin-top:4px; font-size:13px; line-height:1.6; }
+.commerce-form { display:grid; gap:18px; }
+.commerce-fields { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.commerce-fields label { display:grid; gap:8px; font-size:14px; font-weight:500; }
+.commerce-fields input,.commerce-fields select,.commerce-fields textarea { width:100%; min-width:0; min-height:44px; border:1px solid var(--color-control); border-radius:6px; background:var(--color-surface); color:var(--color-ink); font:inherit; font-weight:400; padding:10px 12px; }
+.commerce-fields textarea { min-height:100px; resize:vertical; }
+.commerce-fields .wide { grid-column:1 / -1; }
+.commerce-checks { display:flex; flex-wrap:wrap; gap:20px; font-size:14px; }
+.commerce-checks label { display:flex; align-items:center; gap:8px; min-height:44px; }
+.commerce-checks input { width:18px; height:18px; accent-color:var(--color-brand); }
+.commerce-actions { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:12px; }
+.commerce-error { color:var(--color-ink); font-size:14px; line-height:1.75; border:1px solid var(--color-control); border-radius:6px; padding:12px; }
+.commerce-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); background:var(--color-surface); border-radius:10px; margin-bottom:20px; }
+.commerce-summary>div { padding:20px; }
+.commerce-summary dt { font-size:13px; color:var(--color-muted); line-height:1.7; }
+.commerce-summary dd { margin:8px 0 0; font-size:24px; font-weight:500; font-variant-numeric:tabular-nums; }
+.commerce-overview-grid {display:grid;grid-template-columns:1fr;gap:20px;align-items:start;}
+.commerce-chart-frame {width:100%;overflow-x:auto;scrollbar-color:var(--color-control) var(--color-surface);}
+.commerce-chart {display:block;width:100%;min-width:670px;height:auto;min-height:170px;}
+.commerce-chart text {font-size:14px;}
+@media(max-width:1100px) {.commerce-overview-grid {grid-template-columns:1fr;}}
+@media(max-width:900px) {.commerce-summary {grid-template-columns:1fr 1fr;}}
+@media(max-width:640px) {
+ .commerce-sheet {padding:16px;}
+ .commerce-fields {grid-template-columns:1fr;}
+ .commerce-fields input,.commerce-fields select,.commerce-fields textarea {font-size:16px;}
+ .commerce-table,.commerce-table tbody {display:block;}
+ .commerce-table thead {display:none;}
+ .commerce-table tr {display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 16px;border-top:1px solid var(--color-divider);padding:16px 0;}
+ .commerce-table td {display:block;border:0;padding:0;}
+ .commerce-table td:first-child {grid-column:1 / -1;}
+ .commerce-table td[data-label]::before {content:attr(data-label) ': ';font-size:13px;color:var(--color-muted);}
+ .commerce-summary>div {padding:16px;}
+ .commerce-summary dd {font-size:24px;}
+}

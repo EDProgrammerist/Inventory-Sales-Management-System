@@ -25,7 +25,7 @@ export function renderOrderForm() {
 }
 
 export function renderAuthGuard(state: Pick<AuthState, 'user' | 'loading' | 'error'>) {
-  const value: AuthState = { ...state, retry: () => {}, login: async () => {}, signup: async () => {}, logout: async () => {} }
+  const value: AuthState = { ...state, retry: () => {}, login: async () => { throw new Error('SSR cannot sign in') }, signup: async () => { throw new Error('SSR cannot sign up') }, logout: async () => {} }
   return renderToString(
     <MemoryRouter initialEntries={['/inventory']}>
       <AuthContext value={value}>

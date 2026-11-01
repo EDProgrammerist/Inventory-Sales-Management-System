@@ -44,5 +44,6 @@ function WorkspaceSession({ userId, children }: { userId?: string; children: Rea
 
 export default function WorkspaceProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth()
-  return <WorkspaceSession key={user?.id ?? 'anonymous'} userId={user?.id}>{children}</WorkspaceSession>
+  const adminId = user?.role === 'ADMIN' ? user.id : undefined
+  return <WorkspaceSession key={adminId ?? 'anonymous'} userId={adminId}>{children}</WorkspaceSession>
 }

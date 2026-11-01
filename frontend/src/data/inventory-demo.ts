@@ -64,6 +64,9 @@ export function displayExpiry(date: string) {
 }
 
 export const productCategories = [
+  'Phones (iPhone)',
+  'Computers (GPU)',
+  'Consoles (PS5)',
   'Instant food',
   'Beverages',
   'Groceries',

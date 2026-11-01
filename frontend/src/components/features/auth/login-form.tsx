@@ -4,6 +4,7 @@ import { useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { useAuth } from '@/components/context/use-auth'
 import { emailError } from '@/lib/auth-validation'
+import { accountDestination } from '@/lib/account-destination'
 import { AuthField, AuthSubmit, AuthFeedback, GoogleButton, authLinkClass } from './auth-controls'
 
 const rememberedEmailKey = 'kanban-remembered-email'
@@ -61,7 +62,7 @@ export default function LoginForm() {
     }
     setPending(true)
     try {
-      await login(cleanEmail, password)
+      const account = await login(cleanEmail, password)
       try {
         if (remember) localStorage.setItem(rememberedEmailKey, JSON.stringify({ email: cleanEmail, expiresAt: Date.now() + 30 * 86400000 }))
         else localStorage.removeItem(rememberedEmailKey)
@@ -70,7 +71,7 @@ export default function LoginForm() {
       setSignedIn(true)
       setNotice('You’re signed in successfully.')
       const from: unknown = location.state?.from
-      const destination = typeof from === 'string' && /^\/(dashboard|inventory|reports|suppliers|orders|manage-store)(?:[/?#]|$)/.test(from) ? from : '/dashboard'
+      const destination = accountDestination(account.role, from)
       navigate(destination, { replace: true })
     } catch (error) {
       setRequestError(error instanceof Error ? error.message : 'Unable to sign in. Please try again.')

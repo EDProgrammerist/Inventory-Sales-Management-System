@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import {CommerceContext} from '@/components/context/commerce-context'
 import { FunnelIcon, MagnifyingGlassIcon, CheckCircleIcon } from '@phosphor-icons/react'
 import WorkspaceLayout, { type WorkspaceAction } from '@/components/common/workspace-layout'
 import DashboardDialog from '@/components/ui/dashboard-dialog'
@@ -27,6 +28,7 @@ const typeStyles = {
 }
 
 export default function SuppliersPage() {
+  const commerce=useContext(CommerceContext)
   const { products: inventory, addProduct } = useInventory()
   const { suppliers, saveSupplier } = useWorkspace()
   const [query, setQuery] = useState('')
@@ -137,7 +139,7 @@ export default function SuppliersPage() {
               Supplier contact and return information.
             </caption>
             <thead>
-              <tr className="border-b border-[#edf0f3] text-[#7b8495]">
+              <tr className="border-b border-divider text-muted">
                 {['Supplier Name', 'Product', 'Contact Number', 'Email', 'Type', 'On the way'].map(
                   (heading) => (
                     <th
@@ -183,12 +185,12 @@ export default function SuppliersPage() {
         {!filtered.length && (
           <div className="grid min-h-64 place-content-center justify-items-center gap-3 px-6 text-center">
             <MagnifyingGlassIcon size={32} className="text-slate-300" />
-            <h3 className="font-medium text-slate-600">No matching suppliers</h3>
+            <h3 className="font-medium text-ink">{suppliers.length?'No matching suppliers':'No suppliers yet'}</h3>
             <p className="max-w-72 text-sm leading-6 text-slate-500">
-              Try another name, product, email, or contact number, or clear the return-type filters.
+              {suppliers.length?'Try another name, product, email, or contact number, or clear the return-type filters.':'Add your first supplier to save their electronics products and contact information.'}
             </p>
-            <button onClick={clearFilters} className="dashboard-link">
-              Clear search and filters
+            <button onClick={suppliers.length?clearFilters:()=>setPanel('new-supplier')} className="dashboard-link">
+              {suppliers.length?'Clear search and filters':'Add supplier'}
             </button>
           </div>
         )}
@@ -221,6 +223,7 @@ export default function SuppliersPage() {
         >
           {panel === 'new-supplier' && (
             <SupplierForm
+              catalog={commerce?.products}
               suppliers={suppliers}
               onAdd={addSupplier}
               onDiscard={() => setPanel(null)}

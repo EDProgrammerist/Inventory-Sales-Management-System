@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link, useNavigate, useLocation } from 'react-router'
+import {accountDestination} from '@/lib/account-destination'
 import { AuthField, AuthSubmit, GoogleButton, AuthFeedback, authLinkClass } from './auth-controls'
 import { emailError } from '@/lib/auth-validation'
 import { useAuth } from '@/components/context/use-auth'
@@ -11,6 +12,7 @@ type FieldErrors = { name?: string; email?: string; password?: string }
 export default function SignupForm() {
   const { signup, loading } = useAuth()
   const navigate = useNavigate()
+  const location=useLocation()
   const [errors, setErrors] = useState<FieldErrors>({})
   const [pending, setPending] = useState(false)
   const [complete, setComplete] = useState(false)
@@ -48,7 +50,7 @@ export default function SignupForm() {
       await signup(name, email, password)
       form.reset()
       setComplete(true)
-      navigate('/dashboard', { replace: true })
+      navigate(accountDestination('USER',location.state?.from), { replace: true })
     } catch (error) {
       setRequestError(error instanceof Error ? error.message : 'Unable to create your account. Please try again.')
     } finally {

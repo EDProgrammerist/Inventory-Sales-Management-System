@@ -5,7 +5,7 @@ import { useWorkspace } from './workspace-context'
 import WorkspaceLoading from '@/components/common/workspace-loading'
 
 export default function ProtectedRoute() {
-  const { user, loading, error, retry } = useAuth()
+  const { user, signedOut, loading, error, retry } = useAuth()
   const location = useLocation()
   const workspace = useWorkspace()
   if (loading || error) {
@@ -19,7 +19,8 @@ export default function ProtectedRoute() {
       </main>
     )
   }
-  if (!user) return <Navigate to="/login" replace state={{ from: location.pathname + location.search + location.hash }} />
+  if (!user) return signedOut ? <Navigate to="/" replace /> : <Navigate to="/login" replace state={{ from: location.pathname + location.search + location.hash }} />
+  if (user.role !== 'ADMIN') return <Navigate to="/" replace />
   if (workspace.loading) return <WorkspaceLoading />
   if (workspace.error) return (
     <main className="grid min-h-dvh place-items-center bg-loading-highlight p-6 text-loading-foreground">

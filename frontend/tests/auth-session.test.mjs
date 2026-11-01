@@ -70,7 +70,7 @@ test('cookie authentication restores, refreshes, validates responses and signs o
       assert.ok(failed.includes('Try again'))
       assert.ok(!failed.includes('Private workspace content'))
       const signedIn = renderAuthGuard({ user: account, loading: false, error: '' })
-      assert.ok(signedIn.includes('Private workspace content'))
+      assert.ok(!signedIn.includes('Private workspace content'), 'Customers cannot access the administrator workspace')
     })
   } finally {
     globalThis.fetch = originalFetch

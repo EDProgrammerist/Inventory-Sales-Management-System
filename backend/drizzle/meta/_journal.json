@@ -22,6 +22,34 @@
       "when": 1793438409608,
       "tag": "0002_wooden_alice",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793504726304,
+      "tag": "0003_brave_la_nuit",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793521256799,
+      "tag": "0004_premium_celestials",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793522118611,
+      "tag": "0005_rainy_lockheed",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793522903572,
+      "tag": "0006_jittery_next_avengers",
+      "breakpoints": true
     }
   ]
 }

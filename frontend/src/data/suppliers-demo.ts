@@ -66,7 +66,7 @@ export function validateSupplier(
     email = input.email.trim().toLocaleLowerCase(),
     phone = input.phone.trim()
   if (!name || name.length > 100) errors.name = 'Enter a supplier name of 1–100 characters.'
-  if (!product || product.length > 100) errors.product = 'Enter a product name of 1–100 characters.'
+  if (!product || product.length > 320) errors.product = 'Enter a product name of 1–320 characters.'
   if (!productCategories.includes(input.category)) errors.category = 'Select a product category.'
   if (!validBuyingPrice(input.price))
     errors.price = 'Enter a price greater than zero, with up to 2 decimal places.'

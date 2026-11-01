@@ -1,0 +1,1 @@
+ALTER TABLE "catalog_product" ADD COLUMN "version" integer DEFAULT 0 NOT NULL;

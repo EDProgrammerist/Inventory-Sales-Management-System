@@ -4,6 +4,7 @@ import { AuthContext } from './auth-state'
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null)
+  const [signedOut,setSignedOut]=useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [attempt, setAttempt] = useState(0)
@@ -29,9 +30,11 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const account = await request()
       if (current === generation.current) {
+        setSignedOut(false)
         setUser(account)
         setError('')
       }
+      return account
     } finally {
       if (current === generation.current) setLoading(false)
     }
@@ -40,6 +43,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   async function logout() {
     await signOut()
     generation.current++
+    setSignedOut(true)
     setUser(null)
     setError('')
     setLoading(false)
@@ -52,7 +56,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext value={{ user, loading, error, retry,
+    <AuthContext value={{ user, signedOut, loading, error, retry,
       login: (email, password) => authenticate(() => signIn(email, password)),
       signup: (name, email, password) => authenticate(() => signUp(name, email, password)),
       logout,

@@ -42,7 +42,7 @@ export default function ManageStorePage() {
       )}
       <section
         aria-labelledby="manage-store-heading"
-        className="min-h-[705px] rounded-[10px] bg-white pb-14"
+        className="rounded-[10px] bg-white pb-8"
       >
         <header className="flex items-center justify-between gap-4 p-5">
           <h2 id="manage-store-heading" className="dashboard-heading">
@@ -92,9 +92,10 @@ export default function ManageStorePage() {
           ))}
           {!rows.length && (
             <div className="py-24 text-center">
-              <h3 className="font-medium">No matching stores</h3>
-              <button className="dashboard-link mt-3" onClick={() => setQuery('')}>
-                Clear search
+              <h3 className="font-medium">{stores.length?'No matching stores':'No stores yet'}</h3>
+              {!stores.length&&<p className="mx-auto mt-3 max-w-sm text-sm leading-7 text-muted">Add a store to keep its branch address and contact details together.</p>}
+              <button className="dashboard-link mt-3" onClick={() => {if(stores.length)setQuery('');else{setEditing(null);setFormOpen(true)}}}>
+                {stores.length?'Clear search':'Add store'}
               </button>
             </div>
           )}

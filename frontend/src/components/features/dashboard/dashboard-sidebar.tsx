@@ -47,7 +47,7 @@ export default function DashboardSidebar({
     try {
       await logout()
       onClose?.()
-      navigate('/login', { replace: true })
+      navigate('/', { replace: true })
     } catch (error) {
       setLogoutError(error instanceof Error ? error.message : 'Unable to log out. Please try again.')
     } finally {

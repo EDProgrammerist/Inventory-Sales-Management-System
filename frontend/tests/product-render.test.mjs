@@ -6,7 +6,7 @@ test('original workspace screens start empty and preserve manual entry forms', {
  const server=await createServer({server:{middlewareMode:true,hmr:false},appType:'custom',logLevel:'error'})
  try{
   const {renderInventoryRoute,renderProductForm,renderSupplierForm,renderOrderForm,renderReportChart}=await server.ssrLoadModule('/scripts/product-render-check.tsx')
-  const cases=[['/inventory','No matching products'],['/reports','Best selling product'],['/suppliers','No matching suppliers'],['/orders','No matching orders'],['/manage-store','No matching stores']]
+  const cases=[['/inventory','No matching products'],['/reports','Best selling product'],['/suppliers','No suppliers yet'],['/orders','No matching orders'],['/manage-store','No stores yet']]
   for(const [path,label] of cases){
    const html=renderInventoryRoute(path)
    assert.ok(html.includes(label),`Missing original content at ${path}`)

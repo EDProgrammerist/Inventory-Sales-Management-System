@@ -1,92 +1,69 @@
 import { useState } from 'react'
-import { Link } from 'react-router'
-import { ArrowDownIcon, ArrowRightIcon, ArrowUpRightIcon, MinusIcon, PlusIcon } from '@phosphor-icons/react'
-import logo from '@/assets/shenban-logo.png'
-import { PaperNote, PetalMark, Scribble, LoopMark } from '@/components/features/landing/landing-artwork'
-import LandingIllustration from '@/components/features/landing/landing-illustration'
+import { useNavigate } from 'react-router'
+import { ArrowRightIcon, ArrowUpRightIcon, CaretLeftIcon, CaretRightIcon } from '@phosphor-icons/react'
+import StoreHeader from '@/components/features/landing/store-header'
+import StoreFooter from '@/components/features/landing/store-footer'
+import { shopCategories } from '@/components/features/landing/store-categories'
+import ProductCard from '@/components/features/landing/product-card'
+import { useStorefront } from '@/components/context/storefront-context'
 import { useLandingMotion } from '@/components/features/landing/use-landing-motion'
-import WorkspaceFeatures from '@/components/features/landing/workspace-features'
-import WorkflowCapabilities from '@/components/features/landing/workflow-capabilities'
+import { selectCatalog, type ShopCategory } from '@/data/storefront-catalog'
+import hero from '@/assets/storefront/iphone-hero.png'
+import ps5 from '@/assets/storefront/ps5.png'
+import gold from '@/assets/storefront/iphone-gold.png'
+import silver from '@/assets/storefront/iphone-silver.png'
+import gpu from '@/assets/storefront/rtx-5090.jpg'
 import '@/styles/landing.css'
 
 export default function LandingPage() {
-  const motionRef = useLandingMotion()
-  const [count, setCount] = useState(0)
-  return (
-    <div className="landing-page" ref={motionRef}>
-      <title>Shenban | Inventory, in order.</title>
-      <meta name="description" content="Shenban brings inventory, suppliers, orders, stores, and reports into one workspace." />
-      <a className="landing-skip" href="#landing-main">Skip to content</a>
-      <header className="landing-nav landing-container">
-        <Link to="/" className="landing-brand" aria-label="Shenban home"><img src={logo} alt="" width="38" height="38" /><span>Shenban</span></Link>
-        <div className="nav-action"><Link className="landing-button landing-button-ghost" to="/login">Log in / Sign up</Link></div>
-      </header>
-      <main id="landing-main" tabIndex={-1}>
-        <section className="landing-hero landing-container" aria-labelledby="landing-heading">
-          <p className="process-note" aria-hidden="true"><span>add</span><ArrowRightIcon />check<ArrowRightIcon />organize</p>
-          <div className="hero-heading-group">
-            <h1 id="landing-heading"><span>Inventory, <i className="hero-word-gap" aria-hidden="true"><LandingIllustration name="inventory" className="hero-stock" /></i>in order.</span><span>A little <em>clearer.</em></span></h1>
-            <div className="count-playground">
-              <div className="count-widget">
-                <Link className="landing-button landing-button-primary hero-signup" to="/signup">Create an account <ArrowRightIcon size={18} /></Link>
-                <div className="count-controls" role="group" aria-label="Try a stock count"><span className="count-label">Preview stock</span><div className="count-stepper">
-                  <button type="button" aria-label="Decrease preview stock" disabled={count === 0} onClick={() => setCount(value => Math.max(0, value - 1))}><MinusIcon size={17} /></button>
-                  <output key={count} aria-live="polite" aria-atomic="true">{count}</output>
-                  <button type="button" aria-label="Increase preview stock" disabled={count === 99} onClick={() => setCount(value => Math.min(99, value + 1))}><PlusIcon size={18} /></button>
-                </div></div>
-              </div>
-            </div>
-          </div>
-          <p className="hero-description">An inventory-management workspace. Give products, suppliers, orders, and stores a little more clarity.</p>
-          <a className="hero-look landing-text-link" href="#explore">Take a look around <ArrowDownIcon size={17} /></a>
-          <PaperNote className="hero-note hero-note-left" /><PaperNote className="hero-note hero-note-right" />
-          <PetalMark className="hero-petal hero-petal-left" /><PetalMark className="hero-petal hero-petal-right" />
-          <Scribble className="hero-divider" />
-        </section>
-
-        <section id="explore" className="landing-container landing-overview" aria-labelledby="inventory-feature-heading">
-          <div className="section-heading"><h2 id="inventory-feature-heading">Every item, in its place.</h2><p>Take a look inside. Your inventory story starts with your first entry.</p></div>
-          <div className="inventory-illustration-stage">
-            <LandingIllustration name="overview" /><PetalMark className="overview-petal" />
-          </div>
-        </section>
-
-        <section className="landing-container landing-workflow" aria-labelledby="workflow-heading">
-          <div className="section-heading"><h2 id="workflow-heading">A place for your<br /><em>whole inventory.</em></h2><p>From the first supplier to the next order. Bring the details together.</p></div>
-          <div className="workflow-visual">
-            <div className="workflow-illustration-stage"><LandingIllustration name="workflow" /></div>
-          </div>
-        </section>
-
-        <WorkflowCapabilities />
-
-        <section className="landing-container landing-feature landing-report-feature" aria-labelledby="report-feature-heading">
-          <div className="feature-copy"><h2 id="report-feature-heading">The numbers.<br /><em>In plain sight.</em></h2><Scribble /><p>Find the dashboard and reports in one workspace, with prices in Philippine pesos and zero states that say exactly what they mean.</p><Link to="/reports" className="landing-button landing-button-inverse">Explore reports <ArrowUpRightIcon size={18} /></Link></div>
-          <div className="landing-scene-art"><LandingIllustration name="reports" /></div>
-        </section>
-
-        <WorkspaceFeatures />
-
-        <section id="about-project" className="landing-container landing-project" aria-labelledby="project-heading">
-          <h2 id="project-heading">Your inventory.<br />All together.</h2>
-          <div className="project-proof">
-            <div className="project-art"><LandingIllustration name="together" /><LoopMark /></div>
-            <div className="project-paper">
-              <h3>Everything has its place.</h3>
-              <p>Products, suppliers, orders, stores, and reports. Bring the details together in one inventory workspace.</p>
-              <Link className="landing-text-link" to="/signup">Explore Shenban <ArrowUpRightIcon size={18} /></Link>
-            </div>
-            <PaperNote className="proof-note" />
-          </div>
-        </section>
-
-        <section className="landing-close" aria-labelledby="closing-heading">
-          <div className="closing-invitation landing-container"><LandingIllustration name="closing" className="closing-stock" /><p>Let's put things in order.</p></div>
-          <div className="closing-statement landing-container"><h2 id="closing-heading">A little more <em>Shenban.</em></h2></div>
-          <Link className="landing-button landing-button-primary" to="/signup">Create an account <ArrowRightIcon size={18} /></Link>
-        </section>
-      </main>
-      <footer className="landing-footer landing-container"><Link to="/" className="landing-brand"><img src={logo} alt="" width="28" height="28" /><span>Shenban</span></Link><p>Keep your inventory in order.</p><a href="#landing-main">Back to top <ArrowUpRightIcon size={16} /></a></footer>
-    </div>
-  )
+  const ref = useLandingMotion()
+  const navigate = useNavigate()
+  const { saved, bag, notice, toggleSaved, products:catalog } = useStorefront()
+  const [query, setQuery] = useState('')
+  const [category, setCategory] = useState<ShopCategory>('all')
+  const [view, setView] = useState('all')
+  const [sort, setSort] = useState('recommended')
+  const products = selectCatalog(catalog, category, query, view, saved).slice().sort((a, b) => sort === 'low' ? a.price - b.price : sort === 'high' ? b.price - a.price : 0)
+  function browse(next: ShopCategory = 'all') {
+    navigate(next === 'all' ? '/products' : `/products?category=${next}`)
+  }
+  return <div className="storefront-page" ref={ref}>
+    <title>Shenban | iPhone, graphics cards & PlayStation 5</title>
+    <meta name="description" content="Explore iPhones, desktop graphics cards, and PlayStation 5 in the Shenban display catalog." />
+    <a className="shop-skip" href="#shop-main">Skip to content</a>
+    <StoreHeader query={query} onQuery={value => { setQuery(value); setView('all') }} onSearch={() => navigate(`/products?q=${encodeURIComponent(query)}`)} category={category} onCategory={browse} savedCount={saved.length} bagCount={Object.values(bag).reduce((sum, quantity) => sum + quantity, 0)} onSaved={() => navigate('/products?view=saved')} />
+    <main id="shop-main" tabIndex={-1}>
+      <section className="shop-hero" aria-labelledby="shop-heading">
+        <div className="shop-container shop-hero-inner">
+          <div className="shop-hero-copy"><h1 id="shop-heading">iPhone 14 <strong>Pro.</strong></h1><p>Explore the Shenban electronics catalog. iPhones, graphics cards, and PlayStation 5, all in one place.</p><button className="shop-button shop-button-light" onClick={() => browse('phones')}>Explore iPhone <ArrowUpRightIcon size={18} /></button></div>
+          <img className="shop-hero-image" src={hero} alt="Space black iPhone 14 Pro shown from the front and back" width="406" height="632" fetchPriority="high" />
+        </div>
+      </section>
+      <section className="shop-mosaic" aria-label="Explore the collection">
+        <article className="shop-ps5-feature" data-reveal><img src={ps5} alt="PlayStation 5 consoles and DualSense controller" width="273" height="328" /><div><h2>PlayStation <strong>5</strong></h2><p>A new home for your next adventure.</p><button className="shop-text-link" onClick={() => browse('consoles')}>Explore consoles <ArrowUpRightIcon size={17} /></button></div></article>
+        <article className="shop-phone-feature shop-gold-feature" data-reveal><img src={gold} alt="Gold iPhone 14 Pro" width="160" height="180" /><div><h2>Find your<br /><strong>gold standard.</strong></h2><button className="shop-text-link" onClick={() => navigate('/products/iphone-gold')}>Explore gold <ArrowUpRightIcon size={16} /></button></div></article>
+        <article className="shop-phone-feature shop-silver-feature" data-reveal><img src={silver} alt="Silver iPhone 14 Pro" width="160" height="180" /><div><h2>A little more<br /><strong>brilliant.</strong></h2><button className="shop-text-link" onClick={() => navigate('/products/iphone-silver')}>Explore silver <ArrowUpRightIcon size={16} /></button></div></article>
+        <article className="shop-gpu-feature" data-reveal><img src={gpu} alt="NVIDIA GeForce RTX 5090 Founders Edition graphics card" width="1280" height="720" /><div><h2>Built for your<br /><strong>next level.</strong></h2><p>Graphics cards for the desktop you have in mind.</p><button className="shop-button shop-button-light" onClick={() => browse('computers')}>Explore GPUs <ArrowUpRightIcon size={18} /></button></div></article>
+      </section>
+      <section className="shop-category-section" id="categories" aria-labelledby="categories-heading"><div className="shop-container">
+        <div className="shop-section-header"><h2 id="categories-heading">Browse by category</h2><div className="shop-category-arrows"><button className="shop-icon" aria-label="Previous category" onClick={() => browse(shopCategories[(Math.max(0, shopCategories.findIndex(item => item.id === category)) + 2) % 3].id)}><CaretLeftIcon size={25} /></button><button className="shop-icon" aria-label="Next category" onClick={() => browse(shopCategories[(shopCategories.findIndex(item => item.id === category) + 1) % 3].id)}><CaretRightIcon size={25} /></button></div></div>
+        <div className="shop-category-grid">{shopCategories.map(({ id, name, detail, icon: Icon }) => <button key={id} className={category === id ? 'is-active' : ''} aria-pressed={category === id} onClick={() => browse(id)} data-reveal><Icon size={40} weight="light" /><span>{name}</span><small>{detail}</small></button>)}</div>
+      </div></section>
+      <section className="shop-container shop-catalog" id="catalog" aria-labelledby="catalog-heading">
+        <div className="shop-section-header shop-catalog-heading"><h2 id="catalog-heading">The collection</h2><label>Sort by<select value={sort} onChange={event => setSort(event.target.value)}><option value="recommended">Recommended</option><option value="low">Price: low to high</option><option value="high">Price: high to low</option></select></label></div>
+        <div className="shop-catalog-controls"><div className="shop-view-controls" role="group" aria-label="Catalog view">{[['all', 'All products'], ['featured', 'Featured'], ['saved', 'Saved products']].map(([id, label]) => <button key={id} className={view === id ? 'is-active' : ''} aria-pressed={view === id} onClick={() => setView(id)}>{label}</button>)}</div><select aria-label="Filter product category" value={category} onChange={event => setCategory(event.target.value as ShopCategory)}><option value="all">All categories</option><option value="phones">Phones / iPhone</option><option value="computers">Computers / GPU</option><option value="consoles">Consoles / PS5</option></select></div>
+        <p className="shop-catalog-note">Demo store · Prices in PHP. Checkout saves simulated orders; no real payment is collected.</p>
+        <p className="sr-only" role="status" aria-live="polite">{products.length} products shown. {notice}</p>
+        <div className="shop-product-grid">{products.map(product => <ProductCard key={product.id} product={product} saved={saved.includes(product.id)} onSave={() => toggleSaved(product.id)} />)}</div>
+        {!products.length && <div className="shop-empty"><h3>No products found</h3><p>Try another search, category, or catalog view.</p><button className="shop-button shop-button-solid" onClick={() => { setQuery(''); setCategory('all'); setView('all') }}>Show all products</button></div>}
+      </section>
+      <section className="shop-editorial" aria-label="Find your next upgrade">
+        <article className="shop-editorial-phone" data-reveal><img src={silver} alt="Silver iPhone 14 Pro front and back" width="240" height="270" loading="lazy" /><div><h2>Everyday.<br /><strong>Elevated.</strong></h2><p>A phone that fits into your world. Explore the iPhone collection.</p><button className="shop-button" onClick={() => browse('phones')}>Explore iPhone <ArrowRightIcon size={17} /></button></div></article>
+        <article className="shop-editorial-gpu" data-reveal><img src={gpu} alt="GeForce RTX graphics card cooling system" width="1280" height="720" loading="lazy" /><div><h2>Make room<br /><strong>for more.</strong></h2><p>Your next desktop starts with the right graphics card.</p><button className="shop-button shop-button-light" onClick={() => browse('computers')}>Explore GPUs <ArrowRightIcon size={17} /></button></div></article>
+        <article className="shop-editorial-console" data-reveal><img src={ps5} alt="PlayStation 5 console family" width="273" height="328" loading="lazy" /><div><h2>Your next<br /><strong>great escape.</strong></h2><p>Find a place for PlayStation 5 in your setup.</p><button className="shop-button" onClick={() => browse('consoles')}>Explore PS5 <ArrowRightIcon size={17} /></button></div></article>
+      </section>
+      <section className="shop-closing" aria-labelledby="closing-heading"><img className="shop-closing-phone" src={gold} alt="" width="160" height="180" loading="lazy" /><div data-reveal><h2 id="closing-heading">Your next <strong>upgrade.</strong></h2><p>Three collections. Find what feels right for you.</p><button className="shop-button shop-button-light" onClick={() => browse()}>Explore the collection <ArrowUpRightIcon size={18} /></button></div><img className="shop-closing-ps5" src={ps5} alt="" width="273" height="328" loading="lazy" /></section>
+    </main>
+    <StoreFooter onBrowse={browse} />
+  </div>
 }

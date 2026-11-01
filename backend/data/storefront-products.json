@@ -1,0 +1,82 @@
+[
+  {
+    "id": "iphone-purple",
+    "name": "iPhone 14 Pro Max",
+    "variant": "128GB · Deep Purple",
+    "category": "phones",
+    "price": 45990,
+    "description": "The Pro experience, with a large display and a triple-camera system. Explore the deep purple finish.",
+    "featured": true,
+    "imageKey": "iphone-purple"
+  },
+  {
+    "id": "rtx-5090",
+    "name": "GeForce RTX 5090",
+    "variant": "Founders Edition · 32GB",
+    "category": "computers",
+    "price": 149990,
+    "description": "A graphics card for your next gaming or creative desktop build. Check case, power supply, and motherboard compatibility before choosing a GPU.",
+    "featured": true,
+    "imageKey": "rtx-5090"
+  },
+  {
+    "id": "ps5-disc",
+    "name": "PlayStation 5",
+    "variant": "Disc edition · White",
+    "category": "consoles",
+    "price": 30990,
+    "description": "Explore the PlayStation 5 disc console and DualSense controller. Game and accessory availability is not part of this display catalog.",
+    "featured": true,
+    "imageKey": "ps5"
+  },
+  {
+    "id": "iphone-gold",
+    "name": "iPhone 14 Pro",
+    "variant": "512GB · Gold",
+    "category": "phones",
+    "price": 52990,
+    "description": "A gold finish, triple-camera design, and space for your photos and everyday apps.",
+    "featured": false,
+    "imageKey": "iphone-gold"
+  },
+  {
+    "id": "iphone-silver",
+    "name": "iPhone 14 Pro",
+    "variant": "256GB · Silver",
+    "category": "phones",
+    "price": 42990,
+    "description": "Explore the silver finish in the iPhone 14 Pro family. Compare it with the other display models.",
+    "featured": true,
+    "imageKey": "iphone-silver"
+  },
+  {
+    "id": "rtx-5080",
+    "name": "GeForce RTX 5080",
+    "variant": "Founders Edition · 16GB",
+    "category": "computers",
+    "price": 79990,
+    "description": "Graphics for a desktop made around the way you play and create. Review the requirements of your complete build before selecting components.",
+    "featured": false,
+    "imageKey": "rtx-5080"
+  },
+  {
+    "id": "iphone-black",
+    "name": "iPhone 14 Pro",
+    "variant": "128GB · Space Black",
+    "category": "phones",
+    "price": 39990,
+    "description": "The iPhone 14 Pro family in space black, shown in the official Apple product photography.",
+    "featured": false,
+    "imageKey": "iphone-black"
+  },
+  {
+    "id": "ps5-digital",
+    "name": "PlayStation 5",
+    "variant": "Digital edition · White",
+    "category": "consoles",
+    "price": 25990,
+    "description": "Explore the all-digital PlayStation 5 option. The image shows the PS5 family; this edition does not include a disc drive.",
+    "featured": false,
+    "imageKey": "ps5"
+  }
+]

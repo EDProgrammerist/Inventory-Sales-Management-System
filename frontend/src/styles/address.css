@@ -1,0 +1,77 @@
+.address-page { color:var(--shop-ink); background:var(--shop-paper); }
+.address-main { padding-block:64px 64px; }
+.checkout-progress ol { display:flex; justify-content:space-between; list-style:none; padding:0; margin:0; }
+.checkout-progress li { display:flex; align-items:center; position:relative; gap:9px; color:var(--shop-muted); }
+.checkout-progress li:not(:last-child)::after { content:''; position:absolute; width:clamp(90px,15vw,220px); left:calc(100% + 50px); top:50%; border-top:1px dashed var(--shop-gray); } /* taste-skill-ignore hairline: reference checkout progress connector */
+.checkout-progress .is-current { color:var(--shop-ink); }
+.checkout-step-icon { display:grid; place-items:center; width:26px; height:26px; border-radius:50%; color:var(--shop-paper); background:var(--shop-muted); }
+.is-current .checkout-step-icon { background:var(--shop-ink); }
+.checkout-progress small { display:block; font-size:14px; line-height:1.3; }
+.checkout-progress strong { display:block; font-size:20px; font-weight:500; line-height:1.4; }
+.address-selection { margin-top:100px; }
+.address-selection h1 { margin:0 0 14px; font-size:24px; font-weight:600; line-height:1.3; letter-spacing:-.02em; }
+.address-session-note { margin:0 0 28px; font-size:16px; line-height:1.8; }
+.address-options { display:grid; gap:24px; min-width:0; border:0; margin:0; padding:0; }
+.address-card { display:flex; align-items:center; justify-content:space-between; gap:24px; padding:24px; border-radius:8px; background:var(--shop-soft); min-width:0; }
+.address-card>label { display:flex; align-items:flex-start; flex:1; min-width:0; gap:16px; cursor:pointer; }
+.address-card input[type=radio] { flex-shrink:0; width:24px; height:24px; margin:2px 0 0; accent-color:var(--shop-ink); cursor:pointer; }
+.address-card-content { min-width:0; }
+.address-card-title { display:flex; flex-wrap:wrap; gap:12px 20px; align-items:center; margin-bottom:18px; }
+.address-card-title>span { font-size:20px; line-height:1.4; overflow-wrap:anywhere; }
+.address-card-title strong { border-radius:3px; background:var(--shop-ink); color:var(--shop-paper); padding:2px 8px; text-transform:uppercase; font-size:13px; line-height:1.5; font-weight:500; }
+.address-card-content p { margin:10px 0 0; font-size:16px; line-height:1.7; overflow-wrap:anywhere; white-space:pre-line; }
+.address-card-actions { display:flex; flex-shrink:0; gap:8px; }
+.address-empty { display:flex; flex-direction:column; align-items:flex-start; justify-content:center; padding:30px 24px; min-height:180px; border-radius:8px; background:var(--shop-soft); }
+.address-empty h2 { margin:14px 0 8px; font-size:20px; font-weight:500; }
+.address-empty p { margin:0; font-size:16px; line-height:1.8; }
+.address-add-divider { position:relative; display:flex; justify-content:center; margin-top:48px; }
+.address-add-divider::before { content:''; position:absolute; top:14px; left:0; right:0; border-top:1px dashed var(--shop-muted); } /* taste-skill-ignore hairline: reference add-address affordance */
+.address-add-divider button { display:flex; position:relative; flex-direction:column; align-items:center; gap:10px; padding:0 18px 5px; border:0; background:var(--shop-paper); font-size:14px; min-height:65px; }
+.address-add-divider button>span { display:grid; place-items:center; width:28px; height:28px; border-radius:50%; background:var(--shop-ink); color:var(--shop-paper); transition:transform .2s ease-out; }
+.address-add-divider button:hover>span { transform:rotate(90deg); }
+.address-navigation { display:flex; justify-content:flex-end; gap:24px; margin-top:56px; }
+.address-navigation .shop-button { width:205px; min-width:0; }
+.address-navigation button:disabled { opacity:1; }
+.address-next-note { font-size:16px; line-height:1.8; max-width:65ch; margin:20px 0 0 auto; text-align:right; }
+.address-form { margin-top:32px; padding:32px; border-radius:8px; background:var(--shop-soft); }
+.address-form h2 { font-size:22px; font-weight:500; margin:0 0 24px; }
+.address-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:22px 24px; }
+.address-field { display:flex; flex-direction:column; gap:8px; min-width:0; }
+.address-field-address { grid-column:1 / -1; }
+.address-field label { font-size:14px; }
+.address-field input,.address-field textarea,.address-field select { width:100%; min-width:0; min-height:48px; border:1px solid var(--shop-muted); border-radius:5px; background:var(--shop-paper); padding:12px; font-size:16px; color:var(--shop-ink); caret-color:var(--shop-brand); } /* taste-skill-ignore outlined-box: functional address form fields */
+.address-field textarea { resize:vertical; }
+.address-field [aria-invalid=true] { border-width:2px; }
+.address-error { font-size:14px; font-weight:500; line-height:1.7; margin:0; }
+.address-form>p.address-error { margin-top:20px; }
+.address-form-note { font-size:16px; line-height:1.8; margin:24px 0; }
+.address-form-actions { display:flex; justify-content:flex-end; gap:16px; }
+@media (max-width:1000px) {
+  .checkout-progress li:not(:last-child)::after { width:clamp(40px,10vw,100px); left:calc(100% + 30px); }
+}
+@media (max-width:700px) {
+  .address-main { padding-block:36px 48px; }
+  .checkout-progress li { gap:7px; }
+  .checkout-progress li:not(:last-child)::after { display:none; }
+  .checkout-progress strong { font-size:16px; }
+  .checkout-progress small { font-size:13px; }
+  .checkout-step-icon { width:24px; height:24px; }
+  .checkout-step-icon svg { width:17px; }
+  .address-selection { margin-top:56px; }
+  .address-selection h1 { font-size:22px; }
+  .address-card { padding:20px 16px; flex-direction:column; align-items:stretch; gap:10px; }
+  .address-card>label { gap:12px; }
+  .address-card-title { gap:9px 12px; margin-bottom:14px; }
+  .address-card-title>span { font-size:18px; }
+  .address-card-actions { justify-content:flex-end; gap:8px; }
+  .address-options { gap:18px; }
+  .address-add-divider { margin-top:32px; }
+  .address-navigation { margin-top:36px; gap:14px; }
+  .address-navigation .shop-button { width:50%; }
+  .address-next-note { text-align:left; }
+  .address-form { padding:22px 16px; }
+  .address-form-grid { grid-template-columns:1fr; gap:20px; }
+  .address-form-actions { gap:12px; }
+  .address-form-actions .shop-button { min-width:0; flex:1; padding-inline:12px; }
+}
+@media (prefers-reduced-motion:reduce) { .address-add-divider button>span { transition:none; } }

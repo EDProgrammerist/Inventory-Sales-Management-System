@@ -8,13 +8,17 @@ import { healthRouter } from '@/routes/health.routes'
 import { errorHandler } from '@/middlewares/error.middleware'
 import { authRouter } from '@/routes/auth.routes'
 import { workspaceRouter } from '@/routes/workspace.routes'
+import { catalogRouter } from '@/routes/catalog.routes'
+import {customerOrderRouter} from '@/routes/customer-order.routes'
 
 export const app = express()
 app.disable('x-powered-by')
 app.use(helmet())
 app.use(cors({ origin: ENV.FRONTEND_URL, credentials: true }))
 app.use(cookieParser())
+app.use('/api/orders/v1',customerOrderRouter)
 app.use('/api/workspace/v1', workspaceRouter)
+app.use('/api/catalog/v1', catalogRouter)
 app.use(express.json({ limit: '32kb' }))
 app.use(express.urlencoded({ extended: false, limit: '32kb' }))
 app.use(hpp())

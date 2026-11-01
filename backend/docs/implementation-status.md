@@ -46,7 +46,7 @@ Use `npm run db:plan` after schema changes and `npm run db:studio` to inspect a 
 
 The documented `/api/auth/v1/` endpoints are implemented: GET csrf-token/session and POST login/signup/refresh/logout. Authentication uses bcrypt cost 12, HttpOnly cookies, signed double-submit CSRF tokens, 15-minute access tokens and 7-day refresh tokens. Refresh tokens are hashed in PostgreSQL, rotated atomically, and revoked by logout. Signup always creates USER accounts and rejects role injection. The supplied admin was created through `scripts/seed-admin.ts` using stdin credentials; no credentials are embedded in source.
 
-The workspace routes require a verified frontend session. Business lists remain in-memory frontend state, not database-connected APIs. Item CRUD remains a documented example and is not implemented. No product, supplier, order, store or recipe records are seeded. Supplier/order reference datasets are absent from initial state and test fixtures.
+The workspace routes require a verified frontend session and persist owner-scoped business records in `workspace_record` through `/api/workspace/v1`. Item CRUD remains a documented example and is not implemented. Supplier/order/store reference datasets are not automatically seeded. On November 1, the user explicitly authorized removal of the four old workspace records and import of the existing eight electronics display products into a separate catalog table. Account and token rows were preserved exactly. See [catalog migration](catalog-migration.md).
 
 `scripts/verify-admin.ts` verifies the requested admin against the configured database without creating business records or extra accounts. Credentials arrive through stdin, and verification removes only its own token IDs. Services follow the documented one-service-per-file convention and reuse the shared repository, schemas and response view.
 
@@ -54,15 +54,9 @@ Password handling follows [OWASP bcrypt guidance](https://cheatsheetseries.owasp
 
 Google OAuth, password recovery, email delivery, and trial activation/billing are not implemented. The unused Nodemailer packages were removed during the October 31 audit. Logout still clears browser cookies when the supplied refresh cookie has expired or is malformed; valid sessions are revoked normally and database errors are not swallowed.
 
-## Dashboard preview
+## Store administration and demo orders
 
-The protected frontend `/dashboard` route follows `frontend/design/Dashboard-ref-design.png`. Business lists start empty, charts and transaction metrics remain zero, and values are not queried from Neon. Currency is PHP. Manual supplier/order/store entries survive client-side navigation through the shared workspace provider. All business state resets on reload, logout, or account changes.
-
-Product search filters the available stock lists. Chart grouping switches between monthly values and quarterly totals, including the partial final quarter. Legends toggle purchase/sales visibility. Stock details, notifications, report CSV export, and in-session display preferences are implemented. Supplier, order, inventory, report, and store screens exist; sales/purchase metrics are not wired to transactions. No sample thumbnails or stock allocations are injected into entered inventory records.
-
-Run `npm test` in `frontend/` for data filtering and aggregation checks.
-
-Production requires separate private `JWT_SECRET` and `CSRF_SECRET` values of at least 32 characters. Empty development secrets are generated in memory and change when the process restarts. `.env` is ignored by Git.
+Workspace access is ADMIN-only. Products manage the persisted electronics catalog, suppliers use the three electronics families and actual catalog names, and branches retain existing persistence. Checkout now saves customer demo orders, with customer-owned history and administrator fulfillment. Dashboard and reports use non-cancelled simulated payments, never real revenue. Additive migrations 0004 through 0006 are applied. See [commerce API and validation](commerce-api.md).
 
 ## Dependency audit
 

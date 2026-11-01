@@ -2,6 +2,8 @@ import { useState, type FormEvent } from 'react'
 import ImageUpload from '@/components/ui/image-upload'
 import { useSaveRecord } from '@/components/context/use-save-record'
 import SaveFeedback from '@/components/ui/save-feedback'
+import type {AdminCatalogProduct} from '@/data/admin-catalog'
+import {electronicsCategories} from '@/data/admin-catalog'
 import { productCategories } from '@/data/inventory-demo'
 import {
   validateSupplier,
@@ -67,10 +69,12 @@ export default function SupplierForm({
   suppliers,
   onAdd,
   onDiscard,
+  catalog,
 }: {
   suppliers: Supplier[]
   onAdd: (supplier: Omit<Supplier, 'id'>) => void | Promise<void>
   onDiscard: () => void
+  catalog?: AdminCatalogProduct[]
 }) {
   const [errors, setErrors] = useState<SupplierErrors>({})
   const { saving, saveError, run } = useSaveRecord()
@@ -121,7 +125,7 @@ export default function SupplierForm({
               <span className="sr-only"> (required)</span>
             </label>
             <div className="min-w-0">
-              {field.type === 'select' ? (
+              {field.name==='product'&&catalog ? <select id="supplier-product" name="product" required defaultValue="" className={inputClass}><option value="" disabled>Select a catalog product</option>{catalog.map(product=><option key={product.id} value={`${product.name} · ${product.variant}`}>{product.name} · {product.variant}</option>)}</select> : field.type === 'select' ? (
                 <select
                   id={`supplier-${field.name}`}
                   name={field.name}
@@ -135,7 +139,7 @@ export default function SupplierForm({
                   <option value="" disabled>
                     {field.placeholder}
                   </option>
-                  {productCategories.map((category) => (
+                  {(catalog?electronicsCategories.map(item=>item.name):productCategories).map((category) => (
                     <option key={category} value={category}>
                       {category}
                     </option>

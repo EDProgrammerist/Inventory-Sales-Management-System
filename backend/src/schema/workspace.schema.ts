@@ -5,7 +5,7 @@ const name = z.string().trim().min(1).max(100)
 const count = z.number().int().min(0).max(1_000_000)
 const price = z.number().positive().max(999999999.99).refine((n) => Math.abs(n * 100 - Math.round(n * 100)) < 0.0001, 'Use up to two decimal places')
 const date = z.iso.date()
-const category = z.enum(['Instant food', 'Beverages', 'Groceries', 'Personal care', 'Household cleaning'])
+const category = z.enum(['Phones (iPhone)', 'Computers (GPU)', 'Consoles (PS5)', 'Instant food', 'Beverages', 'Groceries', 'Personal care', 'Household cleaning'])
 const phone = z.string().max(32).regex(/^\+?[\d\s()-]+$/).refine((value) => {
   const length = value.replace(/\D/g, '').length
   return length >= 7 && length <= 15
@@ -28,7 +28,7 @@ const product = z.object({
   availability: value.quantity === 0 ? 'out-of-stock' as const : value.quantity <= value.threshold ? 'low-stock' as const : 'in-stock' as const,
 }))
 const supplier = z.object({
-  id: z.uuid(), name, product: name, phone, email: z.email().max(254).transform((value) => value.toLowerCase()),
+  id: z.uuid(), name, product: z.string().trim().min(1).max(320), phone, email: z.email().max(254).transform((value) => value.toLowerCase()),
   type: z.enum(['taking-return', 'not-taking-return', 'unspecified']), onWay: count.nullable(),
   category: category.optional(), price: price.optional(), image,
 }).strict()
