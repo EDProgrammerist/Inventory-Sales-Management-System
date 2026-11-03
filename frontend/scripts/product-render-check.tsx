@@ -2,6 +2,7 @@ import {renderToString} from 'react-dom/server'
 import {MemoryRouter,Route,Routes} from 'react-router'
 import {AuthContext,type AuthState} from '../src/components/context/auth-state'
 import ProtectedRoute from '../src/components/context/protected-route'
+import CustomerRoute from '../src/components/context/customer-route'
 import {WorkspaceContext} from '../src/components/context/workspace-context'
 import SupplierForm from '../src/components/features/suppliers/supplier-form'
 import CatalogProductForm from '../src/components/features/inventory/catalog-product-form'
@@ -11,7 +12,7 @@ export function renderAuthGuard(state: Pick<AuthState, 'user' | 'loading' | 'err
   return renderToString(
     <MemoryRouter initialEntries={['/inventory']}>
       <AuthContext value={value}>
-        <WorkspaceContext value={{ orders: [], suppliers: [], stores: [], loading: false, error: '', retry: () => {}, saveOrder: async () => {}, saveSupplier: async () => {}, saveStore: async () => {} }}>
+        <WorkspaceContext value={{ orders: [], suppliers: [], stores: [], loading: false, error: '', retry: () => {}, saveOrder: async () => {}, saveSupplier: async () => {}, deleteSupplier: async () => {}, deleteStore: async () => {}, saveStore: async () => {} }}>
         <Routes>
           <Route element={<ProtectedRoute />}>
             <Route path="/inventory" element={<p>Private workspace content</p>} />
@@ -25,5 +26,10 @@ export function renderAuthGuard(state: Pick<AuthState, 'user' | 'loading' | 'err
 
 
 const reject=async()=>{throw new Error('Static rendering cannot save records')}
+
+export function renderCheckoutGuard(state: Pick<AuthState,'user'|'loading'|'error'|'signedOut'>) {
+  const value: AuthState={...state,retry:()=>{},login:reject,signup:reject,logout:async()=>{}}
+  return renderToString(<MemoryRouter initialEntries={['/checkout/address']}><AuthContext value={value}><Routes><Route element={<CustomerRoute requireSignIn />}><Route path="/checkout/address" element={<p>Authenticated checkout content</p>}/></Route></Routes></AuthContext></MemoryRouter>)
+}
 export function renderSupplierForm(){return renderToString(<SupplierForm catalog={[]} suppliers={[]} onAdd={reject} onDiscard={()=>{}}/>)}
 export function renderProductForm(){return renderToString(<CatalogProductForm onSave={reject} onCancel={()=>{}}/>)}

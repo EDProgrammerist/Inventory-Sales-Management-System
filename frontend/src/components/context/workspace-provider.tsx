@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { WorkspaceContext } from './workspace-context'
 import { useAuth } from './use-auth'
-import { emptyWorkspace, loadWorkspace, saveWorkspaceRecord, type WorkspaceRecords, type WorkspaceSnapshot } from '@/services/workspace'
+import { emptyWorkspace, loadWorkspace, saveWorkspaceRecord, deleteWorkspaceRecord, type WorkspaceRecords, type WorkspaceSnapshot } from '@/services/workspace'
 
 function WorkspaceSession({ userId, children }: { userId?: string; children: ReactNode }) {
   const [snapshot, setSnapshot] = useState<WorkspaceSnapshot>(emptyWorkspace)
@@ -32,7 +32,9 @@ function WorkspaceSession({ userId, children }: { userId?: string; children: Rea
     <WorkspaceContext value={{
       orders: snapshot.orders, suppliers: snapshot.suppliers, stores: snapshot.stores,
       saveOrder: (record) => save('orders', record),
-      saveSupplier: (record) => save('suppliers', record),
+      saveSupplier: (record, updating) => save('suppliers', record, updating),
+      deleteSupplier: async id => { await deleteWorkspaceRecord('suppliers',id);setSnapshot(current=>({...current,suppliers:current.suppliers.filter(row=>row.id!==id)})) },
+      deleteStore: async id => { await deleteWorkspaceRecord('stores',id);setSnapshot(current=>({...current,stores:current.stores.filter(row=>row.id!==id)})) },
       saveStore: (record, updating) => save('stores', record, updating),
       loading, error, retry: () => { setError(''); setLoading(true); setAttempt((value) => value + 1) },
     }}>

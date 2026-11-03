@@ -1,5 +1,5 @@
 import { Router,json } from 'express'
-import { catalogController,adminList,adminSave } from '@/controllers/catalog.controller'
+import { catalogController,adminList,adminSave,adminDelete } from '@/controllers/catalog.controller'
 import { getCatalog } from '@/services/catalog/get-catalog-service'
 import { requireAuth } from '@/middlewares/auth.middleware'
 import { requireAdmin } from '@/middlewares/admin.middleware'
@@ -12,6 +12,7 @@ export function createCatalogRouter(read: typeof getCatalog = getCatalog) {
   router.get('/admin/products',adminList)
   router.post('/admin/products',json({limit:'8mb'}),adminSave)
   router.put('/admin/products/:id',json({limit:'8mb'}),adminSave)
+  router.delete('/admin/products/:id',json({limit:'4kb'}),adminDelete)
   return router
 }
 export const catalogRouter = createCatalogRouter()

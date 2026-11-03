@@ -15,6 +15,7 @@ export default function WorkspaceLayout({
   notificationCount = 0,
   searchPlaceholder = 'Search products',
   searchLabel,
+  settingsLabel,
   children,
 }: {
   title: string
@@ -24,6 +25,7 @@ export default function WorkspaceLayout({
   notificationCount?: number
   searchPlaceholder?: string
   searchLabel?: string
+  settingsLabel?: string
   children: ReactNode
 }) {
   const [mobileNavigation, setMobileNavigation] = useState(false)
@@ -42,7 +44,7 @@ export default function WorkspaceLayout({
         Skip to content
       </a>
       <aside className="fixed inset-y-0 left-0 hidden w-[240px] overflow-y-auto border-r border-[#eef0f3] lg:block xl:w-[280px]">
-        <DashboardSidebar onAction={handleAction} />
+        <DashboardSidebar onAction={handleAction} settingsLabel={settingsLabel} />
       </aside>
       <div className="min-w-0 lg:ml-[240px] xl:ml-[280px]">
         <header className="sticky top-0 z-10 flex flex-wrap items-center gap-2 border-b border-divider bg-surface px-4 py-3 sm:min-h-20 sm:flex-nowrap sm:gap-3 sm:px-6 sm:py-0 xl:px-8">
@@ -114,7 +116,7 @@ export default function WorkspaceLayout({
           {children}
         </main>
       </div>
-      <MobileMenu open={mobileNavigation} onClose={() => setMobileNavigation(false)} onAction={handleAction} />
+      <MobileMenu open={mobileNavigation} onClose={() => setMobileNavigation(false)} onAction={handleAction} settingsLabel={settingsLabel} />
     </div>
   )
 }

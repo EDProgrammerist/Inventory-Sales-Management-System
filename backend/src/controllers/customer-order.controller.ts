@@ -1,9 +1,11 @@
 import type {RequestHandler} from 'express'
 import {z} from 'zod'
 import {createOrder} from '@/services/customer-orders/create-order-service'
-import {ownOrders,adminOrders,updateFulfillment,cancelDemoOrder} from '@/repositories/customer-order.repository'
+import {ownOrders,adminOrders,updateFulfillment,cancelDemoOrder,deleteCancelledOrder} from '@/repositories/customer-order.repository'
 import {orderView} from '@/views/customer-order.view'
 import {fulfillmentInput} from '@/schema/customer-order.schema'
+
+export const remove:RequestHandler=async(request,response)=>{await deleteCancelledOrder(z.uuid().parse(request.params.id));response.json({status:'success',data:{deleted:true}})}
 
 export const create:RequestHandler=async(request,response)=>{const order=await createOrder(response.locals.user.id,request.body);response.status(201).json({status:'success',data:{order:orderView(order)}})}
 export const mine:RequestHandler=async(_request,response)=>{response.set('Cache-Control','no-store').json({status:'success',data:{orders:(await ownOrders(response.locals.user.id)).map(orderView)}})}

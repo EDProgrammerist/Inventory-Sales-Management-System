@@ -3,6 +3,7 @@ import {useCommerce} from '@/components/context/commerce-context'
 import { FunnelIcon, MagnifyingGlassIcon, CheckCircleIcon } from '@phosphor-icons/react'
 import CommerceLayout from '@/components/common/commerce-layout'
 import DashboardDialog from '@/components/ui/dashboard-dialog'
+import DeleteRecordDialog from '@/components/ui/delete-record-dialog'
 import SupplierForm from '@/components/features/suppliers/supplier-form'
 import { SupplierFilters, SupplierDetails } from '@/components/features/suppliers/supplier-panels'
 import {
@@ -17,16 +18,17 @@ import { paginateRows } from '@/data/pagination'
 import { downloadCsv } from '@/lib/download'
 import { useWorkspace } from '@/components/context/workspace-context'
 
-type SupplierPanel = 'new-supplier' | 'supplier-filters' | 'supplier-details'
+type SupplierPanel = 'new-supplier' | 'edit-supplier' | 'supplier-filters' | 'supplier-details'
 const typeStyles = {
-  'taking-return': 'text-[#1aaf78]',
-  'not-taking-return': 'text-[#e85050]',
-  unspecified: 'text-[#98a0ae]',
+  'taking-return': 'text-emerald-700',
+  'not-taking-return': 'text-red-700',
+  unspecified: 'text-muted',
 }
 
 export default function SuppliersPage() {
   const commerce=useCommerce()
-  const { suppliers, saveSupplier } = useWorkspace()
+  const { suppliers, saveSupplier, deleteSupplier } = useWorkspace()
+  const [deleting,setDeleting]=useState<Supplier|null>(null)
   const [query, setQuery] = useState('')
   const [type, setType] = useState<SupplierTypeFilter>('all')
   const [onWayOnly, setOnWayOnly] = useState(false)
@@ -50,12 +52,13 @@ export default function SuppliersPage() {
     setPage(1)
   }
   async function addSupplier(supplier: Omit<Supplier, 'id'>) {
-    await saveSupplier({ ...supplier, id: crypto.randomUUID() })
+    const editing=panel==='edit-supplier'?selectedSupplier:null
+    await saveSupplier({ ...supplier, id: editing?.id??crypto.randomUUID() },Boolean(editing))
     clearFilters()
-    setPage(Math.ceil((suppliers.length + 1) / supplierPageSize))
+    setPage(editing?1:Math.ceil((suppliers.length + 1) / supplierPageSize))
     setPanel(null)
     setNotice(
-      `${supplier.name} was added to the supplier list.`,
+      `${supplier.name} was ${editing?'updated':'added'} in the supplier list.`,
     )
   }
   function downloadAll() {
@@ -64,6 +67,7 @@ export default function SuppliersPage() {
   }
   function panelTitle(value: SupplierPanel) {
     if (value === 'new-supplier') return 'New Supplier'
+    if (value === 'edit-supplier') return 'Edit Supplier'
     if (value === 'supplier-filters') return 'Filter suppliers'
     return selectedSupplier?.name ?? 'Supplier details'
   }
@@ -135,7 +139,7 @@ export default function SuppliersPage() {
             </caption>
             <thead>
               <tr className="border-b border-divider text-muted">
-                {['Supplier Name', 'Product', 'Contact Number', 'Email', 'Type', 'On the way'].map(
+                {['Supplier Name', 'Product', 'Contact Number', 'Email', 'Type', 'On the way', 'Actions'].map(
                   (heading) => (
                     <th
                       key={heading}
@@ -172,6 +176,7 @@ export default function SuppliersPage() {
                     {supplierTypeLabels[supplier.type]}
                   </td>
                   <td className="px-4 pr-5 tabular-nums">{supplier.onWay ?? '-'}</td>
+                  <td className="px-4"><div className="flex gap-3"><button className="dashboard-link" aria-label={`Edit ${supplier.name}`} onClick={()=>{setSelectedSupplier(supplier);setPanel('edit-supplier')}}>Edit</button><button className="dashboard-link text-red-700" aria-label={`Delete ${supplier.name}`} onClick={()=>setDeleting(supplier)}>Delete</button></div></td>
                 </tr>
               ))}
             </tbody>
@@ -213,13 +218,14 @@ export default function SuppliersPage() {
         <DashboardDialog
           key={panel}
           title={panelTitle(panel)}
-          variant={panel === 'new-supplier' ? 'product' : 'default'}
+          variant={panel === 'new-supplier'||panel==='edit-supplier' ? 'product' : 'default'}
           onClose={() => setPanel(null)}
         >
-          {panel === 'new-supplier' && (
+          {(panel === 'new-supplier'||panel==='edit-supplier') && (
             <SupplierForm
               catalog={commerce.products}
               suppliers={suppliers}
+              supplier={panel==='edit-supplier'?selectedSupplier??undefined:undefined}
               onAdd={addSupplier}
               onDiscard={() => setPanel(null)}
             />
@@ -241,6 +247,7 @@ export default function SuppliersPage() {
           )}
         </DashboardDialog>
       )}
+      {deleting&&<DeleteRecordDialog name={deleting.name} description="This permanently removes this supplier contact from your list. Products and saved orders are unchanged." onClose={()=>setDeleting(null)} onDelete={async()=>{await deleteSupplier(deleting.id);setNotice(`${deleting.name} was deleted.`)}}/>}
     </CommerceLayout>
   )
 }

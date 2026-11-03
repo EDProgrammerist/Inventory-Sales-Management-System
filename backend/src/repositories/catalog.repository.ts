@@ -1,6 +1,6 @@
 import { and, asc, eq, max, sql } from 'drizzle-orm'
 import { getDatabase } from '@/db'
-import { catalogProducts } from '@/db/schema'
+import { catalogProducts, customerOrders } from '@/db/schema'
 import {ApiError} from '@/lib/api-error'
 
 export async function listCatalog() {
@@ -9,6 +9,16 @@ export async function listCatalog() {
 
 export async function listAdminCatalog(ownerId:string) {
   return getDatabase().select().from(catalogProducts).where(eq(catalogProducts.ownerId,ownerId)).orderBy(asc(catalogProducts.sortOrder),asc(catalogProducts.id))
+}
+
+export async function deleteCatalog(ownerId:string,id:string,expectedVersion:number,database:Pick<ReturnType<typeof getDatabase>,'transaction'>=getDatabase()) {
+  return database.transaction(async tx=>{
+    const [product]=await tx.select().from(catalogProducts).where(and(eq(catalogProducts.ownerId,ownerId),eq(catalogProducts.id,id))).for('update')
+    if(!product||product.version!==expectedVersion)throw new ApiError(409,'This product changed or is unavailable. Refresh products before deleting again.')
+    const [reference]=await tx.select({id:customerOrders.id}).from(customerOrders).where(sql`${customerOrders.items} @> ${JSON.stringify([{productId:id}])}::jsonb`).limit(1)
+    if(reference)throw new ApiError(409,'This product is referenced by a saved order. Hide it from the store instead to preserve order history.')
+    await tx.delete(catalogProducts).where(and(eq(catalogProducts.ownerId,ownerId),eq(catalogProducts.id,id)))
+  })
 }
 
 export async function writeCatalog(ownerId:string,input:import('zod').infer<typeof import('@/schema/catalog.schema').adminCatalogInput>,updating:boolean,database:Pick<ReturnType<typeof getDatabase>,'select'|'update'|'transaction'>=getDatabase()) {

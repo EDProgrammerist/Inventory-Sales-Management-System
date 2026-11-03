@@ -11,7 +11,7 @@ test('commerce management and saved orders reject anonymous HTTP access',async()
   try{
     if(!server.listening)await once(server,'listening')
     const base=`http://127.0.0.1:${(server.address() as AddressInfo).port}/api`
-    for(const [path,method] of [['/catalog/v1/admin/products','GET'],['/catalog/v1/admin/products','POST'],['/orders/v1/admin','GET'],['/orders/v1/mine','GET'],['/orders/v1','POST'],['/orders/v1/admin/invalid','PUT']])assert.equal((await fetch(base+path,{method})).status,401)
+    for(const [path,method] of [['/catalog/v1/admin/products','GET'],['/catalog/v1/admin/products','POST'],['/orders/v1/admin','GET'],['/orders/v1/mine','GET'],['/orders/v1','POST'],['/orders/v1/admin/invalid','PUT'],['/orders/v1/admin/invalid','DELETE'],['/catalog/v1/admin/products/invalid','DELETE']])assert.equal((await fetch(base+path,{method})).status,401)
   }finally{await new Promise<void>(resolve=>server.close(()=>resolve()))}
 })
 

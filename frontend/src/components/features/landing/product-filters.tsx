@@ -1,11 +1,10 @@
 import { useId, useState } from 'react'
 import { CaretDownIcon, MagnifyingGlassIcon } from '@phosphor-icons/react'
 import { useStorefront } from '@/components/context/storefront-context'
-import { productBrand, productMemory, numericPrice } from '@/data/storefront-filters'
+import { productBrand, productMemory, productEdition, numericPrice } from '@/data/storefront-filters'
 import { shopCategories } from './store-categories'
 
 export type UpdateProductFilter = (key: string, value: string | string[]) => void
-const brands = ['Apple', 'NVIDIA', 'Sony']
 
 function FilterGroup({ title, children, open = true }: { title: string; children: React.ReactNode; open?: boolean }) {
   return <details className="products-filter-group" open={open}><summary>{title}<CaretDownIcon size={18} /></summary><div>{children}</div></details>
@@ -14,6 +13,8 @@ function FilterGroup({ title, children, open = true }: { title: string; children
 export default function ProductFilters({ params, onChange, onClear }: { params: URLSearchParams; onChange: UpdateProductFilter; onClear: () => void }) {
   const id = useId()
   const { products } = useStorefront()
+  const brands = [...new Set([...products.map(productBrand), ...params.getAll('brand')])].sort()
+  const editions = [...new Set([...products.filter(product => product.category !== 'phones').map(productEdition), ...params.getAll('edition')])].sort()
   const memories = [...new Set(products.map(productMemory).filter((value): value is string => Boolean(value)))].sort((a,b)=>parseInt(a)-parseInt(b))
   const catalogPriceLimit = Math.max(1000, Math.ceil(Math.max(0,...products.map(product=>product.price))/1000)*1000)
   const [brandQuery, setBrandQuery] = useState('')
@@ -52,7 +53,7 @@ export default function ProductFilters({ params, onChange, onClear }: { params: 
       <div className="products-filter-options">{shopCategories.map(category => <label key={category.id}><input type="radio" name={`${id}-category`} checked={params.get('category') === category.id} onChange={() => onChange('category', category.id)} /><span>{category.name}</span><small>{products.filter(product => product.category === category.id).length}</small></label>)}<label><input type="radio" name={`${id}-category`} checked={!params.get('category') || params.get('category') === 'all'} onChange={() => onChange('category', '')} /><span>All categories</span><small>{products.length}</small></label></div>
     </FilterGroup>
     <FilterGroup title="Edition" open={false}>
-      <div className="products-filter-options">{['Founders Edition', 'Disc edition', 'Digital edition'].map(edition => <label key={edition}><input type="checkbox" checked={params.getAll('edition').includes(edition)} onChange={() => toggle('edition', edition)} /><span>{edition}</span></label>)}</div>
+      <div className="products-filter-options">{editions.map(edition => <label key={edition}><input type="checkbox" checked={params.getAll('edition').includes(edition)} onChange={() => toggle('edition', edition)} /><span>{edition}</span></label>)}</div>
     </FilterGroup>
     <button type="button" className="products-clear-filters" onClick={onClear}>Clear all filters</button>
   </div>

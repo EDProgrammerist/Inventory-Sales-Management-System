@@ -96,7 +96,7 @@ export default function LoginForm() {
         <AuthSubmit pending={pending || loading} complete={signedIn} label="Sign in" pendingLabel={loading ? 'Checking session…' : 'Signing in…'} />
       </form>
       <GoogleButton label="Sign in with Google" disabled={disabled} onClick={() => showNotice('Google sign-in is currently unavailable. Please use your email and password.')} />
-      <p className="mt-8 text-center text-[13px] text-[#737b8b]">Don’t have an account? <Link to="/signup" className={`${authLinkClass} ml-1`}>Sign up</Link></p>
+      <p className="mt-8 text-center text-[13px] text-muted">Don’t have an account? <Link to="/signup" className={`${authLinkClass} ml-1`}>Sign up</Link></p>
       <AuthFeedback error={requestError} notice={notice} />
     </>
   )

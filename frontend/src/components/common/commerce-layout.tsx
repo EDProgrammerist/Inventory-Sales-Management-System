@@ -22,6 +22,7 @@ export default function CommerceLayout({ title, query, onQueryChange, children, 
   const { products } = useCommerce()
   const [panel, setPanel] = useState<WorkspaceAction | null>(null)
   const low = products.filter(product => product.stockQuantity !== null && product.stockQuantity <= product.threshold)
+  const settingsLabel = onCompactChange ? 'View preferences' : 'Store information'
 
   function action(value: WorkspaceAction) {
     const routes: Partial<Record<WorkspaceAction, string>> = { inventory: '/inventory', reports: '/reports', suppliers: '/suppliers', orders: '/orders', store: '/manage-store' }
@@ -31,10 +32,10 @@ export default function CommerceLayout({ title, query, onQueryChange, children, 
   }
 
   return (
-    <WorkspaceLayout title={title} query={query} onQueryChange={onQueryChange} onAction={action} notificationCount={low.length} searchPlaceholder={searchPlaceholder} searchLabel={searchLabel}>
+    <WorkspaceLayout title={title} query={query} onQueryChange={onQueryChange} onAction={action} notificationCount={low.length} searchPlaceholder={searchPlaceholder} searchLabel={searchLabel} settingsLabel={settingsLabel}>
       <div className="commerce-workspace">{children}</div>
       {panel && (
-        <DashboardDialog title={panel === 'profile' ? 'Administrator account' : panel === 'notifications' ? 'Stock alerts' : 'Store administration'} onClose={() => setPanel(null)}>
+        <DashboardDialog title={panel === 'profile' ? 'Administrator account' : panel === 'notifications' ? 'Stock alerts' : onCompactChange ? 'View preferences' : 'Store information'} onClose={() => setPanel(null)}>
           {panel === 'profile' ? <WorkspaceProfile /> : panel === 'notifications' ? (
             <>
               <p className="mb-4 text-sm text-muted">{low.length} products are at or below their stock threshold. Unknown stock is excluded.</p>

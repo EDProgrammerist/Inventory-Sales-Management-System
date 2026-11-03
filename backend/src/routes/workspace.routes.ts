@@ -11,3 +11,4 @@ workspaceRouter.get('/', controller.list)
 // parser scoped to authenticated workspace mutations, away from account routes.
 workspaceRouter.post('/:kind', json({ limit: '8mb' }), controller.save)
 workspaceRouter.put('/:kind/:id', json({ limit: '8mb' }), controller.save)
+workspaceRouter.delete('/:kind/:id',controller.remove)

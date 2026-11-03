@@ -2,10 +2,13 @@ import { and, asc, eq } from 'drizzle-orm'
 import { getDatabase } from '@/db'
 import { workspaceRecords } from '@/db/schema'
 import type { WorkspaceKind } from '@/schema/workspace.schema'
-type Database = Pick<ReturnType<typeof getDatabase>, 'select' | 'insert' | 'update' | 'transaction'>
+type Database = Pick<ReturnType<typeof getDatabase>, 'select' | 'insert' | 'update' | 'delete' | 'transaction'>
 
 function owned(userId: string, kind: WorkspaceKind, id: string) {
   return and(eq(workspaceRecords.userId, userId), eq(workspaceRecords.kind, kind), eq(workspaceRecords.id, id))
+}
+export async function deleteRecord(userId:string,kind:WorkspaceKind,id:string,database:Database=getDatabase()) {
+  return (await database.delete(workspaceRecords).where(owned(userId,kind,id)).returning({id:workspaceRecords.id}))[0]
 }
 export async function listWorkspace(userId: string, database: Database = getDatabase()) {
   return database.select().from(workspaceRecords).where(eq(workspaceRecords.userId, userId)).orderBy(asc(workspaceRecords.createdAt), asc(workspaceRecords.id))

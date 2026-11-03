@@ -9,7 +9,7 @@ test('product listing composes price, brand, memory and category filters and cla
     const { filterProducts, paginateCatalog, productBrand } = await server.ssrLoadModule('/src/data/storefront-filters.ts')
     const before = JSON.stringify(storefrontProducts)
     assert.deepEqual(filterProducts(storefrontProducts, { category: 'phones', brands: ['Apple'], memory: ['128GB'], min: 40000 }).map(row => row.id), ['iphone-purple'])
-    assert.equal(filterProducts(storefrontProducts, { brands: ['NVIDIA'], max: 80000 })[0].id, 'rtx-5080')
+    assert.equal(filterProducts(storefrontProducts, { brands: ['ASUS'], max: 80000 })[0].id, 'rtx-5080')
     assert.equal(filterProducts(storefrontProducts, { min: 90000, max: 10000 }).length, 0)
     assert.equal(filterProducts(storefrontProducts, { query: 'unknown' }).length, 0)
     assert.equal(productBrand(storefrontProducts[2]), 'Sony')

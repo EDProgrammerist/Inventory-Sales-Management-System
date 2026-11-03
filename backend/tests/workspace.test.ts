@@ -8,6 +8,7 @@ import { getDatabase, closeDatabase } from '@/db'
 import { users } from '@/db/schema'
 import { listWorkspace, writeRecord } from '@/repositories/workspace.repository'
 import { workspaceView } from '@/views/workspace.view'
+import * as workspaceRepository from '@/repositories/workspace.repository'
 
 const server = app.listen(0, '127.0.0.1')
 after(() => new Promise<void>((resolve) => server.close(() => resolve())))
@@ -16,7 +17,7 @@ after(closeDatabase)
 test('workspace reads and writes require authentication instead of silently losing data', async () => {
   if (!server.listening) await once(server, 'listening')
   const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}/api/workspace/v1`
-  for (const [path, method] of [['', 'GET'], ['/products', 'POST'], ['/stores/test', 'PUT']]) {
+  for (const [path, method] of [['', 'GET'], ['/products', 'POST'], ['/stores/test', 'PUT'], ['/stores/test', 'DELETE']]) {
     const response = await fetch(`${base}${path}`, { method })
     assert.equal(response.status, 401)
   }
@@ -52,6 +53,14 @@ test('PostgreSQL round trip restores all four lists and product history without 
     assert.ok(restored.orders.some((row) => row.id === marker))
     assert.equal(restored.stores.find((row) => row.id === store.id)?.name, `${marker}-edited`)
     assert.equal(restored.events.filter((event) => event.productId === id).length, 2)
+    const supplier=workspaceSchemas.suppliers.parse(restored.suppliers.find(row=>row.name===marker))
+    await writeRecord(owner.id,'suppliers',{...supplier,name:`${marker}-edited`},true,tx)
+    assert.equal(workspaceView(await listWorkspace(owner.id,tx)).suppliers.find(row=>row.id===supplier.id)?.name,`${marker}-edited`)
+    assert.equal(typeof workspaceRepository.deleteRecord,'function','Workspace Delete must exist')
+    assert.equal(await workspaceRepository.deleteRecord(crypto.randomUUID(),'suppliers',supplier.id,tx),undefined)
+    await workspaceRepository.deleteRecord(owner.id,'suppliers',supplier.id,tx)
+    await workspaceRepository.deleteRecord(owner.id,'stores',store.id,tx)
+    assert.ok(!(await listWorkspace(owner.id,tx)).some(row=>row.id===supplier.id||row.id===store.id))
     assert.deepEqual(await listWorkspace(crypto.randomUUID(), tx), [])
     assert.equal(await writeRecord(crypto.randomUUID(), 'products', product, true, tx), undefined)
     await assert.rejects(writeRecord(owner.id, 'products', { ...product, id: crypto.randomUUID() }, false, tx))

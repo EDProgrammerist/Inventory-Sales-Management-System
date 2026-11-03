@@ -67,7 +67,7 @@ export default function SignupForm() {
         <AuthSubmit pending={pending || loading} complete={complete} label="Get started" pendingLabel="Creating your account…" />
       </form>
       <GoogleButton label="Sign up with Google" disabled={disabled} onClick={() => { setRequestError(''); setNotice('Google sign-up is currently unavailable. Please create an account with your email.') }} />
-      <p className="mt-8 text-center text-[13px] text-[#737b8b]">Already have an account? <Link to="/login" className={`${authLinkClass} ml-1`}>Log in</Link></p>
+      <p className="mt-8 text-center text-[13px] text-muted">Already have an account? <Link to="/login" className={`${authLinkClass} ml-1`}>Log in</Link></p>
       <AuthFeedback error={requestError} notice={notice} />
     </>
   )

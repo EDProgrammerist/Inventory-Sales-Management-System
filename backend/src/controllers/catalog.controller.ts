@@ -4,6 +4,12 @@ import { catalogView } from '@/views/catalog.view'
 import { adminCatalogView } from '@/views/catalog.view'
 import { listAdminCatalog } from '@/repositories/catalog.repository'
 import { saveCatalog } from '@/services/catalog/save-catalog-service'
+import { removeCatalog } from '@/services/catalog/delete-catalog-service'
+
+export const adminDelete:RequestHandler=async(request,response)=>{
+  await removeCatalog(response.locals.user.id,request.params.id,request.body)
+  response.json({status:'success',data:{deleted:true}})
+}
 
 export function catalogController(read: typeof getCatalog = getCatalog): RequestHandler {
   return async (_request, response) => {

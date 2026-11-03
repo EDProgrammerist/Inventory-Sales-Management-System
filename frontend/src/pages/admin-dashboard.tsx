@@ -1,3 +1,4 @@
+import CommerceRefresh from '@/components/common/commerce-refresh'
 import {useState} from 'react'
 import {Link} from 'react-router'
 import {PackageIcon} from '@phosphor-icons/react'
@@ -12,14 +13,14 @@ import DemoSalesChart from '@/components/features/orders/demo-sales-chart'
 import CustomerOrderChart from '@/components/features/dashboard/customer-order-chart'
 
 export default function AdminDashboardPage(){
- const {products,orders,refresh}=useCommerce(),{suppliers}=useWorkspace(),[query,setQuery]=useState('')
+ const {products,orders}=useCommerce(),{suppliers}=useWorkspace(),[query,setQuery]=useState('')
  const metrics=commerceMetrics(products,orders),stock=dashboardStock(products,orders)
  const matches=(name:string)=>name.toLowerCase().includes(query.trim().toLowerCase())
  const top=stock.top.filter(item=>matches(`${item.name} ${item.variant}`)).slice(0,4),low=stock.low.filter(item=>matches(`${item.name} ${item.variant}`)).slice(0,4)
  const recent=orders.filter(order=>matches(`${order.id} ${order.customerName??''} ${order.customerEmail??''} ${order.items.map(item=>item.name).join(' ')}`)).slice(0,4)
  const count=(status:string)=>orders.filter(order=>order.status===status).length
  return <CommerceLayout title="Dashboard" query={query} onQueryChange={setQuery}>
-  <div className="commerce-toolbar"><p>Store activity from saved customer orders. Payments are simulated.</p><div className="flex flex-wrap gap-3"><button className="inventory-button" onClick={refresh}>Refresh data</button><Link className="inventory-button commerce-primary" to="/inventory">Manage products</Link></div></div>
+  <div className="commerce-toolbar"><p>Store activity from saved customer orders. Payments are simulated.</p><div className="flex flex-wrap gap-3"><CommerceRefresh label="Refresh data"/><Link className="inventory-button commerce-primary" to="/inventory">Manage products</Link></div></div>
   <div className="reference-dashboard-grid">
    <OverviewCard title="Sales Overview" kind="sales" items={[{label:'Sales (demo)',value:formatMoney(metrics.demoSales),icon:'Sales'},{label:'Orders',value:String(metrics.demoOrders),icon:'Revenue'},{label:'Delivered',value:String(count('delivered')),icon:'Return'},{label:'Cancelled',value:String(metrics.cancelled),icon:'Cancel'}]} note="Simulated sales exclude cancelled orders; real payments, costs and profit are not recorded."/>
    <SummaryCard kind="inventory" items={[{label:'Quantity in Hand',value:stock.knownProducts?stock.knownUnits.toLocaleString('en-PH'):'Not set'},{label:'Stock not set',value:String(stock.unknown),icon:'To be received'}]} note="Quantity in hand includes known stock only. Unknown quantities stay unknown."/>

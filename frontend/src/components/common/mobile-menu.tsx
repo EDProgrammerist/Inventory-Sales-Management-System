@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react'
 import DashboardSidebar, { type DashboardAction } from '@/components/features/dashboard/dashboard-sidebar'
 
-export default function MobileMenu({ open, onClose, onAction }: {
+export default function MobileMenu({ open, onClose, onAction, settingsLabel }: {
   open: boolean
   onClose: () => void
   onAction: (action: DashboardAction) => void
+  settingsLabel?: string
 }) {
   const ref = useRef<HTMLDialogElement>(null)
 
@@ -41,7 +42,7 @@ export default function MobileMenu({ open, onClose, onAction }: {
         }
       }}
     >
-      <DashboardSidebar onAction={onAction} onClose={onClose} />
+      <DashboardSidebar onAction={onAction} onClose={onClose} settingsLabel={settingsLabel} />
     </dialog>
   )
 }

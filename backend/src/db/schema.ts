@@ -85,6 +85,7 @@ export const customerOrders=pgTable('customer_order',{
   status:customerOrderStatus('status').default('pending').notNull(),
   paymentState:orderPaymentState('payment_state').default('demo_paid').notNull(),
   stockReserved:boolean('stock_reserved').default(true).notNull(),
+  deletedAt:timestamp('deleted_at',{withTimezone:true,mode:'string'}),
   paidAt:timestamp('paid_at',{withTimezone:true,mode:'string'}),
   createdAt:timestamp('created_at',{withTimezone:true,mode:'string'}).defaultNow().notNull(),
 },table=>[uniqueIndex('customer_order_idempotency_unique').on(table.userId,table.idempotencyKey),index('customer_order_user_idx').on(table.userId),check('customer_order_subtotal_positive',sql`${table.subtotal}>0`)])

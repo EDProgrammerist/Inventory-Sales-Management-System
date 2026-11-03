@@ -1,5 +1,6 @@
 import { lazy, Suspense, type ReactNode } from 'react'
-import { Navigate, Route, Routes } from 'react-router'
+import { Route, Routes } from 'react-router'
+import NotFoundPage from '@/pages/not-found'
 import HomePage from '@/pages/home'
 import LandingPage from '@/pages/landing'
 import ProductsPage from '@/pages/products'
@@ -41,9 +42,11 @@ export default function AppRoutes() {
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/products/:productId" element={<StoreProductPage />} />
         <Route path="/cart" element={<CartPage />} />
-        <Route path="/checkout/address" element={checkoutPage(<AddressPage />)} />
-        <Route path="/checkout/shipping" element={checkoutPage(<ShippingPage />)} />
-        <Route path="/checkout/payment" element={checkoutPage(<PaymentPage />)} />
+        <Route element={<CustomerRoute requireSignIn />}>
+          <Route path="/checkout/address" element={checkoutPage(<AddressPage />)} />
+          <Route path="/checkout/shipping" element={checkoutPage(<ShippingPage />)} />
+          <Route path="/checkout/payment" element={checkoutPage(<PaymentPage />)} />
+        </Route>
         <Route element={<CustomerRoute/>}><Route path="/account/orders" element={checkoutPage(<CustomerOrdersPage/>)} /></Route>
       </Route>
       <Route path="/login" element={<HomePage />} />
@@ -57,7 +60,7 @@ export default function AppRoutes() {
         <Route path="/orders" element={workspacePage(<OrdersPage />)} />
         <Route path="/manage-store" element={workspacePage(<ManageStorePage />)} />
       </Route>
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   )
 }

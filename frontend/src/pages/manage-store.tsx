@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import CommerceLayout from '@/components/common/commerce-layout'
 import DashboardDialog from '@/components/ui/dashboard-dialog'
+import DeleteRecordDialog from '@/components/ui/delete-record-dialog'
 import RecordForm, { type RecordField } from '@/components/ui/record-form'
 import { selectStores, validateStore, type Store } from '@/data/stores-demo'
 import { useWorkspace } from '@/components/context/workspace-context'
@@ -13,7 +14,8 @@ const fields: RecordField[] = [
   { name: 'phone', label: 'Contact Number', type: 'tel', maxLength: 32 },
 ]
 export default function ManageStorePage() {
-  const { stores, saveStore } = useWorkspace()
+  const { stores, saveStore, deleteStore } = useWorkspace()
+  const [deleting,setDeleting]=useState<Store|null>(null)
   const [query, setQuery] = useState('')
   const [editing, setEditing] = useState<Store | null>(null)
   const [formOpen, setFormOpen] = useState(false)
@@ -71,7 +73,7 @@ export default function ManageStorePage() {
               </div>
               <div className="relative min-w-0 p-5 pr-5 sm:pr-28">
                 <h4 className="text-base font-medium text-[#657084]">{store.name}</h4>
-                <address className="mt-2 space-y-3 text-sm leading-6 text-[#939ba9] not-italic [overflow-wrap:anywhere]">
+                <address className="mt-2 space-y-3 text-sm leading-6 text-muted not-italic [overflow-wrap:anywhere]">
                   <p>{store.address}</p>
                   <p>{store.city}</p>
                   <p>{store.phone}</p>
@@ -86,6 +88,7 @@ export default function ManageStorePage() {
                 >
                   Edit
                 </button>
+                <button className="dashboard-link mt-4 block text-red-700" aria-label={`Delete ${store.branch}`} onClick={()=>setDeleting(store)}>Delete store</button>
               </div>
             </article>
           ))}
@@ -100,6 +103,7 @@ export default function ManageStorePage() {
           )}
         </div>
       </section>
+      {deleting&&<DeleteRecordDialog name={deleting.branch} description="This permanently removes this store's branch and contact details from your list. Saved orders are unchanged." onClose={()=>setDeleting(null)} onDelete={async()=>{await deleteStore(deleting.id);setNotice(`${deleting.branch} was deleted.`)}}/>}
       {formOpen && (
         <DashboardDialog title={editing ? 'Edit Store' : 'New Store'} onClose={close}>
           <RecordForm

@@ -11,6 +11,7 @@ Signup creates USER customers. Customers can shop and use `/account/orders`, but
 - Public `GET /api/catalog/v1/products` returns published products with safe image fields.
 - ADMIN `GET/POST /api/catalog/v1/admin/products` lists or creates catalog products.
 - ADMIN `PUT /api/catalog/v1/admin/products/:id` edits the same catalog the storefront reads. ID cannot change. `expectedVersion` is required on edits; a stale version returns 409. Refresh the list and reopen the editor before saving again.
+- ADMIN `DELETE /api/catalog/v1/admin/products/:id` accepts `{expectedVersion}`. It removes only an owned, current-version product without saved order references. Referenced products return 409 and can be hidden instead.
 - Supported families: phones, computers, consoles. Prices use PHP. Stock null means unknown; zero means out of stock. Stock thresholds and publication are explicit. Electronics have no fabricated expiry date.
 - Images use bundled fallback keys or validated inline PNG/JPEG/WebP uploads. No remote image URL or SVG upload is accepted. Catalog writes have a scoped 8 MB JSON limit; normal requests retain smaller limits.
 
@@ -25,10 +26,15 @@ Authenticated endpoints under `/api/orders/v1`:
 | POST `/:id/cancel` | Owner cancellation, or ADMIN management; unavailable once shipped/delivered. |
 | GET `/admin` | ADMIN customer-order list, including customer contact fields. |
 | PUT `/admin/:id` | ADMIN next fulfillment step only. |
+| DELETE `/admin/:id` | ADMIN logical deletion of a cancelled order with released stock. Removes it from customer/admin lists; retains its internal retry identity and history. Active/delivered orders return 409. |
 
 Orders snapshot names, variants, product families, quantities, server prices, address and shipping preference. The server rejects unpublished products, stale prices, insufficient known stock, duplicate lines, forged ownership/status/payment fields and card fields. Known stock is decremented transactionally; unknown stock remains unknown for demo testing and does not imply real availability.
 
 Same user/key retries return the original order; a reused key with another payload returns 409. Stable row locks and a unique index protect reservations. Cancellation restores a reservation once. Reservations, cancellations and catalog edits advance the product version to prevent stale editors overwriting stock.
+
+A logically deleted order's key returns 409 on checkout retry; it cannot reserve stock again. Delete does not restore stock. Additive migration 0007 adds a nullable deleted_at timestamp; apply migrations before running this version.
+
+Workspace Suppliers and Stores use authenticated ADMIN `GET /api/workspace/v1`, `POST /:kind`, `PUT /:kind/:id` and `DELETE /:kind/:id`. Update keeps the ID immutable; Delete physically removes only the current admin's record. Both pages expose editing and confirmed deletion in the existing UI.
 
 The browser retains only an opaque checkout digest and attempt UUID in session storage, with a memory fallback. This permits same-tab navigation retries without storing delivery/card input. When storage is disabled, the fallback survives SPA navigation but not a full document reload; check My orders after an uncertain response. Successful checkout clears the attempt and purchased cart quantities. Saved order history survives reload; unsubmitted cart/address/shipping remain session UI state and reset on reload/logout.
 

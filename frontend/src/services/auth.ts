@@ -34,7 +34,12 @@ async function authRequest(path: string, options?: RequestInit) {
     if (response.status === 404 || response.status === 501) throw new Error('This account service is currently unavailable. Please try again later.')
     throw new Error('We couldn’t complete your request. Please try again shortly.')
   }
-  return response.json()
+  try {
+    const result = await response.json()
+    if (!result || typeof result !== 'object' || Array.isArray(result)) throw new Error()
+    return result
+  }
+  catch { throw new Error('The account service returned an invalid response. Please try again.') }
 }
 
 export async function getCsrfToken(): Promise<string> {
