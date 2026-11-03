@@ -50,6 +50,13 @@
       "when": 1793522903572,
       "tag": "0006_jittery_next_avengers",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793676311858,
+      "tag": "0007_shallow_skin",
+      "breakpoints": true
     }
   ]
 }

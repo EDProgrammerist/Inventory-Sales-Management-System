@@ -7,7 +7,9 @@ export interface WorkspaceState {
   orders: Order[]
   saveOrder: (record: Order) => Promise<void>
   suppliers: Supplier[]
-  saveSupplier: (record: Supplier) => Promise<void>
+  saveSupplier: (record: Supplier, updating?: boolean) => Promise<void>
+  deleteSupplier: (id:string) => Promise<void>
+  deleteStore: (id:string) => Promise<void>
   stores: Store[]
   saveStore: (record: Store, updating?: boolean) => Promise<void>
   loading: boolean

@@ -6,28 +6,33 @@ export default function DashboardDialog({
   onClose,
   children,
   variant = 'default',
+  busy = false,
 }: {
   title: string
   onClose: () => void
   children: ReactNode
   variant?: 'default' | 'product'
+  busy?: boolean
 }) {
   const ref = useRef<HTMLDialogElement>(null)
   const headingId = useId()
   useEffect(() => {
     const dialog = ref.current
+    const trigger=document.activeElement instanceof HTMLElement?document.activeElement:null
     dialog?.showModal()
-    return () => dialog?.close()
+    dialog?.querySelector<HTMLElement>('[data-dialog-autofocus]')?.focus()
+    return () => {dialog?.close();if(trigger?.isConnected)trigger.focus()}
   }, [])
 
   return (
     <dialog
       ref={ref}
+      onCancel={(event)=>{if(busy)event.preventDefault()}}
       onClose={(event) => {
         if (!event.currentTarget.open) onClose()
       }}
       onClick={(event) => {
-        if (event.target === event.currentTarget) {
+        if (!busy && event.target === event.currentTarget) {
           const bounds = event.currentTarget.getBoundingClientRect()
           if (
             event.clientX < bounds.left ||
@@ -44,11 +49,12 @@ export default function DashboardDialog({
       <header
         className={`sticky top-0 z-10 flex items-center justify-between gap-4 bg-surface px-4 py-3 sm:px-6 ${variant === 'product' ? 'pb-2' : 'border-b border-divider'}`}
       >
-        <h2 id={headingId} className="text-lg font-semibold">
+        <h2 id={headingId} className="min-w-0 break-words text-lg font-semibold">
           {title}
         </h2>
         <button
           type="button"
+          disabled={busy}
           onClick={onClose}
           aria-label="Close dialog"
           className="workspace-icon-button"

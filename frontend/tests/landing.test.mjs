@@ -2,6 +2,18 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { createServer } from 'vite'
 
+test('homepage PS5 promotions use the existing Disc, Digital and packaging photos',async()=>{
+  const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom',logLevel:'error'})
+  try{
+    const {renderLanding}=await server.ssrLoadModule('/scripts/landing-render-check.tsx')
+    const {html}=renderLanding()
+    assert.match(html,/<article class="shop-ps5-feature"[^>]*><img[^>]*src="[^"]*ps5-disc-console\.jpg"/)
+    assert.match(html,/<article class="shop-editorial-console"[^>]*><img[^>]*src="[^"]*ps5-digital-console\.jpg"/)
+    assert.match(html,/<img class="shop-closing-ps5"[^>]*src="[^"]*ps5-disc-box\.jpg"/)
+    assert.ok(!html.includes('/storefront/ps5.png'),'Homepage should no longer use the generic PS5 artwork')
+  }finally{await server.close()}
+})
+
 test('storefront display catalog stays separate from business data and preserves account links', async () => {
   const server = await createServer({ server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error' })
   try {

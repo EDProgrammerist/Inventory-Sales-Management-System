@@ -42,6 +42,24 @@ export function getProductDetails(product: CatalogProduct): ProductDetails {
     const flagship = product.id === 'rtx-5090'
     const memory = flagship ? '32GB GDDR7' : '16GB GDDR7'
     const cores = flagship ? '21,760' : '10,752'
+    if (product.variant.startsWith('ASUS ROG Astral OC · ')) return {
+      highlights: [
+        { label: 'Video memory', value: memory, kind: 'memory' },
+        { label: 'Architecture', value: 'Blackwell', kind: 'chip' },
+        { label: 'CUDA cores', value: cores, kind: 'chip' },
+        { label: 'Memory bus', value: flagship ? '512-bit' : '256-bit', kind: 'memory' },
+        { label: 'Recommended PSU', value: flagship ? '1000W' : '850W', kind: 'power' },
+        { label: 'Interface', value: 'PCIe Gen 5', kind: 'storage' },
+      ],
+      groups: [
+        { title: 'Graphics processor', rows: [['Architecture', 'NVIDIA Blackwell'], ['CUDA cores', cores], ['Default boost clock', flagship ? '2.58 GHz' : '2.76 GHz'], ['OC mode clock', flagship ? '2.61 GHz' : '2.79 GHz']] },
+        { title: 'Memory', rows: [['Video memory', memory], ['Memory interface', flagship ? '512-bit' : '256-bit']] },
+        { title: 'ASUS ROG Astral OC requirements', rows: [['Recommended system PSU', flagship ? '1000W' : '850W'], ['Length', '357.6 mm'], ['Width', '149.3 mm'], ['Height', '76 mm'], ['Slots', '3.8'], ['Power connector', '1 × 16-pin']] },
+      ],
+      source: `https://rog.asus.com/us/graphics-cards/graphics-cards/rog-astral/rog-astral-${flagship ? 'rtx5090-o32g' : 'rtx5080-o16g'}-gaming/spec/`,
+      sourceName: 'ASUS ROG Astral OC specifications',
+      note: 'Manufacturer specifications for the listed ASUS OC model. Check case clearance and the requirements of your complete system before ordering.',
+    }
     const power = flagship ? '575W' : '360W'
     return {
       highlights: [

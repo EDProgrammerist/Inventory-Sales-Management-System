@@ -12,7 +12,7 @@ export interface ProductFilters {
   saved?: string[]
 }
 export function productBrand(product: CatalogProduct): string {
-  return product.category === 'phones' ? 'Apple' : product.category === 'computers' ? 'NVIDIA' : 'Sony'
+  return product.category === 'phones' ? 'Apple' : product.category === 'computers' ? (product.variant.startsWith('ASUS ROG Astral OC') ? 'ASUS' : 'NVIDIA') : 'Sony'
 }
 export function productMemory(product: CatalogProduct): string | undefined {
   return /\b(\d+GB)\b/.exec(product.variant)?.[1]

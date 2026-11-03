@@ -8,3 +8,4 @@ export async function saveAdminProduct(input:AdminProductInput,updating=false) {
   const data=await apiRequest(`/catalog/v1/admin/products${updating?`/${encodeURIComponent(input.id)}`:''}`,updating?'PUT':'POST',input)
   return decodeAdminCatalog({products:[data?.product]})[0]
 }
+export async function deleteAdminProduct(id:string,expectedVersion:number){await apiRequest(`/catalog/v1/admin/products/${encodeURIComponent(id)}`,'DELETE',{expectedVersion})}

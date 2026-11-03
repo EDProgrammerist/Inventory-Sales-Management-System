@@ -54,6 +54,7 @@
  .commerce-table tr {display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 16px;border-top:1px solid var(--color-divider);padding:16px 0;}
  .commerce-table td {display:block;border:0;padding:0;}
  .commerce-table td:first-child {grid-column:1 / -1;}
+ .commerce-table td:last-child:not([data-label]) {grid-column:1 / -1;}
  .commerce-table td[data-label]::before {content:attr(data-label) ': ';font-size:13px;color:var(--color-muted);}
  .commerce-summary>div {padding:16px;}
  .commerce-summary dd {font-size:24px;}

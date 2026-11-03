@@ -7,7 +7,7 @@ import ps5DiscBox from '@/assets/storefront/ps5-disc-box.jpg'
 import ps5Digital from '@/assets/storefront/ps5-digital-console.jpg'
 import ps5DigitalBox from '@/assets/storefront/ps5-digital-box.jpg'
 import gpu5090 from '@/assets/storefront/rtx-5090.jpg'
-import gpu5080 from '@/assets/storefront/rtx-5080.jpg'
+import gpu5080 from '@/assets/storefront/rtx-5080.png'
 
 export type ShopCategory = 'all' | 'phones' | 'computers' | 'consoles'
 export interface CatalogProduct {

@@ -5,7 +5,7 @@ import { EyeIcon, EyeSlashIcon } from '@phosphor-icons/react'
 import LoadingSpinner from '@/components/ui/loading-spinner'
 
 export const authLinkClass = 'rounded-sm font-medium text-[#1765d5] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1765d5]'
-const fieldClass = 'h-12 w-full rounded-lg border border-[#d3d7de] bg-white px-3.5 text-[15px] text-zinc-800 shadow-[0_1px_2px_rgba(24,39,62,0.04)] outline-none transition-[border-color,box-shadow] placeholder:text-[#8b919e] focus:border-[#1765d5] focus:ring-3 focus:ring-[#1765d5]/10 aria-invalid:border-red-600 disabled:bg-zinc-50'
+const fieldClass = 'h-12 w-full rounded-lg border border-muted bg-white px-3.5 text-[15px] text-zinc-800 shadow-[0_1px_2px_rgba(24,39,62,0.04)] outline-none transition-[border-color,box-shadow] placeholder:text-muted focus:border-[#1765d5] focus:ring-3 focus:ring-[#1765d5]/10 aria-invalid:border-red-600 disabled:bg-zinc-50'
 
 interface AuthFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   id: string
@@ -30,7 +30,7 @@ export function AuthField({ id, label, error, helper, visibleHelper = false, typ
           </button>
         )}
       </div>
-      <p id={`${id}-help`} className={visibleHelper ? 'text-[13px] leading-5 text-[#737b8b]' : 'sr-only'}>{helper}</p>
+      <p id={`${id}-help`} className={visibleHelper ? 'text-[13px] leading-5 text-muted' : 'sr-only'}>{helper}</p>
       {error && <p id={`${id}-error`} className="text-xs text-red-700">{error}</p>}
     </div>
   )

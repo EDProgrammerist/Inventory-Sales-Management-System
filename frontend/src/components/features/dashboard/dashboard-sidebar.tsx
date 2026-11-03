@@ -31,9 +31,11 @@ const navigation: { label: string; icon: Icon; path?: string; action?: Dashboard
 export default function DashboardSidebar({
   onAction,
   onClose,
+  settingsLabel = 'Settings',
 }: {
   onAction: (action: DashboardAction) => void
   onClose?: () => void
+  settingsLabel?: string
 }) {
   const { logout } = useAuth()
   const navigate = useNavigate()
@@ -96,7 +98,7 @@ export default function DashboardSidebar({
       <div className={`mt-auto ${onClose ? 'space-y-1 border-t border-loading-base pt-4' : 'space-y-3 pt-12'}`}>
         <button onClick={() => onAction('settings')} className="dashboard-nav">
           <GearSixIcon size={23} weight="regular" />
-          Settings
+          {settingsLabel}
         </button>
         <button
           type="button"

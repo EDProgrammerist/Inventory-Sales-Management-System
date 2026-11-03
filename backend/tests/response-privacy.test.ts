@@ -5,11 +5,11 @@ import {catalogView,adminCatalogView,type CatalogRow} from '@/views/catalog.view
 import type {customerOrders} from '@/db/schema'
 
 test('customer order responses exclude ownership, retry identity and request hashes',()=>{
-  const order={id:'isolated',userId:'private-owner',idempotencyKey:'private-attempt',requestHash:'private-hash',items:[],address:{name:'Isolated',address:'Isolated address',phone:'09170000000'},shipping:{method:'standard',date:''},subtotal:'25.50',status:'pending',paymentState:'demo_paid',paidAt:null,createdAt:new Date().toISOString(),stockReserved:false} satisfies typeof customerOrders.$inferSelect
+  const order={id:'isolated',userId:'private-owner',idempotencyKey:'private-attempt',requestHash:'private-hash',items:[],address:{name:'Isolated',address:'Isolated address',phone:'09170000000'},shipping:{method:'standard',date:''},subtotal:'25.50',status:'pending',paymentState:'demo_paid',paidAt:null,createdAt:new Date().toISOString(),stockReserved:false,deletedAt:null} satisfies typeof customerOrders.$inferSelect
   const response=orderView(order)
   assert.equal(response.subtotal,25.5)
   assert.equal(response.paymentMode,'demo')
-  for(const key of ['userId','idempotencyKey','requestHash','stockReserved'])assert.ok(!(key in response))
+  for(const key of ['userId','idempotencyKey','requestHash','stockReserved','deletedAt'])assert.ok(!(key in response))
 })
 
 test('public catalog omits administrative fields while the admin response retains edit versions',()=>{

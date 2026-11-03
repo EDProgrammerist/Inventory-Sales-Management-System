@@ -3,6 +3,12 @@ import { workspaceKind } from '@/schema/workspace.schema'
 import { getWorkspace } from '@/services/workspace/get-workspace-service'
 import { saveRecord } from '@/services/workspace/save-record-service'
 import { recordView, workspaceView } from '@/views/workspace.view'
+import { removeRecord } from '@/services/workspace/delete-record-service'
+
+export const remove:RequestHandler=async(req,res)=>{
+  await removeRecord(res.locals.user.id,req.params.kind,req.params.id)
+  res.json({status:'success',data:{deleted:true}})
+}
 
 export const list: RequestHandler = async (_req, res) => {
   res.json({ status: 'success', data: workspaceView(await getWorkspace(res.locals.user.id)) })

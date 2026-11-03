@@ -16,6 +16,11 @@ test('workspace services save all four kinds and restore them on the next load',
       if (options.method === 'GET') return Response.json({ data: structuredClone(stored) })
       assert.equal(options.headers['x-csrf-token'], 'test-only-csrf')
       const kind = url.split('/workspace/v1/')[1].split('/')[0]
+      if(options.method==='DELETE'){
+        const id=decodeURIComponent(url.split('/').at(-1))
+        stored[kind]=stored[kind].filter(row=>row.id!==id)
+        return Response.json({data:{deleted:true}})
+      }
       const record = JSON.parse(options.body)
       if (options.method === 'PUT') stored[kind] = stored[kind].map((row) => row.id === record.id ? record : row)
       else stored[kind].push(record)
@@ -25,12 +30,21 @@ test('workspace services save all four kinds and restore them on the next load',
       await service.saveWorkspaceRecord(kind, { id: kind, name: `Isolated ${kind}` })
     }
     await service.saveWorkspaceRecord('stores', { id: 'stores', name: 'Edited store' }, true)
+    await service.saveWorkspaceRecord('suppliers', { id: 'suppliers', name: 'Edited supplier' }, true)
     const restored = await service.loadWorkspace()
     for (const kind of ['products', 'suppliers', 'orders', 'stores']) assert.equal(restored[kind].length, 1)
     assert.equal(restored.stores[0].name, 'Edited store')
-    assert.deepEqual(calls, ['POST', 'POST', 'POST', 'POST', 'PUT', 'GET'])
+    assert.equal(restored.suppliers[0].name,'Edited supplier')
+    await service.deleteWorkspaceRecord('suppliers','suppliers')
+    await service.deleteWorkspaceRecord('stores','stores')
+    const removed=await service.loadWorkspace()
+    assert.deepEqual(removed.suppliers,[])
+    assert.deepEqual(removed.stores,[])
+    assert.equal(removed.products.length,1)
+    assert.deepEqual(calls, ['POST', 'POST', 'POST', 'POST', 'PUT', 'PUT', 'GET','DELETE','DELETE','GET'])
     globalThis.fetch = async (url) => url.endsWith('csrf-token') ? Response.json({ data: { csrfToken: 'test-only' } }) : Response.json({ message: 'Duplicate branch' }, { status: 409 })
     await assert.rejects(service.saveWorkspaceRecord('stores', { id: 'duplicate' }), /Duplicate branch/)
+    await assert.rejects(service.deleteWorkspaceRecord('stores','missing'),/Duplicate branch/)
     globalThis.fetch = async () => Response.json({ data: {} })
     await assert.rejects(service.loadWorkspace(), /invalid response/)
   } finally {

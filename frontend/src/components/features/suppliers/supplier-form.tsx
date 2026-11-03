@@ -63,24 +63,26 @@ const fields: {
   },
 ]
 const inputClass =
-  'h-11 min-w-0 w-full rounded-lg border border-[#d0d5dd] bg-white px-3 text-sm text-[#606979] shadow-xs outline-none placeholder:text-[#99a1af] focus:border-blue-500 focus:ring-2 focus:ring-blue-100 aria-invalid:border-red-500'
+  'h-11 min-w-0 w-full rounded-lg border border-[#d0d5dd] bg-white px-3 text-sm text-[#606979] shadow-xs outline-none placeholder:text-muted focus:border-blue-500 focus:ring-2 focus:ring-blue-100 aria-invalid:border-red-500'
 
 export default function SupplierForm({
   suppliers,
   onAdd,
   onDiscard,
   catalog,
+  supplier,
 }: {
   suppliers: Supplier[]
   onAdd: (supplier: Omit<Supplier, 'id'>) => void | Promise<void>
   onDiscard: () => void
   catalog?: AdminCatalogProduct[]
+  supplier?: Supplier
 }) {
   const [errors, setErrors] = useState<SupplierErrors>({})
   const { saving, saveError, run } = useSaveRecord()
-  const [image, setImage] = useState<string | undefined>()
+  const [image, setImage] = useState<string | undefined>(supplier?.image)
   const [readingImage, setReadingImage] = useState(false)
-  const [type, setType] = useState('')
+  const [type, setType] = useState(supplier?.type ?? '')
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (readingImage) return
@@ -92,14 +94,14 @@ export default function SupplierForm({
       ),
       type,
     } as SupplierInput
-    const result = validateSupplier(input, suppliers)
+    const result = validateSupplier(input, suppliers.filter(row=>row.id!==supplier?.id))
     if (!result.valid) {
       setErrors(result.errors)
       const first = fields.find((field) => result.errors[field.name])?.name ?? 'type'
       form.querySelector<HTMLInputElement | HTMLSelectElement>(`[name="${first}"]`)?.focus()
       return
     }
-    void run(() => onAdd({ ...result.supplier, image }))
+    void run(() => onAdd({ ...result.supplier, image, onWay:supplier?.onWay ?? result.supplier.onWay }))
   }
 
   return (
@@ -125,11 +127,11 @@ export default function SupplierForm({
               <span className="sr-only"> (required)</span>
             </label>
             <div className="min-w-0">
-              {field.name==='product'&&catalog ? <select id="supplier-product" name="product" required defaultValue="" className={inputClass}><option value="" disabled>Select a catalog product</option>{catalog.map(product=><option key={product.id} value={`${product.name} · ${product.variant}`}>{product.name} · {product.variant}</option>)}</select> : field.type === 'select' ? (
+              {field.name==='product'&&catalog ? <select id="supplier-product" name="product" required defaultValue={supplier?.product??''} aria-invalid={Boolean(errors.product)} aria-describedby={`supplier-product-help${errors.product?' supplier-product-error':''}`} className={inputClass}><option value="" disabled>Select a catalog product</option>{supplier&&!catalog.some(row=>`${row.name} · ${row.variant}`===supplier.product)&&<option value={supplier.product}>{supplier.product}</option>}{catalog.map(product=><option key={product.id} value={`${product.name} · ${product.variant}`}>{product.name} · {product.variant}</option>)}</select> : field.type === 'select' ? (
                 <select
                   id={`supplier-${field.name}`}
                   name={field.name}
-                  defaultValue=""
+                  defaultValue={supplier?.category??''}
                   required
                   aria-invalid={Boolean(errors[field.name])}
                   aria-describedby={`supplier-${field.name}-help${errors[field.name] ? ` supplier-${field.name}-error` : ''}`}
@@ -150,6 +152,7 @@ export default function SupplierForm({
                   id={`supplier-${field.name}`}
                   name={field.name}
                   type={field.type}
+                  defaultValue={supplier?.[field.name]??''}
                   placeholder={field.placeholder}
                   required
                   min={field.name === 'price' ? '0.01' : undefined}
@@ -209,7 +212,7 @@ export default function SupplierForm({
                 }}
                 className="peer sr-only"
               />
-              <span className="inline-flex min-h-11 items-center rounded-lg border border-[#d0d5dd] px-3 text-sm text-[#99a1af] shadow-xs peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:text-blue-700 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-blue-500">
+              <span className="inline-flex min-h-11 items-center rounded-lg border border-[#d0d5dd] px-3 text-sm text-muted shadow-xs peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:text-blue-700 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-blue-500">
                 {option.label}
               </span>
             </label>
@@ -237,7 +240,7 @@ export default function SupplierForm({
           disabled={readingImage || saving}
           className="inventory-button border-[#1765d5] bg-[#1765d5] text-white hover:bg-blue-700"
         >
-          Add Supplier
+          {saving?'Saving…':supplier?'Save Changes':'Add Supplier'}
         </button>
       </div>
     </form>

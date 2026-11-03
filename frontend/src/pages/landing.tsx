@@ -9,10 +9,13 @@ import { useStorefront } from '@/components/context/storefront-context'
 import { useLandingMotion } from '@/components/features/landing/use-landing-motion'
 import { selectCatalog, type ShopCategory } from '@/data/storefront-catalog'
 import hero from '@/assets/storefront/iphone-hero.png'
-import ps5 from '@/assets/storefront/ps5.png'
+import ps5 from '@/assets/storefront/ps5-disc-console.jpg'
+import ps5Digital from '@/assets/storefront/ps5-digital-console.jpg'
+import ps5Box from '@/assets/storefront/ps5-disc-box.jpg'
 import gold from '@/assets/storefront/iphone-gold.png'
 import silver from '@/assets/storefront/iphone-silver.png'
-import gpu from '@/assets/storefront/rtx-5090.jpg'
+import gpuFeature from '@/assets/storefront/gpu-next-level.jpg'
+import gpuAura from '@/assets/storefront/gpu-aura.jpg'
 import '@/styles/landing.css'
 
 export default function LandingPage() {
@@ -40,10 +43,10 @@ export default function LandingPage() {
         </div>
       </section>
       <section className="shop-mosaic" aria-label="Explore the collection">
-        <article className="shop-ps5-feature" data-reveal><img src={ps5} alt="PlayStation 5 consoles and DualSense controller" width="273" height="328" /><div><h2>PlayStation <strong>5</strong></h2><p>A new home for your next adventure.</p><button className="shop-text-link" onClick={() => browse('consoles')}>Explore consoles <ArrowUpRightIcon size={17} /></button></div></article>
+        <article className="shop-ps5-feature" data-reveal><img src={ps5} alt="White PlayStation 5 Disc edition console and DualSense controller" width="1000" height="1320" /><div><h2>PlayStation <strong>5</strong></h2><p>A new home for your next adventure.</p><button className="shop-text-link" onClick={() => browse('consoles')}>Explore consoles <ArrowUpRightIcon size={17} /></button></div></article>
         <article className="shop-phone-feature shop-gold-feature" data-reveal><img src={gold} alt="Gold iPhone 14 Pro" width="160" height="180" /><div><h2>Find your<br /><strong>gold standard.</strong></h2><button className="shop-text-link" onClick={() => navigate('/products/iphone-gold')}>Explore gold <ArrowUpRightIcon size={16} /></button></div></article>
         <article className="shop-phone-feature shop-silver-feature" data-reveal><img src={silver} alt="Silver iPhone 14 Pro" width="160" height="180" /><div><h2>A little more<br /><strong>brilliant.</strong></h2><button className="shop-text-link" onClick={() => navigate('/products/iphone-silver')}>Explore silver <ArrowUpRightIcon size={16} /></button></div></article>
-        <article className="shop-gpu-feature" data-reveal><img src={gpu} alt="NVIDIA GeForce RTX 5090 Founders Edition graphics card" width="1280" height="720" /><div><h2>Built for your<br /><strong>next level.</strong></h2><p>Graphics cards for the desktop you have in mind.</p><button className="shop-button shop-button-light" onClick={() => browse('computers')}>Explore GPUs <ArrowUpRightIcon size={18} /></button></div></article>
+        <article className="shop-gpu-feature" data-reveal><div className="shop-gpu-art"><img src={gpuFeature} alt="ASUS ROG Astral graphics card with illuminated triple-fan cooling" width="2000" height="1125" /></div><div className="shop-gpu-copy"><h2>Built for your<br /><strong>next level.</strong></h2><p>Graphics cards for the desktop you have in mind.</p><button className="shop-button shop-button-light" onClick={() => browse('computers')}>Explore GPUs <ArrowUpRightIcon size={18} /></button></div></article>
       </section>
       <section className="shop-category-section" id="categories" aria-labelledby="categories-heading"><div className="shop-container">
         <div className="shop-section-header"><h2 id="categories-heading">Browse by category</h2><div className="shop-category-arrows"><button className="shop-icon" aria-label="Previous category" onClick={() => browse(shopCategories[(Math.max(0, shopCategories.findIndex(item => item.id === category)) + 2) % 3].id)}><CaretLeftIcon size={25} /></button><button className="shop-icon" aria-label="Next category" onClick={() => browse(shopCategories[(shopCategories.findIndex(item => item.id === category) + 1) % 3].id)}><CaretRightIcon size={25} /></button></div></div>
@@ -59,10 +62,10 @@ export default function LandingPage() {
       </section>
       <section className="shop-editorial" aria-label="Find your next upgrade">
         <article className="shop-editorial-phone" data-reveal><img src={silver} alt="Silver iPhone 14 Pro front and back" width="240" height="270" loading="lazy" /><div><h2>Everyday.<br /><strong>Elevated.</strong></h2><p>A phone that fits into your world. Explore the iPhone collection.</p><button className="shop-button" onClick={() => browse('phones')}>Explore iPhone <ArrowRightIcon size={17} /></button></div></article>
-        <article className="shop-editorial-gpu" data-reveal><img src={gpu} alt="GeForce RTX graphics card cooling system" width="1280" height="720" loading="lazy" /><div><h2>Make room<br /><strong>for more.</strong></h2><p>Your next desktop starts with the right graphics card.</p><button className="shop-button shop-button-light" onClick={() => browse('computers')}>Explore GPUs <ArrowRightIcon size={17} /></button></div></article>
-        <article className="shop-editorial-console" data-reveal><img src={ps5} alt="PlayStation 5 console family" width="273" height="328" loading="lazy" /><div><h2>Your next<br /><strong>great escape.</strong></h2><p>Find a place for PlayStation 5 in your setup.</p><button className="shop-button" onClick={() => browse('consoles')}>Explore PS5 <ArrowRightIcon size={17} /></button></div></article>
+        <article className="shop-editorial-gpu" data-reveal><img src={gpuAura} alt="ASUS ROG Astral graphics card with purple Aura lighting" width="1200" height="700" loading="lazy" /><div><h2>Make room<br /><strong>for more.</strong></h2><p>Your next desktop starts with the right graphics card.</p><button className="shop-button shop-button-light" onClick={() => browse('computers')}>Explore GPUs <ArrowRightIcon size={17} /></button></div></article>
+        <article className="shop-editorial-console" data-reveal><img src={ps5Digital} alt="White PlayStation 5 Digital edition console and DualSense controller" width="2000" height="2000" loading="lazy" /><div><h2>Your next<br /><strong>great escape.</strong></h2><p>Find a place for PlayStation 5 in your setup.</p><button className="shop-button" onClick={() => browse('consoles')}>Explore PS5 <ArrowRightIcon size={17} /></button></div></article>
       </section>
-      <section className="shop-closing" aria-labelledby="closing-heading"><img className="shop-closing-phone" src={gold} alt="" width="160" height="180" loading="lazy" /><div data-reveal><h2 id="closing-heading">Your next <strong>upgrade.</strong></h2><p>Three collections. Find what feels right for you.</p><button className="shop-button shop-button-light" onClick={() => browse()}>Explore the collection <ArrowUpRightIcon size={18} /></button></div><img className="shop-closing-ps5" src={ps5} alt="" width="273" height="328" loading="lazy" /></section>
+      <section className="shop-closing" aria-labelledby="closing-heading"><img className="shop-closing-phone" src={gold} alt="" width="160" height="180" loading="lazy" /><div data-reveal><h2 id="closing-heading">Your next <strong>upgrade.</strong></h2><p>Three collections. Find what feels right for you.</p><button className="shop-button shop-button-light" onClick={() => browse()}>Explore the collection <ArrowUpRightIcon size={18} /></button></div><img className="shop-closing-ps5" src={ps5Box} alt="" width="1200" height="1200" loading="lazy" /></section>
     </main>
     <StoreFooter onBrowse={browse} />
   </div>
