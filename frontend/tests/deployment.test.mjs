@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import {test} from 'node:test'
+import {readFile, access} from 'node:fs/promises'
 import {createServer} from 'vite'
 
 test('production account, catalog, and management requests stay on the frontend origin',async()=>{
@@ -26,24 +27,15 @@ test('production account, catalog, and management requests stay on the frontend 
  }finally{globalThis.fetch=originalFetch;await server.close()}
 })
 
-test('Vercel config requires an HTTPS backend origin and keeps API requests ahead of SPA fallback',async()=>{
- const original=process.env.RENDER_API_ORIGIN
- let attempt=0
- const read=()=>import(new URL(`../vercel.mjs?test=${attempt++}`,import.meta.url).href)
- try {
-  for(const invalid of [undefined,'http://api.example','https://user:password@api.example','https://api.example/api','https://api.example?key=x','https://api.example#x']){
-   if(invalid===undefined)delete process.env.RENDER_API_ORIGIN
-   else process.env.RENDER_API_ORIGIN=invalid
-   await assert.rejects(read(),/RENDER_API_ORIGIN/)
-  }
-  process.env.RENDER_API_ORIGIN='https://shenban-test.onrender.com/'
-  const {config}=await read()
-  assert.equal(config.framework,'vite')
-  assert.equal(config.outputDirectory,'dist')
-  assert.deepEqual(config.rewrites,[
-   {source:'/api/:path*',destination:'https://shenban-test.onrender.com/api/:path*'},
-   {source:'/(.*)',destination:'/index.html'},
-  ])
-  assert.ok(config.headers.find(row=>row.source==='/api/:path*').headers.some(header=>header.key==='Cache-Control'&&header.value.includes('no-store')))
- }finally{if(original===undefined)delete process.env.RENDER_API_ORIGIN;else process.env.RENDER_API_ORIGIN=original}
+test('Vercel uses a static Render rewrite ahead of the SPA fallback',async()=>{
+ const config=JSON.parse(await readFile(new URL('../vercel.json',import.meta.url),'utf8'))
+ assert.equal(config.framework,'vite')
+ assert.equal(config.outputDirectory,'dist')
+ assert.deepEqual(config.rewrites,[
+  {source:'/api/:path*',destination:'https://inventory-sales-management-system-vwwv.onrender.com/api/:path*'},
+  {source:'/(.*)',destination:'/index.html'},
+ ])
+ assert.ok(config.rewrites.every(row=>typeof row.destination==='string'&&row.destination.length>0))
+ assert.ok(config.headers.find(row=>row.source==='/api/:path*').headers.some(header=>header.key==='Cache-Control'&&header.value.includes('no-store')))
+ await assert.rejects(access(new URL('../vercel.mjs',import.meta.url)),{code:'ENOENT'})
 })
