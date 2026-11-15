@@ -35,3 +35,45 @@ test('catalog loading uses the API without credentials or a hardcoded fallback',
     await assert.rejects(loadCatalog(controller.signal, async()=>new Response('{',{status:200})),/invalid response/)
   } finally {await server.close()}
 })
+
+
+test('catalog loads on browsers without AbortSignal.any or timeout', async () => {
+ const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom',logLevel:'error'})
+ const originalAny=Object.getOwnPropertyDescriptor(AbortSignal,'any')
+ const originalTimeout=Object.getOwnPropertyDescriptor(AbortSignal,'timeout')
+ try {
+  const {loadCatalog}=await server.ssrLoadModule('/src/services/catalog.ts')
+  Object.defineProperty(AbortSignal,'any',{value:undefined,configurable:true})
+  Object.defineProperty(AbortSignal,'timeout',{value:undefined,configurable:true})
+  let called=false
+  const result=await loadCatalog(new AbortController().signal,async()=>{
+   called=true
+   return Response.json({status:'success',data:{products:[]}})
+  })
+  assert.equal(called,true)
+  assert.deepEqual(result,[])
+ } finally {
+  Object.defineProperty(AbortSignal,'any',originalAny)
+  Object.defineProperty(AbortSignal,'timeout',originalTimeout)
+  await server.close()
+ }
+})
+
+
+test('request timeout and caller cancellation still abort the fetch', async () => {
+ const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom',logLevel:'error'})
+ try {
+  const {fetchWithTimeout}=await server.ssrLoadModule('/src/services/fetch-with-timeout.ts')
+  const waitingFetch=async(_url,{signal})=>new Promise((_resolve,reject)=>{
+   const abort=()=>reject(new DOMException('Aborted','AbortError'))
+   if(signal.aborted)abort()
+   else signal.addEventListener('abort',abort,{once:true})
+  })
+  await assert.rejects(fetchWithTimeout('/timeout',{},10,waitingFetch),{name:'AbortError'})
+  const caller=new AbortController()
+  const pending=fetchWithTimeout('/cancel',{signal:caller.signal},30000,waitingFetch)
+  caller.abort()
+  await assert.rejects(pending,{name:'AbortError'})
+  await assert.rejects(fetchWithTimeout('/already-cancelled',{signal:caller.signal},30000,waitingFetch),{name:'AbortError'})
+ } finally {await server.close()}
+})

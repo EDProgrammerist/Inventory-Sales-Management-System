@@ -1,14 +1,15 @@
 import {getCsrfToken,getSession} from './auth'
 import {apiBaseUrl as base} from './api-base'
+import {fetchWithTimeout} from './fetch-with-timeout'
 
 export async function apiRequest<T=Record<string,unknown>>(path:string,method='GET',body?:unknown,signal?:AbortSignal,retry=true):Promise<T> {
   if(!base)throw new Error('The data service is unavailable. Please check the API configuration.')
-  signal?.throwIfAborted()
+  if(signal?.aborted)throw new DOMException('The request was aborted.','AbortError')
   const headers:Record<string,string>={}
   if(method!=='GET'){headers['Content-Type']='application/json';headers['x-csrf-token']=await getCsrfToken()}
   let response:Response
   try {
-    response=await fetch(`${base}${path}`,{method,headers,credentials:'include',...(body===undefined?{}:{body:JSON.stringify(body)}),signal:signal?AbortSignal.any([signal,AbortSignal.timeout(30000)]):AbortSignal.timeout(30000)})
+    response=await fetchWithTimeout(`${base}${path}`,{method,headers,credentials:'include',...(body===undefined?{}:{body:JSON.stringify(body)}),signal},30000)
   } catch(error) {
     if(signal?.aborted)throw error
     throw new Error('Unable to reach the data service. Your changes have not been confirmed saved. Please try again.',{cause:error})

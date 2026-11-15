@@ -1,4 +1,5 @@
 import {apiBaseUrl} from './api-base'
+import {fetchWithTimeout} from './fetch-with-timeout'
 
 export interface AuthUser {
   id: string
@@ -19,11 +20,10 @@ async function authRequest(path: string, options?: RequestInit) {
   if (!apiBaseUrl) throw new Error('Account services are currently unavailable. Please try again later.')
   let response: Response
   try {
-    response = await fetch(`${apiBaseUrl}/auth/v1/${path}`, {
+    response = await fetchWithTimeout(`${apiBaseUrl}/auth/v1/${path}`, {
       ...options,
       credentials: 'include',
-      signal: AbortSignal.timeout(15000),
-    })
+    },15000)
   } catch {
     throw new Error('We couldn’t reach the account service. Please try again shortly.')
   }
