@@ -93,13 +93,13 @@ Use fictional address details and the test card above. No real card is needed. A
 | Part | Technologies |
 |---|---|
 | Frontend | React, TypeScript, Vite, React Router, Tailwind CSS |
-| Backend | Node.js, Express, TypeScript |
+| Backend | Node.js, Express MVC (Model–View–Controller), TypeScript |
 | Database | PostgreSQL with Drizzle ORM and migrations |
 | Authentication | bcrypt password hashing, JWT sessions, HTTP-only cookies, CSRF protection |
 | Validation | Zod on the backend |
 | Tests | Node.js test runner; tsx for backend TypeScript tests |
 
-The React frontend calls the Express API. The API validates requests, checks account permissions, and reads or writes PostgreSQL records. Admin pages require an `ADMIN` account; public registration creates a `USER` account.
+The React frontend calls the Express API, which follows an **MVC (Model–View–Controller)** structure: `models/` defines application data types, `views/` formats JSON responses, and `controllers/` handles HTTP requests and responses. Routes connect endpoints to controllers, while services contain application logic and repositories handle database access. The API validates requests, checks account permissions, and reads or writes PostgreSQL records. Admin pages require an `ADMIN` account; public registration creates a `USER` account.
 
 ## Local Setup
 

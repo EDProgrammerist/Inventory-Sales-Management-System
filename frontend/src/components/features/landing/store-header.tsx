@@ -18,15 +18,26 @@ export default function StoreHeader({ query, onQuery, onSearch, category, onCate
   const [menu, setMenu] = useState(false)
   const menuToggle = useRef<HTMLButtonElement>(null)
   const navigation = useRef<HTMLElement>(null)
+  const header = useRef<HTMLElement>(null)
   useEffect(() => {
-    if (menu) navigation.current?.querySelector<HTMLAnchorElement>('a')?.focus()
+    if (!menu) return
+    navigation.current?.querySelector<HTMLAnchorElement>('a')?.focus()
+    const closeOutside = (event: Event) => {
+      if (event.target instanceof Node && !header.current?.contains(event.target)) setMenu(false)
+    }
+    // Safari can blur a link before dispatching its touch click. Only dismiss
+    // for an actual outside interaction, not a blur with no related target.
+    document.addEventListener('pointerdown', closeOutside)
+    document.addEventListener('focusin', closeOutside)
+    return () => {
+      document.removeEventListener('pointerdown', closeOutside)
+      document.removeEventListener('focusin', closeOutside)
+    }
   }, [menu])
   const account=useContext(AuthContext)?.user
   const { pathname } = useLocation()
   return <>
-    <header className="shop-header" onBlur={event => {
-      if (!event.currentTarget.contains(event.relatedTarget)) setMenu(false)
-    }} onKeyDown={event => {
+    <header ref={header} className="shop-header" onKeyDown={event => {
       if (menu && event.key === 'Escape') {
         event.preventDefault()
         setMenu(false)
@@ -42,7 +53,10 @@ export default function StoreHeader({ query, onQuery, onSearch, category, onCate
           {query && <button type="button" onClick={() => onQuery('')} aria-label="Clear product search"><XIcon size={18} /></button>}
         </form>
         <nav ref={navigation} className={`shop-main-nav ${menu ? 'is-open' : ''}`} id="shop-main-nav" aria-label="Main navigation">
-          <Link to="/" aria-current={pathname === '/' ? 'page' : undefined} onClick={() => setMenu(false)}>Home</Link>
+          <Link to="/" aria-current={pathname === '/' ? 'page' : undefined} onClick={() => {
+            setMenu(false)
+            if (pathname === '/') window.scrollTo({ top: 0, behavior: 'auto' })
+          }}>Home</Link>
           <Link to="/products" aria-current={pathname.startsWith('/products') ? 'page' : undefined} onClick={() => setMenu(false)}>Catalog</Link>
           <a href="#about-shenban" onClick={() => setMenu(false)}>About</a>
         </nav>
