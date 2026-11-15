@@ -1,5 +1,15 @@
 # Shenban — Electronics Store and Admin Dashboard
 
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Drizzle ORM](https://img.shields.io/badge/Drizzle_ORM-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black)
+
+
 Shenban is an HCI and OOP school project for browsing electronics, placing demo orders, and managing a store. The catalog focuses on iPhones, graphics cards, and PlayStation 5 consoles. Prices are in Philippine pesos (PHP).
 
 **Payments and deliveries are simulated.** Placing an order saves it in the database, but does not charge a card or arrange a delivery.
@@ -236,6 +246,43 @@ npm run build
 ```
 
 For a built backend, `npm start` runs the compiled server. For a local frontend build preview, run `npm run preview` from `frontend`.
+
+## Deploy the Backend to Render
+
+This repository has separate `frontend` and `backend` folders. For the backend web service, open **Render → Settings → Build & Deploy** and use:
+
+| Setting | Value |
+|---|---|
+| Runtime | Node |
+| Root Directory | `backend` |
+| Build Command | `npm ci --include=dev && npm run build` |
+| Start Command | `npm run db:migrate && npm start` |
+| Health Check Path | `/api/health` |
+
+The build command follows the class reference. Its `npm start` command is also used here, after applying database migrations. If migrations are applied separately before starting the service, the Start Command can be just `npm start` as shown in the class screenshot.
+
+Set these in Render's **Environment** settings:
+
+| Variable | Value |
+|---|---|
+| `NODE_VERSION` | `24` |
+| `NODE_ENV` | `production` |
+| `APP_NAME` | `Shenban API` |
+| `DATABASE_URL` | Your deployed PostgreSQL connection URL |
+| `FRONTEND_URL` | Your deployed frontend origin, without a trailing slash |
+| `BACKEND_URL` | Your Render service origin, without a trailing slash |
+| `JWT_SECRET` | A private random secret of at least 32 characters |
+| `CSRF_SECRET` | A different private random secret of at least 32 characters |
+
+Use the actual deployed URLs rather than the local development addresses. Keep database credentials and secrets in Render's environment settings.
+
+**If Render reports `npm error code EUSAGE` and says it needs a lockfile:**
+
+1. Set **Root Directory** to `backend`. There is no `package-lock.json` at the repository root.
+2. Check that the GitHub branch and commit used by Render contain both `backend/package.json` and `backend/package-lock.json`.
+3. Save the settings and choose **Manual Deploy → Deploy latest commit**.
+
+The backend lockfile is already included in this repository. Keep `npm ci`; it should run inside the backend folder. See [Render's monorepo documentation](https://render.com/docs/monorepo-support) and [npm ci requirements](https://docs.npmjs.com/cli/npm-ci/).
 
 ## Troubleshooting
 
