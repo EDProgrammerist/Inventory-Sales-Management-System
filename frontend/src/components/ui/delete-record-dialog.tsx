@@ -10,7 +10,7 @@ export default function DeleteRecordDialog({name,description,onDelete,onClose}:{
     <p role="status" className="mt-3 text-sm text-muted">{saving?'Deleting…':''}</p>
     <div className="mt-5 flex flex-wrap justify-end gap-3">
       <button data-dialog-autofocus className="inventory-button" disabled={saving} onClick={onClose}>Keep record</button>
-      <button className="inventory-button border-red-700 bg-red-700 text-white hover:bg-red-800" disabled={saving} aria-busy={saving} onClick={()=>void remove()}>{saving?'Deleting…':'Delete record'}</button>
+      <button className="inventory-button action-danger-solid" disabled={saving} aria-busy={saving} onClick={()=>void remove()}>{saving?'Deleting…':'Delete record'}</button>
     </div>
   </DashboardDialog>
 }

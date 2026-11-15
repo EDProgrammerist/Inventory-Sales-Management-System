@@ -55,7 +55,7 @@ export default function StoreHeader({ query, onQuery, onSearch, category, onCate
       </div>
     </header>
     <nav className="shop-category-bar" aria-label="Product categories"><div className="shop-container">
-      {shopCategories.map(({ id, name, detail, icon: Icon }) => <button key={id} aria-pressed={category === id} onClick={() => onCategory(id)}><Icon size={24} /><span>{name}<small>{detail}</small></span></button>)}
+      {shopCategories.map(({ id, name, icon: Icon }) => <button key={id} aria-pressed={category === id} onClick={() => onCategory(id)}><Icon size={24} /><span>{name}</span></button>)}
     </div></nav>
   </>
 }

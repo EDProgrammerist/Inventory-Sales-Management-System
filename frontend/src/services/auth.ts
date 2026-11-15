@@ -1,3 +1,5 @@
+import {apiBaseUrl} from './api-base'
+
 export interface AuthUser {
   id: string
   email: string
@@ -12,8 +14,6 @@ export class AuthRequestError extends Error {
     this.status = status
   }
 }
-
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '')
 
 async function authRequest(path: string, options?: RequestInit) {
   if (!apiBaseUrl) throw new Error('Account services are currently unavailable. Please try again later.')

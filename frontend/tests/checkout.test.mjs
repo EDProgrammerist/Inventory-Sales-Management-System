@@ -2,6 +2,29 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { createServer } from 'vite'
 
+test('scheduled delivery uses Philippine dates across browser time zones', async (t)=>{
+ const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom',logLevel:'error'})
+ const originalTimeZone=process.env.TZ
+ try {
+  const {todayDateKey,validateShipping}=await server.ssrLoadModule('/src/data/storefront-checkout.ts')
+  t.mock.timers.enable({apis:['Date'],now:new Date('2026-11-15T16:30:00Z')})
+  for(const timeZone of ['America/Los_Angeles','Pacific/Kiritimati','Asia/Manila']) {
+   process.env.TZ=timeZone
+   assert.equal(todayDateKey(),'2026-11-16',timeZone)
+   assert.ok(validateShipping({method:'scheduled',date:'2026-11-15'}),timeZone)
+   assert.equal(validateShipping({method:'scheduled',date:'2026-11-16'}),null,timeZone)
+  }
+  process.env.TZ='Pacific/Kiritimati'
+  t.mock.timers.setTime(new Date('2026-11-15T15:30:00Z').getTime())
+  assert.equal(todayDateKey(),'2026-11-15','A browser ahead of Manila must still allow the Philippine date')
+ } finally {
+  t.mock.timers.reset()
+  if(originalTimeZone===undefined)delete process.env.TZ
+  else process.env.TZ=originalTimeZone
+  await server.close()
+ }
+})
+
 test('shipping validates real calendar dates without quoting fees or delivery', async()=>{
  const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom',logLevel:'error'})
  try{

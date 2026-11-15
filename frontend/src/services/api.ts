@@ -1,6 +1,6 @@
 import {getCsrfToken,getSession} from './auth'
+import {apiBaseUrl as base} from './api-base'
 
-const base=import.meta.env.VITE_API_BASE_URL?.replace(/\/$/,'')
 export async function apiRequest<T=Record<string,unknown>>(path:string,method='GET',body?:unknown,signal?:AbortSignal,retry=true):Promise<T> {
   if(!base)throw new Error('The data service is unavailable. Please check the API configuration.')
   signal?.throwIfAborted()

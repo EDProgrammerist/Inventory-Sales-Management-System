@@ -13,6 +13,9 @@
   --color-muted: #596579;
   --color-divider: #e9ecf2;
   --color-control: #a7afbc;
+  --color-danger: #b91c1c;
+  --color-danger-hover: #991b1b;
+  --color-danger-subtle: #fef2f2;
   --color-chart-primary: #1765d5;
   --color-chart-secondary: #667085;
   --color-loading-base: #e9ecf2;
@@ -39,6 +42,35 @@
   .workspace-icon-button { @apply grid size-11 shrink-0 place-items-center rounded-lg text-muted transition-colors hover:bg-loading-highlight hover:text-ink focus-visible:outline-2 focus-visible:outline-brand; }
   .chart-label { @apply fill-muted text-[12px]; }
 }
+
+/* Shared action colors also override the storefront's unlayered button rules. */
+.inventory-button.action-danger,
+.shop-button.action-danger {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+  background: var(--color-surface);
+}
+
+.inventory-button.action-danger:hover:not(:disabled),
+.shop-button.action-danger:hover:not(:disabled) {
+  color: var(--color-danger-hover);
+  border-color: var(--color-danger-hover);
+  background: var(--color-danger-subtle);
+}
+
+.inventory-button.action-danger-solid {
+  color: var(--color-surface);
+  border-color: var(--color-danger);
+  background: var(--color-danger);
+}
+
+.inventory-button.action-danger-solid:hover:not(:disabled) {
+  border-color: var(--color-danger-hover);
+  background: var(--color-danger-hover);
+}
+
+.dashboard-link.action-danger-link { color: var(--color-danger); }
+.dashboard-link.action-danger-link:hover:not(:disabled) { color: var(--color-danger-hover); }
 
 .mobile-menu {
   position: fixed;

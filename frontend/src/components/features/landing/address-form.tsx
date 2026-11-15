@@ -27,6 +27,6 @@ export default function AddressForm({ initial, onSave, onCancel }: { initial?: S
     })}<div className="address-field"><label htmlFor="address-field-type">Address type</label><select id="address-field-type" value={draft.type} onChange={event => setDraft(current => ({ ...current,type:event.target.value as AddressDraft['type'] }))}><option value="home">Home</option><option value="office">Office</option><option value="other">Other</option></select></div></div>
     {Object.values(errors).some(Boolean) && <p className="address-error" role="alert">Check the highlighted address fields.</p>}
     <p className="address-form-note">Saved in this browsing session until you place an order. The selected delivery details are then saved with your demo order.</p>
-    <div className="address-form-actions"><button className="shop-button" type="button" onClick={onCancel}>Cancel</button><button className="shop-button shop-button-solid" type="submit">{initial ? 'Save changes' : 'Save address'}</button></div>
+    <div className="address-form-actions"><button className="shop-button action-danger" type="button" onClick={onCancel}>Cancel</button><button className="shop-button shop-button-solid" type="submit">{initial ? 'Save changes' : 'Save address'}</button></div>
   </form>
 }

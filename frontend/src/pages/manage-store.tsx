@@ -88,7 +88,7 @@ export default function ManageStorePage() {
                 >
                   Edit
                 </button>
-                <button className="dashboard-link mt-4 block text-red-700" aria-label={`Delete ${store.branch}`} onClick={()=>setDeleting(store)}>Delete store</button>
+                <button className="dashboard-link mt-4 block action-danger-link" aria-label={`Delete ${store.branch}`} onClick={()=>setDeleting(store)}>Delete store</button>
               </div>
             </article>
           ))}

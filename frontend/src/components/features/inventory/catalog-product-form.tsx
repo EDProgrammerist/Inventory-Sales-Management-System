@@ -31,6 +31,6 @@ export default function CatalogProductForm({product,onSave,onCancel}:{product?:A
     </fieldset>
     <div className="commerce-checks"><label><input type="checkbox" name="published" defaultChecked={product?.published??true} disabled={saving}/>Published in store</label><label><input type="checkbox" name="featured" defaultChecked={product?.featured??false} disabled={saving}/>Featured product</label></div>
     {error&&<p className="commerce-error" role="alert">{error}</p>}
-    <div className="commerce-actions"><button type="button" className="inventory-button" disabled={saving} onClick={onCancel}>Cancel</button><button className="inventory-button commerce-primary" disabled={saving||reading}>{saving?'Saving…':product?'Save product':'Add product'}</button></div>
+    <div className="commerce-actions"><button type="button" className="inventory-button action-danger" disabled={saving} onClick={onCancel}>Cancel</button><button className="inventory-button commerce-primary" disabled={saving||reading}>{saving?'Saving…':product?'Save product':'Add product'}</button></div>
   </form>
 }

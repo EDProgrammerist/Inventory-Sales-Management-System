@@ -1,6 +1,6 @@
 import { decodeCatalog } from '@/data/storefront-catalog'
+import { apiBaseUrl as base } from './api-base'
 
-const base = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/,'')
 export async function loadCatalog(signal: AbortSignal, fetcher: typeof fetch = fetch) {
   if (!base) throw new Error('The catalog service is not configured. Please try again later.')
   let response: Response

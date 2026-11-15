@@ -1,7 +1,7 @@
 import { app } from '@/app'
 import { ENV } from '@/config/env'
 
-const server = app.listen(ENV.PORT, () => {
+const server = app.listen(ENV.PORT, '0.0.0.0', () => {
   console.log(`${ENV.APP_NAME} listening on ${ENV.BACKEND_URL}`)
 })
 

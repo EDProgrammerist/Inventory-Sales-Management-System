@@ -176,7 +176,7 @@ export default function SuppliersPage() {
                     {supplierTypeLabels[supplier.type]}
                   </td>
                   <td className="px-4 pr-5 tabular-nums">{supplier.onWay ?? '-'}</td>
-                  <td className="px-4"><div className="flex gap-3"><button className="dashboard-link" aria-label={`Edit ${supplier.name}`} onClick={()=>{setSelectedSupplier(supplier);setPanel('edit-supplier')}}>Edit</button><button className="dashboard-link text-red-700" aria-label={`Delete ${supplier.name}`} onClick={()=>setDeleting(supplier)}>Delete</button></div></td>
+                  <td className="px-4"><div className="flex gap-3"><button className="dashboard-link" aria-label={`Edit ${supplier.name}`} onClick={()=>{setSelectedSupplier(supplier);setPanel('edit-supplier')}}>Edit</button><button className="dashboard-link action-danger-link" aria-label={`Delete ${supplier.name}`} onClick={()=>setDeleting(supplier)}>Delete</button></div></td>
                 </tr>
               ))}
             </tbody>

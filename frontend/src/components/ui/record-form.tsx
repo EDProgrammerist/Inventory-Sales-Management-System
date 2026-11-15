@@ -72,7 +72,7 @@ export default function RecordForm({
       ))}
       <SaveFeedback saving={saving} error={saveError} />
       <div className="flex justify-end gap-3 pt-2">
-        <button type="button" className="inventory-button" onClick={onCancel}>
+        <button type="button" className="inventory-button action-danger" onClick={onCancel}>
           Discard
         </button>
         <button

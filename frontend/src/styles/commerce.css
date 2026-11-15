@@ -20,6 +20,11 @@
 .commerce-table th { color:var(--color-muted); font-weight:400; font-size:13px; text-align:left; padding:12px 10px; }
 .commerce-table td { padding:14px 10px; border-top:1px solid var(--color-divider); vertical-align:middle; }
 .commerce-table .num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.catalog-row-actions { display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+.catalog-row-action { min-height:44px; padding-inline:10px; white-space:nowrap; box-shadow:none; color:var(--color-ink); }
+.catalog-row-edit { color:var(--color-brand); border-color:var(--color-brand); }
+.catalog-row-edit:hover { background:var(--color-loading-highlight); }
+.catalog-row-delete { margin-inline-start:8px; }
 .commerce-object { display:flex; align-items:center; gap:12px; min-width:0; }
 .commerce-object img { width:44px; height:48px; object-fit:contain; flex:none; }
 .commerce-object strong { display:block; font-weight:500; overflow-wrap:anywhere; }
