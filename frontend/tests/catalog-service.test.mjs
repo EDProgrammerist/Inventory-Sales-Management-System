@@ -77,3 +77,49 @@ test('request timeout and caller cancellation still abort the fetch', async () =
   await assert.rejects(fetchWithTimeout('/already-cancelled',{signal:caller.signal},30000,waitingFetch),{name:'AbortError'})
  } finally {await server.close()}
 })
+
+
+test('catalog recovers automatically from startup gateway failures and network interruptions', async () => {
+ const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom',logLevel:'error'})
+ try {
+  const {loadCatalog}=await server.ssrLoadModule('/src/services/catalog.ts')
+  let calls=0
+  const result=await loadCatalog(new AbortController().signal,async()=>{
+   calls++
+   if(calls===1)return new Response('Starting',{status:503})
+   if(calls===2)throw new TypeError('Network interrupted')
+   return Response.json({data:{products:[]}})
+  })
+  assert.equal(calls,3)
+  assert.deepEqual(result,[])
+ }finally{await server.close()}
+})
+
+test('catalog retries stop after a bounded number and never retry permanent or malformed responses', async () => {
+ const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom',logLevel:'error'})
+ try {
+  const {loadCatalog}=await server.ssrLoadModule('/src/services/catalog.ts')
+  let calls=0
+  await assert.rejects(loadCatalog(new AbortController().signal,async()=>{calls++;return new Response('Starting',{status:504})}),/unavailable/)
+  assert.equal(calls,5)
+  for(const response of [()=>new Response('{}',{status:404}),()=>new Response('{',{status:200})]){
+   calls=0
+   await assert.rejects(loadCatalog(new AbortController().signal,async()=>{calls++;return response()}))
+   assert.equal(calls,1)
+  }
+ }finally{await server.close()}
+})
+
+test('leaving during catalog retry backoff cancels recovery without another request', async () => {
+ const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom',logLevel:'error'})
+ try {
+  const {loadCatalog}=await server.ssrLoadModule('/src/services/catalog.ts')
+  const controller=new AbortController()
+  let calls=0
+  const pending=loadCatalog(controller.signal,async()=>{calls++;return new Response('Starting',{status:503})})
+  await new Promise(resolve=>setTimeout(resolve,20))
+  controller.abort()
+  await assert.rejects(pending,{name:'AbortError'})
+  assert.equal(calls,1)
+ }finally{await server.close()}
+})
