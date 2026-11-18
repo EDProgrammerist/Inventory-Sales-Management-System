@@ -93,7 +93,7 @@ Use fictional address details and the test card above. No real card is needed. A
 | Part | Technologies |
 |---|---|
 | Frontend | React, TypeScript, Vite, React Router, Tailwind CSS |
-| Backend | Node.js, Express MVC (Model–View–Controller), TypeScript |
+| Backend | Node.js, Express MVC, TypeScript |
 | Database | PostgreSQL with Drizzle ORM and migrations |
 | Authentication | bcrypt password hashing, JWT sessions, HTTP-only cookies, CSRF protection |
 | Validation | Zod on the backend |
